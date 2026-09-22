@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+backend/.pgdata
+*.tsbuildinfo
+*.log
+
+.idea/
+.workbuddy/

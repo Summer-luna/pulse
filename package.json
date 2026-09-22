@@ -1,0 +1,13 @@
+{
+  "name": "linear-clone",
+  "private": true,
+  "workspaces": ["backend", "frontend"],
+  "scripts": {
+    "db:dev": "npm run db:dev -w backend",
+    "dev:backend": "npm run start:dev -w backend",
+    "dev:frontend": "npm run dev -w frontend",
+    "codegen": "npm run schema:generate -w backend && npm run codegen -w frontend",
+    "build": "npm run build -w backend && npm run build -w frontend",
+    "test": "npm run test -w backend && npm run test -w frontend"
+  }
+}

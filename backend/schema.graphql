@@ -1,0 +1,280 @@
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+input CreateIssueInput {
+  assigneeId: ID
+  description: String
+  dueDate: Date
+
+  """Points: 0, 1, 2, 3, 5 or 8"""
+  estimate: Int
+  labelIds: [ID!]
+
+  """Makes this issue a sub-issue; the parent must be in the same project"""
+  parentId: ID
+  priority: IssuePriority
+  projectId: ID!
+
+  """The release must belong to the same project"""
+  releaseId: ID
+  status: IssueStatus
+  title: String!
+}
+
+input CreateProjectInput {
+  description: String
+
+  """2-5 letters, used as the issue identifier prefix"""
+  key: String!
+  leadId: ID
+  memberIds: [ID!]
+  name: String!
+  priority: ProjectPriority
+  startDate: Date
+  status: ProjectStatus
+  targetDate: Date
+}
+
+input CreateReleaseInput {
+  description: String
+  name: String!
+  projectId: ID!
+  status: ReleaseStatus
+  targetDate: Date
+  version: String
+}
+
+"""Calendar date in YYYY-MM-DD format"""
+scalar Date
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Issue {
+  assignee: User
+  assigneeId: ID
+  completedAt: DateTime
+  createdAt: DateTime!
+  description: String!
+  dueDate: Date
+
+  """Points: 0, 1, 2, 3, 5 or 8. Null means no estimate."""
+  estimate: Int
+  id: ID!
+  identifier: String!
+  labels: [Label!]!
+  number: Int!
+  parent: Issue
+  parentId: ID
+  priority: IssuePriority!
+  project: Project!
+  projectId: ID!
+  release: Release
+  releaseId: ID
+  status: IssueStatus!
+
+  """Null when the issue has no sub-issues"""
+  subIssueProgress: Progress
+  subIssues: [Issue!]!
+  title: String!
+  updatedAt: DateTime!
+}
+
+enum IssuePriority {
+  HIGH
+  LOW
+  MEDIUM
+  NO_PRIORITY
+  URGENT
+}
+
+enum IssueStatus {
+  BACKLOG
+  CANCELED
+  DONE
+  IN_PROGRESS
+  IN_REVIEW
+  TODO
+}
+
+input IssuesFilterInput {
+  assigneeId: ID
+
+  """Only direct sub-issues of this issue"""
+  parentId: ID
+  projectId: ID
+  releaseId: ID
+
+  """Case-insensitive match on the title"""
+  search: String
+  statuses: [IssueStatus!]
+
+  """Exclude sub-issues"""
+  topLevelOnly: Boolean
+}
+
+type Label {
+  color: String!
+  createdAt: DateTime!
+  id: ID!
+  name: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  createIssue(input: CreateIssueInput!): Issue!
+  createProject(input: CreateProjectInput!): Project!
+  createRelease(input: CreateReleaseInput!): Release!
+
+  """Sub-issues of the deleted issue become top-level issues"""
+  deleteIssue(id: ID!): Issue!
+  deleteProject(id: ID!): Project!
+  deleteRelease(id: ID!): Release!
+  login(input: LoginInput!): AuthPayload!
+  register(input: RegisterInput!): AuthPayload!
+  updateIssue(id: ID!, input: UpdateIssueInput!): Issue!
+  updateProject(id: ID!, input: UpdateProjectInput!): Project!
+  updateRelease(id: ID!, input: UpdateReleaseInput!): Release!
+}
+
+type Progress {
+  completed: Int!
+  total: Int!
+}
+
+type Project {
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  key: String!
+  lead: User
+  leadId: ID
+  members: [User!]!
+  name: String!
+  priority: ProjectPriority!
+  progress: Progress!
+  startDate: Date
+  status: ProjectStatus!
+  targetDate: Date
+  updatedAt: DateTime!
+}
+
+enum ProjectPriority {
+  HIGH
+  LOW
+  MEDIUM
+  NO_PRIORITY
+  URGENT
+}
+
+enum ProjectStatus {
+  BACKLOG
+  CANCELED
+  COMPLETED
+  IN_PROGRESS
+  PLANNED
+}
+
+type Query {
+  issue(id: ID!): Issue!
+
+  """Look up an issue by its human readable identifier, e.g. ENG-12"""
+  issueByIdentifier(identifier: String!): Issue!
+  issues(filter: IssuesFilterInput): [Issue!]!
+  labels: [Label!]!
+  me: User!
+  project(id: ID!): Project!
+  projects: [Project!]!
+  release(id: ID!): Release!
+  releases(projectId: ID): [Release!]!
+  users: [User!]!
+}
+
+input RegisterInput {
+  email: String!
+  name: String!
+  password: String!
+}
+
+type Release {
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  name: String!
+  progress: Progress!
+  project: Project!
+  projectId: ID!
+  releasedAt: DateTime
+  status: ReleaseStatus!
+  targetDate: Date
+  updatedAt: DateTime!
+  version: String
+}
+
+enum ReleaseStatus {
+  CANCELED
+  COMPLETED
+  IN_PROGRESS
+  PLANNED
+}
+
+input UpdateIssueInput {
+  """Pass null to unassign"""
+  assigneeId: ID
+  description: String
+
+  """Pass null to clear"""
+  dueDate: Date
+
+  """Points: 0, 1, 2, 3, 5 or 8. Pass null to clear."""
+  estimate: Int
+
+  """Replaces the full label list"""
+  labelIds: [ID!]
+
+  """Pass null to turn a sub-issue back into a top-level issue"""
+  parentId: ID
+  priority: IssuePriority
+
+  """Pass null to remove from the release"""
+  releaseId: ID
+  status: IssueStatus
+  title: String
+}
+
+input UpdateProjectInput {
+  description: String
+  leadId: ID
+
+  """Replaces the full member list"""
+  memberIds: [ID!]
+  name: String
+  priority: ProjectPriority
+  startDate: Date
+  status: ProjectStatus
+  targetDate: Date
+}
+
+input UpdateReleaseInput {
+  description: String
+  name: String
+  status: ReleaseStatus
+  targetDate: Date
+  version: String
+}
+
+type User {
+  color: String!
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  name: String!
+}

@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import { AppShell } from '@/components/AppShell'
+import { SettingsLayout } from '@/components/SettingsLayout'
 import { IssuePage } from '@/pages/IssuePage'
 import { IssuesPage } from '@/pages/IssuesPage'
 import { LoginPage } from '@/pages/LoginPage'
@@ -56,11 +57,13 @@ export function App() {
                 <Route path="projects/:projectId/releases/:releaseId" element={<ReleasePage />} />
                 <Route path="releases" element={<ReleasesPage />} />
                 <Route path="release-pipelines/:pipelineId" element={<ReleasePipelinePage />} />
-                <Route element={<RequireAdmin />}>
-                  <Route path="settings" element={<SettingsPage />} />
-                  <Route path="settings/members" element={<MembersPage />} />
-                </Route>
                 <Route path="*" element={<Navigate to="/issues" replace />} />
+              </Route>
+              <Route element={<RequireAdmin />}>
+                <Route path="settings" element={<SettingsLayout />}>
+                  <Route index element={<SettingsPage />} />
+                  <Route path="members" element={<MembersPage />} />
+                </Route>
               </Route>
             </Route>
           </Routes>

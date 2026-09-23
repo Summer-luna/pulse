@@ -5,7 +5,7 @@ export function SettingsPage() {
   return (
     <div className="flex h-full flex-col">
       <PageHeader>
-        <h1 className="font-medium">Settings</h1>
+        <h1 className="font-medium">Workspace</h1>
       </PageHeader>
       <div className="min-h-0 flex-1 overflow-y-auto">
         <EmptyState title="Workspace settings" description="Coming soon." />

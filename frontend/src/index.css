@@ -80,8 +80,61 @@ body {
 
 .description-editor ul,
 .description-editor ol {
-  margin: 0.25em 0;
+  margin: 0.25em 0 0.5em;
   padding-left: 1.25em;
+}
+
+.description-editor ul {
+  list-style: disc;
+}
+
+.description-editor ol {
+  list-style: decimal;
+}
+
+.description-editor li {
+  margin: 0.15em 0;
+}
+
+.description-editor li p {
+  margin: 0;
+}
+
+.description-editor h1,
+.description-editor h2,
+.description-editor h3 {
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0.9em 0 0.35em;
+}
+
+.description-editor h1:first-child,
+.description-editor h2:first-child,
+.description-editor h3:first-child {
+  margin-top: 0;
+}
+
+.description-editor h1 {
+  font-size: 1.375rem;
+}
+
+.description-editor h2 {
+  font-size: 1.15rem;
+}
+
+.description-editor h3 {
+  font-size: 1rem;
+}
+
+.description-editor strong {
+  font-weight: 600;
+}
+
+.description-editor blockquote {
+  margin: 0.5em 0;
+  padding-left: 0.75em;
+  border-left: 2px solid var(--color-line);
+  color: var(--color-dim);
 }
 
 .description-editor code {

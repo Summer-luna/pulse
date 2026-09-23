@@ -63,6 +63,7 @@ export type IssuePriority =
 
 export type IssueStatus =
   | 'BACKLOG'
+  | 'BLOCKED'
   | 'CANCELED'
   | 'DONE'
   | 'IN_PROGRESS'

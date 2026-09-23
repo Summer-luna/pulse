@@ -28,6 +28,12 @@ export function StatusIcon({ status, size = 14 }: Props) {
           <path d={pie(status === 'IN_PROGRESS' ? 0.5 : 0.75)} fill={color} />
         </>
       )}
+      {status === 'BLOCKED' && (
+        <>
+          <circle cx="7" cy="7" r="5.75" stroke={color} strokeWidth="1.5" />
+          <rect x="4" y="6.25" width="6" height="1.5" fill={color} />
+        </>
+      )}
       {status === 'DONE' && (
         <>
           <circle cx="7" cy="7" r="7" fill={color} />

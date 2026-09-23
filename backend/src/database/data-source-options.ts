@@ -12,6 +12,7 @@ import { AddIssueEstimate1790000003000 } from './migrations/1790000003000-add-is
 import { AddLabels1790000004000 } from './migrations/1790000004000-add-labels.js';
 import { AddReleasePipelines1790000005000 } from './migrations/1790000005000-add-release-pipelines.js';
 import { AddComments1790000006000 } from './migrations/1790000006000-add-comments.js';
+import { AddBlockedIssueStatus1790000007000 } from './migrations/1790000007000-add-blocked-issue-status.js';
 import { InitSchema1790000000000 } from './migrations/1790000000000-init-schema.js';
 import { SnakeNamingStrategy } from './snake-naming.strategy.js';
 
@@ -28,6 +29,7 @@ export function buildDataSourceOptions(url: string): DataSourceOptions {
       AddLabels1790000004000,
       AddReleasePipelines1790000005000,
       AddComments1790000006000,
+      AddBlockedIssueStatus1790000007000,
     ],
     namingStrategy: new SnakeNamingStrategy(),
     uuidExtension: 'pgcrypto',

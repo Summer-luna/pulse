@@ -118,6 +118,7 @@ enum IssuePriority {
 
 enum IssueStatus {
   BACKLOG
+  BLOCKED
   CANCELED
   DONE
   IN_PROGRESS

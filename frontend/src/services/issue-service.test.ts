@@ -38,7 +38,7 @@ describe('issueService', () => {
   it('groups by workflow order and can drop empty sections', () => {
     const issues = [issue({ id: 'a', status: 'DONE' }), issue({ id: 'b', status: 'IN_PROGRESS' })]
     expect(issueService.groupByStatus(issues, { includeEmpty: false }).map((s) => s.status)).toEqual(['IN_PROGRESS', 'DONE'])
-    expect(issueService.groupByStatus(issues, { includeEmpty: true })).toHaveLength(6)
+    expect(issueService.groupByStatus(issues, { includeEmpty: true })).toHaveLength(7)
   })
 
   it('filters by identifier or title and can hide sub-issues', () => {

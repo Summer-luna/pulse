@@ -5,6 +5,7 @@ import { useDialogs } from '@/app/dialogs-context'
 import { useProjectsController } from '@/controllers/use-projects-controller'
 import { Avatar } from '@/ui/Avatar'
 import { ProjectBadge } from './ProjectBadge'
+import { WorkspaceMenu } from './WorkspaceMenu'
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
   `flex h-7 items-center gap-2 rounded-md px-2 text-dim transition-colors hover:bg-hover hover:text-ink ${isActive ? 'bg-hover text-ink' : ''}`
@@ -16,12 +17,9 @@ export function Sidebar() {
 
   return (
     <aside className="flex w-60 shrink-0 flex-col gap-4 border-r border-line bg-panel p-3">
-      <div className="flex items-center justify-between px-1">
-        <div className="flex items-center gap-2 font-medium">
-          <span className="flex size-5 items-center justify-center rounded bg-accent text-xs font-bold text-white">L</span>
-          Linear Clone
-        </div>
-        <button className="btn btn-ghost size-7 p-0" onClick={() => dialogs.openCreateIssue()} title="New issue (C)" aria-label="New issue">
+      <div className="flex items-center justify-between gap-1 px-1">
+        <WorkspaceMenu />
+        <button className="btn btn-ghost size-7 shrink-0 p-0" onClick={() => dialogs.openCreateIssue()} title="New issue (C)" aria-label="New issue">
           <SquarePen size={15} />
         </button>
       </div>

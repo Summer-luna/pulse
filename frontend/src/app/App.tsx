@@ -4,6 +4,7 @@ import { AppShell } from '@/components/AppShell'
 import { IssuePage } from '@/pages/IssuePage'
 import { IssuesPage } from '@/pages/IssuesPage'
 import { LoginPage } from '@/pages/LoginPage'
+import { MembersPage } from '@/pages/MembersPage'
 import { ProjectIssuesTab } from '@/pages/ProjectIssuesTab'
 import { ProjectOverviewTab } from '@/pages/ProjectOverviewTab'
 import { ProjectPage } from '@/pages/ProjectPage'
@@ -13,9 +14,11 @@ import { RegisterPage } from '@/pages/RegisterPage'
 import { ReleasePage } from '@/pages/ReleasePage'
 import { ReleasePipelinePage } from '@/pages/ReleasePipelinePage'
 import { ReleasesPage } from '@/pages/ReleasesPage'
+import { SettingsPage } from '@/pages/SettingsPage'
 import { AuthProvider } from './AuthProvider'
 import { DialogsProvider } from './DialogsProvider'
 import { GuestOnly } from './GuestOnly'
+import { RequireAdmin } from './RequireAdmin'
 import { RequireAuth } from './RequireAuth'
 
 const queryClient = new QueryClient({
@@ -53,6 +56,10 @@ export function App() {
                 <Route path="projects/:projectId/releases/:releaseId" element={<ReleasePage />} />
                 <Route path="releases" element={<ReleasesPage />} />
                 <Route path="release-pipelines/:pipelineId" element={<ReleasePipelinePage />} />
+                <Route element={<RequireAdmin />}>
+                  <Route path="settings" element={<SettingsPage />} />
+                  <Route path="settings/members" element={<MembersPage />} />
+                </Route>
                 <Route path="*" element={<Navigate to="/issues" replace />} />
               </Route>
             </Route>

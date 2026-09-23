@@ -11,7 +11,7 @@ export interface ProjectMemberRow {
   user: User;
 }
 
-const MEMBER_COLUMNS = ['id', 'name', 'email', 'color', 'created_at'] as const;
+const MEMBER_COLUMNS = ['id', 'name', 'email', 'color', 'role', 'created_at'] as const;
 
 @Injectable()
 export class ProjectsRepository {
@@ -76,7 +76,14 @@ export class ProjectsRepository {
     );
     return rows.map((row) => ({
       projectId: row.project_id,
-      user: { id: row.id, name: row.name, email: row.email, color: row.color, createdAt: row.created_at } as unknown as User,
+      user: {
+        id: row.id,
+        name: row.name,
+        email: row.email,
+        color: row.color,
+        role: row.role,
+        createdAt: row.created_at,
+      } as unknown as User,
     }));
   }
 

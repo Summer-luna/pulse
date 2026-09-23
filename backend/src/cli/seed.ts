@@ -10,6 +10,7 @@ import { ProjectStatus } from '../projects/project-status.enum.js';
 import { Project } from '../projects/project.entity.js';
 import { ReleaseStatus } from '../releases/release-status.enum.js';
 import { Release } from '../releases/release.entity.js';
+import { UserRole } from '../users/user-role.enum.js';
 import { User } from '../users/user.entity.js';
 
 function daysFromNow(days: number): string {
@@ -30,10 +31,10 @@ const DEV_PASSWORD = 'password123';
 const passwordHash = await bcrypt.hash(DEV_PASSWORD, 10);
 
 const users = await dataSource.getRepository(User).save([
-  { name: 'Ada Lovelace', email: 'ada@example.com', color: '#e5484d', passwordHash },
-  { name: 'Grace Hopper', email: 'grace@example.com', color: '#30a46c', passwordHash },
-  { name: 'Linus Torvalds', email: 'linus@example.com', color: '#f5a524', passwordHash },
-  { name: 'Margaret Hamilton', email: 'margaret@example.com', color: '#5e6ad2', passwordHash },
+  { name: 'Ada Lovelace', email: 'ada@example.com', color: '#e5484d', passwordHash, role: UserRole.ADMIN },
+  { name: 'Grace Hopper', email: 'grace@example.com', color: '#30a46c', passwordHash, role: UserRole.MEMBER },
+  { name: 'Linus Torvalds', email: 'linus@example.com', color: '#f5a524', passwordHash, role: UserRole.MEMBER },
+  { name: 'Margaret Hamilton', email: 'margaret@example.com', color: '#5e6ad2', passwordHash, role: UserRole.MEMBER },
 ]);
 const [ada, grace, linus, margaret] = users;
 

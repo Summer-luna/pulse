@@ -1,7 +1,14 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import * as bcrypt from 'bcryptjs';
+import { InviteMembersInput } from './invite-members.input.js';
+import { InvitedMember } from './invited-member.model.js';
+import { generateTemporaryPassword } from './temporary-password.js';
 import { randomUserColor } from './user-color.js';
+import { UserRole } from './user-role.enum.js';
 import { User } from './user.entity.js';
 import { UsersRepository } from './users.repository.js';
+
+const PASSWORD_HASH_ROUNDS = 10;
 
 export interface NewUserProfile {
   name: string;
@@ -43,6 +50,47 @@ export class UsersService {
     if (await this.users.findByEmail(profile.email)) {
       throw new ConflictException('Email is already registered');
     }
-    return this.users.create({ ...profile, color: randomUserColor() });
+    return this.users.create({ ...profile, color: randomUserColor(), role: UserRole.MEMBER });
+  }
+
+  async invite(input: InviteMembersInput, actingUser: User): Promise<InvitedMember[]> {
+    this.assertAdmin(actingUser);
+    const results: InvitedMember[] = [];
+    for (const rawEmail of input.emails) {
+      const email = rawEmail.trim().toLowerCase();
+      if (await this.users.findByEmail(email)) {
+        throw new ConflictException(`${email} is already a member`);
+      }
+      const temporaryPassword = generateTemporaryPassword();
+      const passwordHash = await bcrypt.hash(temporaryPassword, PASSWORD_HASH_ROUNDS);
+      const user = await this.users.create({
+        name: email.split('@')[0],
+        email,
+        passwordHash,
+        color: randomUserColor(),
+        role: input.role ?? UserRole.MEMBER,
+      });
+      results.push({ user, temporaryPassword });
+    }
+    return results;
+  }
+
+  async remove(id: string, actingUser: User): Promise<User> {
+    this.assertAdmin(actingUser);
+    if (id === actingUser.id) {
+      throw new BadRequestException('You cannot remove yourself');
+    }
+    const user = await this.users.findById(id);
+    if (!user) {
+      throw new NotFoundException(`User ${id} not found`);
+    }
+    await this.users.remove(id);
+    return user;
+  }
+
+  private assertAdmin(user: User): void {
+    if (user.role !== UserRole.ADMIN) {
+      throw new ForbiddenException('Only admins can manage workspace members');
+    }
   }
 }

@@ -19,7 +19,8 @@ type Documents = {
     "\n  query Me {\n    me {\n      ...UserFields\n    }\n  }\n": typeof types.MeDocument,
     "\n  mutation CreateComment($input: CreateCommentInput!) {\n    createComment(input: $input) {\n      ...CommentFields\n    }\n  }\n": typeof types.CreateCommentDocument,
     "\n  mutation DeleteComment($id: ID!) {\n    deleteComment(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteCommentDocument,
-    "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n  }\n": typeof types.UserFieldsFragmentDoc,
+    "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n    role\n    createdAt\n  }\n": typeof types.UserFieldsFragmentDoc,
+    "\n  fragment InvitedMemberFields on InvitedMember {\n    temporaryPassword\n    user {\n      ...UserFields\n    }\n  }\n": typeof types.InvitedMemberFieldsFragmentDoc,
     "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": typeof types.ProjectFieldsFragmentDoc,
     "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    pipelineId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": typeof types.ReleaseFieldsFragmentDoc,
     "\n  fragment ReleasePipelineFields on ReleasePipeline {\n    id\n    projectId\n    name\n    type\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    releaseCount\n    latestRelease {\n      id\n      name\n      version\n      status\n      releasedAt\n    }\n  }\n": typeof types.ReleasePipelineFieldsFragmentDoc,
@@ -48,6 +49,8 @@ type Documents = {
     "\n  mutation UpdateRelease($id: ID!, $input: UpdateReleaseInput!) {\n    updateRelease(id: $id, input: $input) {\n      ...ReleaseFields\n    }\n  }\n": typeof types.UpdateReleaseDocument,
     "\n  mutation DeleteRelease($id: ID!) {\n    deleteRelease(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteReleaseDocument,
     "\n  query Users {\n    users {\n      ...UserFields\n    }\n  }\n": typeof types.UsersDocument,
+    "\n  mutation InviteMembers($input: InviteMembersInput!) {\n    inviteMembers(input: $input) {\n      ...InvitedMemberFields\n    }\n  }\n": typeof types.InviteMembersDocument,
+    "\n  mutation RemoveMember($id: ID!) {\n    removeMember(id: $id) {\n      id\n    }\n  }\n": typeof types.RemoveMemberDocument,
 };
 const documents: Documents = {
     "\n  mutation Login($input: LoginInput!) {\n    login(input: $input) {\n      token\n      user {\n        ...UserFields\n      }\n    }\n  }\n": types.LoginDocument,
@@ -55,7 +58,8 @@ const documents: Documents = {
     "\n  query Me {\n    me {\n      ...UserFields\n    }\n  }\n": types.MeDocument,
     "\n  mutation CreateComment($input: CreateCommentInput!) {\n    createComment(input: $input) {\n      ...CommentFields\n    }\n  }\n": types.CreateCommentDocument,
     "\n  mutation DeleteComment($id: ID!) {\n    deleteComment(id: $id) {\n      id\n    }\n  }\n": types.DeleteCommentDocument,
-    "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n  }\n": types.UserFieldsFragmentDoc,
+    "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n    role\n    createdAt\n  }\n": types.UserFieldsFragmentDoc,
+    "\n  fragment InvitedMemberFields on InvitedMember {\n    temporaryPassword\n    user {\n      ...UserFields\n    }\n  }\n": types.InvitedMemberFieldsFragmentDoc,
     "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": types.ProjectFieldsFragmentDoc,
     "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    pipelineId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": types.ReleaseFieldsFragmentDoc,
     "\n  fragment ReleasePipelineFields on ReleasePipeline {\n    id\n    projectId\n    name\n    type\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    releaseCount\n    latestRelease {\n      id\n      name\n      version\n      status\n      releasedAt\n    }\n  }\n": types.ReleasePipelineFieldsFragmentDoc,
@@ -84,6 +88,8 @@ const documents: Documents = {
     "\n  mutation UpdateRelease($id: ID!, $input: UpdateReleaseInput!) {\n    updateRelease(id: $id, input: $input) {\n      ...ReleaseFields\n    }\n  }\n": types.UpdateReleaseDocument,
     "\n  mutation DeleteRelease($id: ID!) {\n    deleteRelease(id: $id) {\n      id\n    }\n  }\n": types.DeleteReleaseDocument,
     "\n  query Users {\n    users {\n      ...UserFields\n    }\n  }\n": types.UsersDocument,
+    "\n  mutation InviteMembers($input: InviteMembersInput!) {\n    inviteMembers(input: $input) {\n      ...InvitedMemberFields\n    }\n  }\n": types.InviteMembersDocument,
+    "\n  mutation RemoveMember($id: ID!) {\n    removeMember(id: $id) {\n      id\n    }\n  }\n": types.RemoveMemberDocument,
 };
 
 /**
@@ -123,7 +129,11 @@ export function graphql(source: "\n  mutation DeleteComment($id: ID!) {\n    del
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n  }\n"): (typeof documents)["\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n  }\n"];
+export function graphql(source: "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n    role\n    createdAt\n  }\n"): (typeof documents)["\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n    role\n    createdAt\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  fragment InvitedMemberFields on InvitedMember {\n    temporaryPassword\n    user {\n      ...UserFields\n    }\n  }\n"): (typeof documents)["\n  fragment InvitedMemberFields on InvitedMember {\n    temporaryPassword\n    user {\n      ...UserFields\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -236,6 +246,14 @@ export function graphql(source: "\n  mutation DeleteRelease($id: ID!) {\n    del
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query Users {\n    users {\n      ...UserFields\n    }\n  }\n"): (typeof documents)["\n  query Users {\n    users {\n      ...UserFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation InviteMembers($input: InviteMembersInput!) {\n    inviteMembers(input: $input) {\n      ...InvitedMemberFields\n    }\n  }\n"): (typeof documents)["\n  mutation InviteMembers($input: InviteMembersInput!) {\n    inviteMembers(input: $input) {\n      ...InvitedMemberFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation RemoveMember($id: ID!) {\n    removeMember(id: $id) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation RemoveMember($id: ID!) {\n    removeMember(id: $id) {\n      id\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

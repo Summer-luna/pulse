@@ -75,6 +75,17 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input InviteMembersInput {
+  emails: [String!]!
+  role: UserRole
+}
+
+type InvitedMember {
+  """Shown once at invite time; not recoverable afterwards"""
+  temporaryPassword: String!
+  user: User!
+}
+
 type Issue {
   assignee: User
   assigneeId: ID
@@ -167,8 +178,16 @@ type Mutation {
   deleteProject(id: ID!): Project!
   deleteRelease(id: ID!): Release!
   deleteReleasePipeline(id: ID!): ReleasePipeline!
+
+  """
+  Admin only. Returns each invited member with a one-time temporary password.
+  """
+  inviteMembers(input: InviteMembersInput!): [InvitedMember!]!
   login(input: LoginInput!): AuthPayload!
   register(input: RegisterInput!): AuthPayload!
+
+  """Admin only."""
+  removeMember(id: ID!): User!
   updateIssue(id: ID!, input: UpdateIssueInput!): Issue!
   updateProject(id: ID!, input: UpdateProjectInput!): Project!
   updateRelease(id: ID!, input: UpdateReleaseInput!): Release!
@@ -333,4 +352,11 @@ type User {
   email: String!
   id: ID!
   name: String!
+  role: UserRole!
+}
+
+enum UserRole {
+  ADMIN
+  GUEST
+  MEMBER
 }

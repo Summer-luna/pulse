@@ -6,6 +6,17 @@ export const UserFields = graphql(`
     name
     email
     color
+    role
+    createdAt
+  }
+`)
+
+export const InvitedMemberFields = graphql(`
+  fragment InvitedMemberFields on InvitedMember {
+    temporaryPassword
+    user {
+      ...UserFields
+    }
   }
 `)
 

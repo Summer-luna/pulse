@@ -28,6 +28,11 @@ export interface StatusSection {
   issues: Issue[]
 }
 
+export interface NestedIssueRow {
+  issue: Issue
+  depth: number
+}
+
 class IssueService {
   list(filter?: IssuesFilterInput): Promise<Issue[]> {
     return issueRepository.list(filter)
@@ -126,6 +131,32 @@ class IssueService {
     return ISSUE_STATUSES.map((status) => ({ status, issues: sorted.filter((issue) => issue.status === status) })).filter(
       (section) => options.includeEmpty || section.issues.length > 0,
     )
+  }
+
+  /** Orders issues so each parent is immediately followed by its children (present in the same list), indented. */
+  nest(issues: Issue[]): NestedIssueRow[] {
+    const idsInList = new Set(issues.map((issue) => issue.id))
+    const childrenByParent = new Map<string, Issue[]>()
+    for (const issue of issues) {
+      if (issue.parentId && idsInList.has(issue.parentId)) {
+        childrenByParent.set(issue.parentId, [...(childrenByParent.get(issue.parentId) ?? []), issue])
+      }
+    }
+    const childIds = new Set(issues.filter((issue) => issue.parentId && idsInList.has(issue.parentId)).map((issue) => issue.id))
+
+    const rows: NestedIssueRow[] = []
+    const addWithChildren = (issue: Issue, depth: number) => {
+      rows.push({ issue, depth })
+      for (const child of childrenByParent.get(issue.id) ?? []) {
+        addWithChildren(child, depth + 1)
+      }
+    }
+    for (const issue of issues) {
+      if (!childIds.has(issue.id)) {
+        addWithChildren(issue, 0)
+      }
+    }
+    return rows
   }
 
   descendantIds(rootId: string, issues: Issue[]): Set<string> {

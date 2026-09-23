@@ -1,6 +1,6 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { GqlExecutionContext } from '@nestjs/graphql';
+import { GqlContextType, GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 import type { GraphQLContext } from '../common/loaders/loaders.js';
 import { IS_PUBLIC_KEY } from './public.decorator.js';
@@ -12,7 +12,13 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   override getRequest(context: ExecutionContext): GraphQLContext['req'] {
-    return GqlExecutionContext.create(context).getContext<GraphQLContext>().req;
+    // REST controllers (e.g. file uploads) run as a plain 'http' context, where
+    // GqlExecutionContext.getContext() does not return the request; only actual
+    // GraphQL resolvers get their request via the context function in app.module.ts.
+    if (context.getType<GqlContextType>() === 'graphql') {
+      return GqlExecutionContext.create(context).getContext<GraphQLContext>().req;
+    }
+    return context.switchToHttp().getRequest();
   }
 
   override canActivate(context: ExecutionContext): boolean | Promise<boolean> {

@@ -1,13 +1,19 @@
+import { mkdirSync } from 'node:fs';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module.js';
+import { UPLOADS_DIR } from './uploads/uploads.constants.js';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  mkdirSync(UPLOADS_DIR, { recursive: true });
+
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors({
     origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173',
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
+  app.useStaticAssets(UPLOADS_DIR, { prefix: '/uploads/' });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

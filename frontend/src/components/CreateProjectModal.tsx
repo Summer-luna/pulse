@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { useCreateProjectController } from '@/controllers/use-create-project-controller'
 import { keyColor } from '@/lib/key-color'
+import { DescriptionField } from '@/ui/DescriptionField'
 import { Modal } from '@/ui/Modal'
 import { MembersPicker } from './MembersPicker'
 import { ProjectPriorityPicker } from './ProjectPriorityPicker'
@@ -92,11 +93,11 @@ export function CreateProjectModal({ onClose }: Props) {
           </label>
         </div>
 
-        <textarea
+        <DescriptionField
           value={draft.description}
-          onChange={(event) => updateDraft({ description: event.target.value })}
+          onChange={(description) => updateDraft({ description })}
           placeholder="Write a description, a project brief, or collect ideas…"
-          className="field min-h-32 flex-1 resize-none border-transparent border-t border-t-line bg-transparent px-5 py-3 focus:border-transparent focus:border-t-line"
+          className="min-h-32 flex-1 border-t border-line px-5 py-3"
         />
 
         <div className="flex items-center justify-end gap-2 border-t border-line p-4">

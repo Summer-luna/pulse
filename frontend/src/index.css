@@ -63,3 +63,39 @@ body {
     @apply inline-flex h-6 items-center gap-1.5 rounded-md border border-line px-2 text-xs text-dim;
   }
 }
+
+.description-editor {
+  outline: none;
+  min-height: 1.5rem;
+  line-height: 1.6;
+}
+
+.description-editor p {
+  margin: 0 0 0.5em;
+}
+
+.description-editor p:last-child {
+  margin-bottom: 0;
+}
+
+.description-editor ul,
+.description-editor ol {
+  margin: 0.25em 0;
+  padding-left: 1.25em;
+}
+
+.description-editor code {
+  @apply rounded bg-line px-1 py-0.5 font-mono text-xs;
+}
+
+.description-editor pre {
+  @apply my-1 overflow-x-auto rounded-md bg-line p-2 font-mono text-xs;
+}
+
+.description-editor p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--color-faint);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}

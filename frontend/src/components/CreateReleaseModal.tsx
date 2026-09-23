@@ -1,6 +1,7 @@
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { useCreateReleaseController } from '@/controllers/use-create-release-controller'
+import { DescriptionField } from '@/ui/DescriptionField'
 import { Modal } from '@/ui/Modal'
 import { ProjectPicker } from './ProjectPicker'
 import { ReleaseStatusPicker } from './ReleaseStatusPicker'
@@ -47,11 +48,11 @@ export function CreateReleaseModal({ projectId, onClose }: Props) {
             className="field w-28 font-mono"
           />
         </div>
-        <textarea
+        <DescriptionField
           value={draft.description}
-          onChange={(event) => updateDraft({ description: event.target.value })}
+          onChange={(description) => updateDraft({ description })}
           placeholder="Description"
-          className="field"
+          className="min-h-16 rounded-md border border-line bg-raised px-2.5 py-2 hover:border-line focus-within:border-accent"
         />
         <div className="flex flex-wrap items-center gap-2">
           <ProjectPicker

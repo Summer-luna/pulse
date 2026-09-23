@@ -42,6 +42,7 @@ npm run dev:frontend                   # http://localhost:5173
 - **Sub-issues**：任意层级嵌套；父 issue 上显示子 issue 进度；详情页可直接添加子 issue、修改父级
 - **Releases**：属于某个 project，状态（Planned / In Progress / Completed / Canceled）、版本号、目标日期、进度；issue 可归入 release，release 页可批量添加 issue
 - **Labels**：工作区级的标签（内置 Feature / Bug / Improvement，只读），一个 issue 可打多个标签；列表行、看板卡片展示标签 chip，详情页属性栏和新建弹窗里可多选
+- **Description 里可以放图片**：往 issue / project / release 的描述框里粘贴或拖拽图片（PNG/JPEG/GIF/WebP，≤8MB），会自动上传并以 `![](url)` 形式插入；非编辑状态下这类图片会直接渲染出来
 
 业务规则（都在后端 service 层，有单测）：
 
@@ -52,6 +53,7 @@ npm run dev:frontend                   # http://localhost:5173
 - 进度只统计未取消的 issue
 - 密码用 bcrypt 哈希（`users.password_hash`，`select: false`，默认查询不会带出来）；邮箱重复注册会报错
 - Project 成员是独立的多对多表 `project_members`（不是 entity 上的字段），通过 DataLoader 批量查询；成员 id 必须都存在，否则整个创建/更新会报错
+- 图片上传是一个单独的 REST 端点（`POST /uploads`，登录态保护，用的是同一个 JWT guard），不是 GraphQL 的一部分；文件存在 `backend/uploads/`（已 gitignore），按 `/uploads/<uuid>.<ext>` 静态托管
 - 标签是独立的多对多表 `issue_labels`（不在 `issues` 表上加字段）；`labelIds` 是全量替换，传 `[]` 清空，去重后校验 id 是否存在，不存在则整个创建/更新报错；删除 issue 时关联记录级联删除
 
 ## 分层

@@ -11,6 +11,7 @@ import { SubIssuesSection } from '@/components/SubIssuesSection'
 import { UserPicker } from '@/components/UserPicker'
 import { useIssueController } from '@/controllers/use-issue-controller'
 import { formatFullDate } from '@/lib/format-date'
+import { DescriptionEditor } from '@/ui/DescriptionEditor'
 import { EditableText } from '@/ui/EditableText'
 import { PageState } from '@/ui/PageState'
 import { Picker } from '@/ui/Picker'
@@ -80,9 +81,7 @@ export function IssuePage() {
               className="text-2xl font-semibold"
             />
             <div className="mt-2">
-              <EditableText
-                multiline
-                allowEmpty
+              <DescriptionEditor
                 value={issue.description}
                 onSave={(description) => controller.updateIssue({ description })}
                 placeholder="Add description…"

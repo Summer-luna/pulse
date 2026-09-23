@@ -1,7 +1,10 @@
+import { MoreHorizontal } from 'lucide-react'
 import { type FormEvent, useRef, useState } from 'react'
 import { useCreateIssueController } from '@/controllers/use-create-issue-controller'
 import type { IssueDraft } from '@/services/issue-service'
+import { DescriptionField } from '@/ui/DescriptionField'
 import { Modal } from '@/ui/Modal'
+import { PopoverButton } from '@/ui/PopoverButton'
 import { Switch } from '@/ui/Switch'
 import { EstimatePicker } from './EstimatePicker'
 import { IssuePriorityPicker } from './IssuePriorityPicker'
@@ -51,16 +54,11 @@ export function CreateIssueModal({ defaults, onClose }: Props) {
           maxLength={200}
           className="w-full bg-transparent text-lg font-medium outline-none placeholder:text-faint"
         />
-        <textarea
+        <DescriptionField
           value={draft.description}
-          onChange={(event) => updateDraft({ description: event.target.value })}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
-              event.currentTarget.form?.requestSubmit()
-            }
-          }}
+          onChange={(description) => updateDraft({ description })}
           placeholder="Add description…"
-          className="field min-h-20 border-transparent bg-transparent px-0 focus:border-transparent"
+          className="min-h-20"
         />
         <div className="flex flex-wrap items-center gap-2">
           <IssueStatusPicker value={draft.status} onChange={(status) => updateDraft({ status })} />
@@ -77,19 +75,27 @@ export function CreateIssueModal({ defaults, onClose }: Props) {
             projects={controller.projects}
             onChange={(projectId) => updateDraft({ projectId })}
           />
-          <ReleasePicker
-            value={draft.releaseId}
-            releases={controller.releases}
-            onChange={(releaseId) => updateDraft({ releaseId })}
-          />
           <LabelPicker values={draft.labelIds} onChange={(labelIds) => updateDraft({ labelIds })} />
-          <input
-            type="date"
-            value={draft.dueDate ?? ''}
-            onChange={(event) => updateDraft({ dueDate: event.target.value || null })}
-            aria-label="Due date"
-            className="field h-7 w-36"
-          />
+          <PopoverButton icon={<MoreHorizontal size={15} />} label="More options">
+            <label className="flex flex-col gap-1 text-xs text-dim">
+              Release
+              <ReleasePicker
+                value={draft.releaseId}
+                releases={controller.releases}
+                onChange={(releaseId) => updateDraft({ releaseId })}
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-xs text-dim">
+              Due date
+              <input
+                type="date"
+                value={draft.dueDate ?? ''}
+                onChange={(event) => updateDraft({ dueDate: event.target.value || null })}
+                aria-label="Due date"
+                className="field h-7"
+              />
+            </label>
+          </PopoverButton>
         </div>
         <div className="flex items-center justify-end gap-3 border-t border-line pt-3">
           {controller.error && <p className="mr-auto text-danger">{controller.error}</p>}

@@ -4,6 +4,7 @@ import { ProjectPriorityPicker } from '@/components/ProjectPriorityPicker'
 import { ProjectStatusPicker } from '@/components/ProjectStatusPicker'
 import { UserPicker } from '@/components/UserPicker'
 import { useProjectController } from '@/controllers/use-projects-controller'
+import { DescriptionEditor } from '@/ui/DescriptionEditor'
 import { EditableText } from '@/ui/EditableText'
 import { PageState } from '@/ui/PageState'
 import { ProgressBar } from '@/ui/ProgressBar'
@@ -34,9 +35,7 @@ export function ProjectOverviewTab() {
           maxLength={80}
           className="text-xl font-semibold"
         />
-        <EditableText
-          multiline
-          allowEmpty
+        <DescriptionEditor
           value={project.description}
           onSave={(description) => controller.updateProject({ description })}
           placeholder="Add a description…"

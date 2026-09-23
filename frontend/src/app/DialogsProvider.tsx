@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import { CreateIssueModal } from '@/components/CreateIssueModal'
+import { CreatePipelineModal } from '@/components/CreatePipelineModal'
 import { CreateProjectModal } from '@/components/CreateProjectModal'
 import { CreateReleaseModal } from '@/components/CreateReleaseModal'
 import type { IssueDraft } from '@/services/issue-service'
@@ -8,7 +9,8 @@ import { DialogsContext } from './dialogs-context'
 type OpenDialog =
   | { kind: 'issue'; defaults: Partial<IssueDraft> }
   | { kind: 'project' }
-  | { kind: 'release'; projectId: string }
+  | { kind: 'release'; pipelineId: string }
+  | { kind: 'pipeline' }
   | null
 
 function isTypingTarget(target: EventTarget | null): boolean {
@@ -23,7 +25,8 @@ export function DialogsProvider({ children }: { children: ReactNode }) {
     () => ({
       openCreateIssue: (defaults: Partial<IssueDraft> = {}) => setDialog({ kind: 'issue', defaults }),
       openCreateProject: () => setDialog({ kind: 'project' }),
-      openCreateRelease: (projectId = '') => setDialog({ kind: 'release', projectId }),
+      openCreateRelease: (pipelineId = '') => setDialog({ kind: 'release', pipelineId }),
+      openCreatePipeline: () => setDialog({ kind: 'pipeline' }),
     }),
     [],
   )
@@ -46,7 +49,8 @@ export function DialogsProvider({ children }: { children: ReactNode }) {
       {children}
       {dialog?.kind === 'issue' && <CreateIssueModal defaults={dialog.defaults} onClose={close} />}
       {dialog?.kind === 'project' && <CreateProjectModal onClose={close} />}
-      {dialog?.kind === 'release' && <CreateReleaseModal projectId={dialog.projectId} onClose={close} />}
+      {dialog?.kind === 'release' && <CreateReleaseModal pipelineId={dialog.pipelineId} onClose={close} />}
+      {dialog?.kind === 'pipeline' && <CreatePipelineModal onClose={close} />}
     </DialogsContext.Provider>
   )
 }

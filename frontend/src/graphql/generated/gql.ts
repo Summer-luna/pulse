@@ -19,7 +19,8 @@ type Documents = {
     "\n  query Me {\n    me {\n      ...UserFields\n    }\n  }\n": typeof types.MeDocument,
     "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n  }\n": typeof types.UserFieldsFragmentDoc,
     "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": typeof types.ProjectFieldsFragmentDoc,
-    "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": typeof types.ReleaseFieldsFragmentDoc,
+    "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    pipelineId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": typeof types.ReleaseFieldsFragmentDoc,
+    "\n  fragment ReleasePipelineFields on ReleasePipeline {\n    id\n    projectId\n    name\n    type\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    releaseCount\n    latestRelease {\n      id\n      name\n      version\n      status\n      releasedAt\n    }\n  }\n": typeof types.ReleasePipelineFieldsFragmentDoc,
     "\n  fragment LabelFields on Label {\n    id\n    name\n    color\n  }\n": typeof types.LabelFieldsFragmentDoc,
     "\n  fragment IssueFields on Issue {\n    id\n    identifier\n    number\n    title\n    status\n    priority\n    estimate\n    projectId\n    parentId\n    releaseId\n    assigneeId\n    dueDate\n    completedAt\n    createdAt\n    updatedAt\n    assignee {\n      ...UserFields\n    }\n    release {\n      id\n      name\n      version\n    }\n    labels {\n      ...LabelFields\n    }\n    subIssueProgress {\n      total\n      completed\n    }\n  }\n": typeof types.IssueFieldsFragmentDoc,
     "\n  query Issues($filter: IssuesFilterInput) {\n    issues(filter: $filter) {\n      ...IssueFields\n    }\n  }\n": typeof types.IssuesDocument,
@@ -33,6 +34,11 @@ type Documents = {
     "\n  mutation CreateProject($input: CreateProjectInput!) {\n    createProject(input: $input) {\n      ...ProjectFields\n    }\n  }\n": typeof types.CreateProjectDocument,
     "\n  mutation UpdateProject($id: ID!, $input: UpdateProjectInput!) {\n    updateProject(id: $id, input: $input) {\n      ...ProjectFields\n    }\n  }\n": typeof types.UpdateProjectDocument,
     "\n  mutation DeleteProject($id: ID!) {\n    deleteProject(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteProjectDocument,
+    "\n  query ReleasePipelines($projectId: ID) {\n    releasePipelines(projectId: $projectId) {\n      ...ReleasePipelineFields\n    }\n  }\n": typeof types.ReleasePipelinesDocument,
+    "\n  query ReleasePipeline($id: ID!) {\n    releasePipeline(id: $id) {\n      ...ReleasePipelineFields\n    }\n  }\n": typeof types.ReleasePipelineDocument,
+    "\n  mutation CreateReleasePipeline($input: CreateReleasePipelineInput!) {\n    createReleasePipeline(input: $input) {\n      ...ReleasePipelineFields\n    }\n  }\n": typeof types.CreateReleasePipelineDocument,
+    "\n  mutation UpdateReleasePipeline($id: ID!, $input: UpdateReleasePipelineInput!) {\n    updateReleasePipeline(id: $id, input: $input) {\n      ...ReleasePipelineFields\n    }\n  }\n": typeof types.UpdateReleasePipelineDocument,
+    "\n  mutation DeleteReleasePipeline($id: ID!) {\n    deleteReleasePipeline(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteReleasePipelineDocument,
     "\n  query Releases($projectId: ID) {\n    releases(projectId: $projectId) {\n      ...ReleaseFields\n    }\n  }\n": typeof types.ReleasesDocument,
     "\n  query Release($id: ID!) {\n    release(id: $id) {\n      ...ReleaseFields\n    }\n  }\n": typeof types.ReleaseDocument,
     "\n  mutation CreateRelease($input: CreateReleaseInput!) {\n    createRelease(input: $input) {\n      ...ReleaseFields\n    }\n  }\n": typeof types.CreateReleaseDocument,
@@ -46,7 +52,8 @@ const documents: Documents = {
     "\n  query Me {\n    me {\n      ...UserFields\n    }\n  }\n": types.MeDocument,
     "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n  }\n": types.UserFieldsFragmentDoc,
     "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": types.ProjectFieldsFragmentDoc,
-    "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": types.ReleaseFieldsFragmentDoc,
+    "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    pipelineId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": types.ReleaseFieldsFragmentDoc,
+    "\n  fragment ReleasePipelineFields on ReleasePipeline {\n    id\n    projectId\n    name\n    type\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    releaseCount\n    latestRelease {\n      id\n      name\n      version\n      status\n      releasedAt\n    }\n  }\n": types.ReleasePipelineFieldsFragmentDoc,
     "\n  fragment LabelFields on Label {\n    id\n    name\n    color\n  }\n": types.LabelFieldsFragmentDoc,
     "\n  fragment IssueFields on Issue {\n    id\n    identifier\n    number\n    title\n    status\n    priority\n    estimate\n    projectId\n    parentId\n    releaseId\n    assigneeId\n    dueDate\n    completedAt\n    createdAt\n    updatedAt\n    assignee {\n      ...UserFields\n    }\n    release {\n      id\n      name\n      version\n    }\n    labels {\n      ...LabelFields\n    }\n    subIssueProgress {\n      total\n      completed\n    }\n  }\n": types.IssueFieldsFragmentDoc,
     "\n  query Issues($filter: IssuesFilterInput) {\n    issues(filter: $filter) {\n      ...IssueFields\n    }\n  }\n": types.IssuesDocument,
@@ -60,6 +67,11 @@ const documents: Documents = {
     "\n  mutation CreateProject($input: CreateProjectInput!) {\n    createProject(input: $input) {\n      ...ProjectFields\n    }\n  }\n": types.CreateProjectDocument,
     "\n  mutation UpdateProject($id: ID!, $input: UpdateProjectInput!) {\n    updateProject(id: $id, input: $input) {\n      ...ProjectFields\n    }\n  }\n": types.UpdateProjectDocument,
     "\n  mutation DeleteProject($id: ID!) {\n    deleteProject(id: $id) {\n      id\n    }\n  }\n": types.DeleteProjectDocument,
+    "\n  query ReleasePipelines($projectId: ID) {\n    releasePipelines(projectId: $projectId) {\n      ...ReleasePipelineFields\n    }\n  }\n": types.ReleasePipelinesDocument,
+    "\n  query ReleasePipeline($id: ID!) {\n    releasePipeline(id: $id) {\n      ...ReleasePipelineFields\n    }\n  }\n": types.ReleasePipelineDocument,
+    "\n  mutation CreateReleasePipeline($input: CreateReleasePipelineInput!) {\n    createReleasePipeline(input: $input) {\n      ...ReleasePipelineFields\n    }\n  }\n": types.CreateReleasePipelineDocument,
+    "\n  mutation UpdateReleasePipeline($id: ID!, $input: UpdateReleasePipelineInput!) {\n    updateReleasePipeline(id: $id, input: $input) {\n      ...ReleasePipelineFields\n    }\n  }\n": types.UpdateReleasePipelineDocument,
+    "\n  mutation DeleteReleasePipeline($id: ID!) {\n    deleteReleasePipeline(id: $id) {\n      id\n    }\n  }\n": types.DeleteReleasePipelineDocument,
     "\n  query Releases($projectId: ID) {\n    releases(projectId: $projectId) {\n      ...ReleaseFields\n    }\n  }\n": types.ReleasesDocument,
     "\n  query Release($id: ID!) {\n    release(id: $id) {\n      ...ReleaseFields\n    }\n  }\n": types.ReleaseDocument,
     "\n  mutation CreateRelease($input: CreateReleaseInput!) {\n    createRelease(input: $input) {\n      ...ReleaseFields\n    }\n  }\n": types.CreateReleaseDocument,
@@ -105,7 +117,11 @@ export function graphql(source: "\n  fragment ProjectFields on Project {\n    id
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n"): (typeof documents)["\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n"];
+export function graphql(source: "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    pipelineId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n"): (typeof documents)["\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    pipelineId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  fragment ReleasePipelineFields on ReleasePipeline {\n    id\n    projectId\n    name\n    type\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    releaseCount\n    latestRelease {\n      id\n      name\n      version\n      status\n      releasedAt\n    }\n  }\n"): (typeof documents)["\n  fragment ReleasePipelineFields on ReleasePipeline {\n    id\n    projectId\n    name\n    type\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    releaseCount\n    latestRelease {\n      id\n      name\n      version\n      status\n      releasedAt\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -158,6 +174,26 @@ export function graphql(source: "\n  mutation UpdateProject($id: ID!, $input: Up
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation DeleteProject($id: ID!) {\n    deleteProject(id: $id) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteProject($id: ID!) {\n    deleteProject(id: $id) {\n      id\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query ReleasePipelines($projectId: ID) {\n    releasePipelines(projectId: $projectId) {\n      ...ReleasePipelineFields\n    }\n  }\n"): (typeof documents)["\n  query ReleasePipelines($projectId: ID) {\n    releasePipelines(projectId: $projectId) {\n      ...ReleasePipelineFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query ReleasePipeline($id: ID!) {\n    releasePipeline(id: $id) {\n      ...ReleasePipelineFields\n    }\n  }\n"): (typeof documents)["\n  query ReleasePipeline($id: ID!) {\n    releasePipeline(id: $id) {\n      ...ReleasePipelineFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateReleasePipeline($input: CreateReleasePipelineInput!) {\n    createReleasePipeline(input: $input) {\n      ...ReleasePipelineFields\n    }\n  }\n"): (typeof documents)["\n  mutation CreateReleasePipeline($input: CreateReleasePipelineInput!) {\n    createReleasePipeline(input: $input) {\n      ...ReleasePipelineFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateReleasePipeline($id: ID!, $input: UpdateReleasePipelineInput!) {\n    updateReleasePipeline(id: $id, input: $input) {\n      ...ReleasePipelineFields\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateReleasePipeline($id: ID!, $input: UpdateReleasePipelineInput!) {\n    updateReleasePipeline(id: $id, input: $input) {\n      ...ReleasePipelineFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation DeleteReleasePipeline($id: ID!) {\n    deleteReleasePipeline(id: $id) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteReleasePipeline($id: ID!) {\n    deleteReleasePipeline(id: $id) {\n      id\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

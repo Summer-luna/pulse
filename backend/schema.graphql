@@ -40,10 +40,16 @@ input CreateProjectInput {
 input CreateReleaseInput {
   description: String
   name: String!
-  projectId: ID!
+  pipelineId: ID!
   status: ReleaseStatus
   targetDate: Date
   version: String
+}
+
+input CreateReleasePipelineInput {
+  name: String!
+  projectId: ID!
+  type: ReleasePipelineType
 }
 
 """Calendar date in YYYY-MM-DD format"""
@@ -133,16 +139,19 @@ type Mutation {
   createIssue(input: CreateIssueInput!): Issue!
   createProject(input: CreateProjectInput!): Project!
   createRelease(input: CreateReleaseInput!): Release!
+  createReleasePipeline(input: CreateReleasePipelineInput!): ReleasePipeline!
 
   """Sub-issues of the deleted issue become top-level issues"""
   deleteIssue(id: ID!): Issue!
   deleteProject(id: ID!): Project!
   deleteRelease(id: ID!): Release!
+  deleteReleasePipeline(id: ID!): ReleasePipeline!
   login(input: LoginInput!): AuthPayload!
   register(input: RegisterInput!): AuthPayload!
   updateIssue(id: ID!, input: UpdateIssueInput!): Issue!
   updateProject(id: ID!, input: UpdateProjectInput!): Project!
   updateRelease(id: ID!, input: UpdateReleaseInput!): Release!
+  updateReleasePipeline(id: ID!, input: UpdateReleasePipelineInput!): ReleasePipeline!
 }
 
 type Progress {
@@ -194,6 +203,8 @@ type Query {
   project(id: ID!): Project!
   projects: [Project!]!
   release(id: ID!): Release!
+  releasePipeline(id: ID!): ReleasePipeline!
+  releasePipelines(projectId: ID): [ReleasePipeline!]!
   releases(projectId: ID): [Release!]!
   users: [User!]!
 }
@@ -209,6 +220,8 @@ type Release {
   description: String!
   id: ID!
   name: String!
+  pipeline: ReleasePipeline!
+  pipelineId: ID!
   progress: Progress!
   project: Project!
   projectId: ID!
@@ -217,6 +230,23 @@ type Release {
   targetDate: Date
   updatedAt: DateTime!
   version: String
+}
+
+type ReleasePipeline {
+  createdAt: DateTime!
+  id: ID!
+  latestRelease: Release
+  name: String!
+  project: Project!
+  projectId: ID!
+  releaseCount: Int!
+  type: ReleasePipelineType!
+  updatedAt: DateTime!
+}
+
+enum ReleasePipelineType {
+  CONTINUOUS
+  SCHEDULED
 }
 
 enum ReleaseStatus {
@@ -269,6 +299,11 @@ input UpdateReleaseInput {
   status: ReleaseStatus
   targetDate: Date
   version: String
+}
+
+input UpdateReleasePipelineInput {
+  name: String
+  type: ReleasePipelineType
 }
 
 type User {

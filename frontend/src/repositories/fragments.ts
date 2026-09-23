@@ -38,6 +38,7 @@ export const ReleaseFields = graphql(`
   fragment ReleaseFields on Release {
     id
     projectId
+    pipelineId
     name
     version
     description
@@ -53,6 +54,29 @@ export const ReleaseFields = graphql(`
     progress {
       total
       completed
+    }
+  }
+`)
+
+export const ReleasePipelineFields = graphql(`
+  fragment ReleasePipelineFields on ReleasePipeline {
+    id
+    projectId
+    name
+    type
+    createdAt
+    project {
+      id
+      key
+      name
+    }
+    releaseCount
+    latestRelease {
+      id
+      name
+      version
+      status
+      releasedAt
     }
   }
 `)

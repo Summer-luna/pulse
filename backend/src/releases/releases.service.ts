@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProjectsService } from '../projects/projects.service.js';
+import { ReleasePipelinesService } from '../release-pipelines/release-pipelines.service.js';
 import { CreateReleaseInput } from './create-release.input.js';
 import { ReleasePatch, ReleasesRepository } from './releases.repository.js';
 import { Release } from './release.entity.js';
@@ -10,7 +10,7 @@ import { UpdateReleaseInput } from './update-release.input.js';
 export class ReleasesService {
   constructor(
     private readonly releases: ReleasesRepository,
-    private readonly projects: ProjectsService,
+    private readonly pipelines: ReleasePipelinesService,
   ) {}
 
   list(projectId?: string): Promise<Release[]> {
@@ -30,8 +30,8 @@ export class ReleasesService {
   }
 
   async create(input: CreateReleaseInput): Promise<Release> {
-    await this.projects.get(input.projectId);
-    return this.releases.create({ ...input, ...this.releasedAtFor(input.status) });
+    const pipeline = await this.pipelines.get(input.pipelineId);
+    return this.releases.create({ ...input, projectId: pipeline.projectId, ...this.releasedAtFor(input.status) });
   }
 
   async update(id: string, input: UpdateReleaseInput): Promise<Release> {

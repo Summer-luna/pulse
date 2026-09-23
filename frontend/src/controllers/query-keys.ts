@@ -10,4 +10,6 @@ export const queryKeys = {
   issue: (identifier: string) => ['issue', identifier] as const,
   releases: (projectId: string | undefined) => ['releases', projectId ?? 'all'] as const,
   release: (id: string) => ['release', id] as const,
+  releasePipelines: (projectId: string | undefined) => ['releasePipelines', projectId ?? 'all'] as const,
+  releasePipeline: (id: string) => ['releasePipeline', id] as const,
 }

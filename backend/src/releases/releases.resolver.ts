@@ -2,6 +2,8 @@ import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } fr
 import type { GraphQLContext } from '../common/loaders/loaders.js';
 import { Progress } from '../common/progress.model.js';
 import { Project } from '../projects/project.entity.js';
+import { ReleasePipeline } from '../release-pipelines/release-pipeline.entity.js';
+import { ReleasePipelinesService } from '../release-pipelines/release-pipelines.service.js';
 import { CreateReleaseInput } from './create-release.input.js';
 import { Release } from './release.entity.js';
 import { ReleasesService } from './releases.service.js';
@@ -9,7 +11,10 @@ import { UpdateReleaseInput } from './update-release.input.js';
 
 @Resolver(() => Release)
 export class ReleasesResolver {
-  constructor(private readonly releases: ReleasesService) {}
+  constructor(
+    private readonly releases: ReleasesService,
+    private readonly pipelines: ReleasePipelinesService,
+  ) {}
 
   @Query(() => [Release], { name: 'releases' })
   list(@Args('projectId', { type: () => ID, nullable: true }) projectId?: string): Promise<Release[]> {
@@ -42,6 +47,11 @@ export class ReleasesResolver {
   @ResolveField(() => Project)
   async project(@Parent() release: Release, @Context() ctx: GraphQLContext): Promise<Project> {
     return (await ctx.loaders.projectById.load(release.projectId))!;
+  }
+
+  @ResolveField(() => ReleasePipeline)
+  pipeline(@Parent() release: Release): Promise<ReleasePipeline> {
+    return this.pipelines.get(release.pipelineId);
   }
 
   @ResolveField(() => Progress)

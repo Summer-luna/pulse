@@ -5,6 +5,7 @@ import { PageHeader } from '@/components/PageHeader'
 import { ReleaseStatusPicker } from '@/components/ReleaseStatusPicker'
 import { useReleaseController } from '@/controllers/use-releases-controller'
 import { releaseService } from '@/services/release-service'
+import { DescriptionEditor } from '@/ui/DescriptionEditor'
 import { EditableText } from '@/ui/EditableText'
 import { PageState } from '@/ui/PageState'
 import { Picker } from '@/ui/Picker'
@@ -24,7 +25,7 @@ export function ReleasePage() {
   async function onDelete() {
     if (window.confirm(`Delete release ${release!.name}? Its issues stay in the project.`)) {
       await controller.deleteRelease()
-      navigate(`/projects/${release!.projectId}/releases`)
+      navigate(`/release-pipelines/${release!.pipelineId}`)
     }
   }
 
@@ -58,7 +59,7 @@ export function ReleasePage() {
         }
       >
         <nav className="flex min-w-0 items-center gap-1 text-dim">
-          <Link to={`/projects/${release.projectId}/releases`} className="hover:text-ink">
+          <Link to={`/release-pipelines/${release.pipelineId}`} className="hover:text-ink">
             {release.project.name}
           </Link>
           <ChevronRight size={14} />
@@ -87,9 +88,7 @@ export function ReleasePage() {
             />
           </div>
         </div>
-        <EditableText
-          multiline
-          allowEmpty
+        <DescriptionEditor
           value={release.description}
           onSave={(description) => controller.updateRelease({ description })}
           placeholder="Add a description…"

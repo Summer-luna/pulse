@@ -14,6 +14,7 @@ import { buildDataSourceOptions } from './database/data-source-options.js';
 import { IssuesModule } from './issues/issues.module.js';
 import { LabelsModule } from './labels/labels.module.js';
 import { ProjectsModule } from './projects/projects.module.js';
+import { ReleasePipelinesModule } from './release-pipelines/release-pipelines.module.js';
 import { ReleasesModule } from './releases/releases.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
 import { UsersModule } from './users/users.module.js';
@@ -43,6 +44,7 @@ import { UsersModule } from './users/users.module.js';
     AuthModule,
     UsersModule,
     ProjectsModule,
+    ReleasePipelinesModule,
     ReleasesModule,
     IssuesModule,
     LabelsModule,

@@ -1,24 +1,26 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import type { Release } from '@/domain/types'
 import { errorMessage } from '@/lib/error-message'
+import { releasePipelineService } from '@/services/release-pipeline-service'
 import { type ReleaseDraft, releaseService } from '@/services/release-service'
-import { useProjectsController } from './use-projects-controller'
+import { queryKeys } from './query-keys'
 import { useRefreshAll } from './use-refresh-all'
 
-export function useCreateReleaseController(initialProjectId: string) {
+export function useCreateReleaseController(initialPipelineId: string) {
   const refresh = useRefreshAll()
-  const { projects } = useProjectsController()
-  const [draft, setDraft] = useState<ReleaseDraft>(() => releaseService.emptyDraft(initialProjectId))
+  const pipelinesQuery = useQuery({ queryKey: queryKeys.releasePipelines(undefined), queryFn: () => releasePipelineService.list() })
+  const pipelines = pipelinesQuery.data ?? []
+  const [draft, setDraft] = useState<ReleaseDraft>(() => releaseService.emptyDraft(initialPipelineId))
   const create = useMutation({ mutationFn: (value: ReleaseDraft) => releaseService.create(value), onSuccess: refresh })
 
-  const projectId = draft.projectId || projects[0]?.id || ''
+  const pipelineId = draft.pipelineId || pipelines[0]?.id || ''
 
   return {
-    draft: { ...draft, projectId },
-    projects,
+    draft: { ...draft, pipelineId },
+    pipelines,
     updateDraft: (patch: Partial<ReleaseDraft>) => setDraft((current) => ({ ...current, ...patch })),
-    submit: (): Promise<Release> => create.mutateAsync({ ...draft, projectId }),
+    submit: (): Promise<Release> => create.mutateAsync({ ...draft, pipelineId }),
     isSubmitting: create.isPending,
     error: errorMessage(create.error),
   }

@@ -7,6 +7,7 @@ function release(overrides: Partial<Release>): Release {
   return {
     id: 'r1',
     projectId: 'p1',
+    pipelineId: 'pl1',
     name: 'Launch',
     version: null,
     description: '',
@@ -40,18 +41,6 @@ describe('releaseService', () => {
   it('formats name with version', () => {
     expect(releaseService.displayName({ name: 'Launch', version: 'v1.0' })).toBe('Launch (v1.0)')
     expect(releaseService.displayName({ name: 'Launch', version: null })).toBe('Launch')
-  })
-
-  it('groups releases by project name', () => {
-    const groups = releaseService.groupByProject([
-      release({ id: '1', projectId: 'b', project: { id: 'b', key: 'BB', name: 'Beta' } }),
-      release({ id: '2', projectId: 'a', project: { id: 'a', key: 'AA', name: 'Alpha' } }),
-      release({ id: '3', projectId: 'b', project: { id: 'b', key: 'BB', name: 'Beta' } }),
-    ])
-    expect(groups.map((g) => [g.projectName, g.releases.length])).toEqual([
-      ['Alpha', 1],
-      ['Beta', 2],
-    ])
   })
 })
 

@@ -4,7 +4,8 @@ import type { IssueDraft } from '@/services/issue-service'
 export interface DialogsApi {
   openCreateIssue: (defaults?: Partial<IssueDraft>) => void
   openCreateProject: () => void
-  openCreateRelease: (projectId?: string) => void
+  openCreateRelease: (pipelineId?: string) => void
+  openCreatePipeline: () => void
 }
 
 export const DialogsContext = createContext<DialogsApi | null>(null)

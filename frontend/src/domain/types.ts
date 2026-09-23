@@ -4,12 +4,14 @@ import type {
   LabelFieldsFragment,
   ProjectFieldsFragment,
   ReleaseFieldsFragment,
+  ReleasePipelineFieldsFragment,
   UserFieldsFragment,
 } from '@/graphql/generated/graphql'
 
 export type Issue = IssueFieldsFragment
 export type Project = ProjectFieldsFragment
 export type Release = ReleaseFieldsFragment
+export type ReleasePipeline = ReleasePipelineFieldsFragment
 export type User = UserFieldsFragment
 export type Label = LabelFieldsFragment
 

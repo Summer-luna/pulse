@@ -24,7 +24,7 @@ export class ReleasesRepository {
     return this.repo.findBy({ id: In(ids) });
   }
 
-  create(data: ReleasePatch & Pick<Release, 'projectId' | 'name'>): Promise<Release> {
+  create(data: ReleasePatch & Pick<Release, 'projectId' | 'pipelineId' | 'name'>): Promise<Release> {
     return this.repo.save(this.repo.create(data));
   }
 

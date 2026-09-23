@@ -9,8 +9,7 @@ import { useRefreshAll } from './use-refresh-all'
 
 export function useReleasesController(projectId?: string) {
   const query = useQuery({ queryKey: queryKeys.releases(projectId), queryFn: () => releaseService.list(projectId) })
-  const groups = useMemo(() => releaseService.groupByProject(query.data ?? []), [query.data])
-  return { releases: query.data ?? [], groups, isLoading: query.isLoading, error: errorMessage(query.error) }
+  return { releases: query.data ?? [], isLoading: query.isLoading, error: errorMessage(query.error) }
 }
 
 export function useReleaseController(id: string) {

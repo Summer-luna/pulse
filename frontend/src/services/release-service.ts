@@ -4,18 +4,12 @@ import { issueRepository } from '@/repositories/issue-repository'
 import { releaseRepository } from '@/repositories/release-repository'
 
 export interface ReleaseDraft {
-  projectId: string
+  pipelineId: string
   name: string
   version: string
   description: string
   status: ReleaseStatus
   targetDate: string | null
-}
-
-export interface ProjectReleases {
-  projectId: string
-  projectName: string
-  releases: Release[]
 }
 
 const DAY_MS = 86_400_000
@@ -58,8 +52,8 @@ class ReleaseService {
     await issueRepository.update(issueId, { releaseId: null })
   }
 
-  emptyDraft(projectId: string): ReleaseDraft {
-    return { projectId, name: '', version: '', description: '', status: 'PLANNED', targetDate: null }
+  emptyDraft(pipelineId: string): ReleaseDraft {
+    return { pipelineId, name: '', version: '', description: '', status: 'PLANNED', targetDate: null }
   }
 
   toCreateInput(draft: ReleaseDraft): CreateReleaseInput {
@@ -67,11 +61,11 @@ class ReleaseService {
     if (!name) {
       throw new Error('Release name is required')
     }
-    if (!draft.projectId) {
-      throw new Error('Choose a project for the release')
+    if (!draft.pipelineId) {
+      throw new Error('Choose a pipeline for the release')
     }
     return {
-      projectId: draft.projectId,
+      pipelineId: draft.pipelineId,
       name,
       version: draft.version.trim() || null,
       description: draft.description.trim(),
@@ -107,20 +101,6 @@ class ReleaseService {
       return `Overdue by ${-days} ${-days === 1 ? 'day' : 'days'}`
     }
     return `Due in ${days} ${days === 1 ? 'day' : 'days'}`
-  }
-
-  groupByProject(releases: Release[]): ProjectReleases[] {
-    const groups = new Map<string, ProjectReleases>()
-    for (const release of releases) {
-      const group = groups.get(release.projectId) ?? {
-        projectId: release.projectId,
-        projectName: release.project.name,
-        releases: [],
-      }
-      group.releases.push(release)
-      groups.set(release.projectId, group)
-    }
-    return [...groups.values()].sort((a, b) => a.projectName.localeCompare(b.projectName))
   }
 
   assignableIssues(release: Pick<Release, 'id' | 'projectId'>, projectIssues: Issue[]): Issue[] {

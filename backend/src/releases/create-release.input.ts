@@ -7,7 +7,7 @@ import { ReleaseStatus } from './release-status.enum.js';
 export class CreateReleaseInput {
   @Field(() => ID)
   @IsUUID()
-  projectId!: string;
+  pipelineId!: string;
 
   @Field(() => String)
   @IsString()

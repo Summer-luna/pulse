@@ -14,6 +14,10 @@ export class Release {
   @Column({ type: 'uuid' })
   projectId!: string;
 
+  @Field(() => ID)
+  @Column({ type: 'uuid' })
+  pipelineId!: string;
+
   @Field(() => String)
   @Column({ type: 'varchar', length: 80 })
   name!: string;

@@ -11,7 +11,7 @@ export function ProjectReleasesTab() {
   const { releases, isLoading, error } = useReleasesController(projectId)
   const dialogs = useDialogs()
   const create = (
-    <button className="btn btn-primary" onClick={() => dialogs.openCreateRelease(projectId)}>
+    <button className="btn btn-primary" onClick={() => dialogs.openCreateRelease()}>
       <Plus size={14} /> New release
     </button>
   )

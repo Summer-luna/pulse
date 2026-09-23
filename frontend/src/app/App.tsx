@@ -11,6 +11,7 @@ import { ProjectReleasesTab } from '@/pages/ProjectReleasesTab'
 import { ProjectsPage } from '@/pages/ProjectsPage'
 import { RegisterPage } from '@/pages/RegisterPage'
 import { ReleasePage } from '@/pages/ReleasePage'
+import { ReleasePipelinePage } from '@/pages/ReleasePipelinePage'
 import { ReleasesPage } from '@/pages/ReleasesPage'
 import { AuthProvider } from './AuthProvider'
 import { DialogsProvider } from './DialogsProvider'
@@ -51,6 +52,7 @@ export function App() {
                 </Route>
                 <Route path="projects/:projectId/releases/:releaseId" element={<ReleasePage />} />
                 <Route path="releases" element={<ReleasesPage />} />
+                <Route path="release-pipelines/:pipelineId" element={<ReleasePipelinePage />} />
                 <Route path="*" element={<Navigate to="/issues" replace />} />
               </Route>
             </Route>

@@ -3,16 +3,16 @@ import { useNavigate } from 'react-router'
 import { useCreateReleaseController } from '@/controllers/use-create-release-controller'
 import { DescriptionField } from '@/ui/DescriptionField'
 import { Modal } from '@/ui/Modal'
-import { ProjectPicker } from './ProjectPicker'
+import { PipelinePicker } from './PipelinePicker'
 import { ReleaseStatusPicker } from './ReleaseStatusPicker'
 
 interface Props {
-  projectId: string
+  pipelineId?: string
   onClose: () => void
 }
 
-export function CreateReleaseModal({ projectId, onClose }: Props) {
-  const controller = useCreateReleaseController(projectId)
+export function CreateReleaseModal({ pipelineId = '', onClose }: Props) {
+  const controller = useCreateReleaseController(pipelineId)
   const navigate = useNavigate()
   const { draft, updateDraft } = controller
 
@@ -21,7 +21,7 @@ export function CreateReleaseModal({ projectId, onClose }: Props) {
     try {
       const release = await controller.submit()
       onClose()
-      navigate(`/projects/${release.projectId}/releases/${release.id}`)
+      navigate(`/release-pipelines/${release.pipelineId}`)
     } catch {
       // 错误已通过 controller.error 展示
     }
@@ -55,10 +55,10 @@ export function CreateReleaseModal({ projectId, onClose }: Props) {
           className="min-h-16 rounded-md border border-line bg-raised px-2.5 py-2 hover:border-line focus-within:border-accent"
         />
         <div className="flex flex-wrap items-center gap-2">
-          <ProjectPicker
-            value={draft.projectId}
-            projects={controller.projects}
-            onChange={(next) => updateDraft({ projectId: next })}
+          <PipelinePicker
+            value={draft.pipelineId}
+            pipelines={controller.pipelines}
+            onChange={(next) => updateDraft({ pipelineId: next })}
           />
           <ReleaseStatusPicker value={draft.status} onChange={(status) => updateDraft({ status })} />
           <input

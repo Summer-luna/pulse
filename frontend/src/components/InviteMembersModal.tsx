@@ -3,17 +3,11 @@ import { useMembersController } from '@/controllers/use-users-controller'
 import type { InvitedMember } from '@/domain/types'
 import type { UserRole } from '@/graphql/generated/graphql'
 import { Modal } from '@/ui/Modal'
-import { Picker } from '@/ui/Picker'
+import { RolePicker } from './RolePicker'
 
 interface Props {
   onClose: () => void
 }
-
-const ROLE_OPTIONS = [
-  { value: 'GUEST' as UserRole, label: 'Guest', hint: 'Limited access' },
-  { value: 'MEMBER' as UserRole, label: 'Member', hint: 'Full access with limited permissions' },
-  { value: 'ADMIN' as UserRole, label: 'Admin', hint: 'Full administrative access' },
-]
 
 export function InviteMembersModal({ onClose }: Props) {
   const { invite, isInviting, inviteError } = useMembersController()
@@ -65,13 +59,7 @@ export function InviteMembersModal({ onClose }: Props) {
         </label>
         <label className="flex flex-col gap-1.5">
           <span className="text-xs font-medium text-dim">Role</span>
-          <Picker
-            value={role}
-            options={ROLE_OPTIONS}
-            onChange={(next) => next && setRole(next)}
-            placeholder="Role"
-            className="w-full [&>button]:w-full [&>button]:justify-start"
-          />
+          <RolePicker value={role} onChange={setRole} />
         </label>
         {inviteError && <p className="text-danger">{inviteError}</p>}
         <button type="button" className="btn btn-primary self-end" onClick={onSubmit} disabled={isInviting || !emails.trim()}>

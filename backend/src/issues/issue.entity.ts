@@ -46,6 +46,10 @@ export class Issue {
 
   @Field(() => ID, { nullable: true })
   @Column({ type: 'uuid', nullable: true })
+  creatorId!: string | null;
+
+  @Field(() => ID, { nullable: true })
+  @Column({ type: 'uuid', nullable: true })
   parentId!: string | null;
 
   @Field(() => ID, { nullable: true })

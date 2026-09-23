@@ -6,6 +6,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module.js';
 import { JwtAuthGuard } from './auth/jwt-auth.guard.js';
+import { CommentsModule } from './comments/comments.module.js';
 import { CommonModule } from './common/common.module.js';
 import type { GraphQLContext } from './common/loaders/loaders.js';
 import { LoadersModule } from './common/loaders/loaders.module.js';
@@ -49,6 +50,7 @@ import { UsersModule } from './users/users.module.js';
     IssuesModule,
     LabelsModule,
     UploadsModule,
+    CommentsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })

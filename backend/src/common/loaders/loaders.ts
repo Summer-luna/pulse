@@ -1,5 +1,6 @@
 import type DataLoader from 'dataloader';
 import type { Request } from 'express';
+import type { Comment } from '../../comments/comment.entity.js';
 import type { Issue } from '../../issues/issue.entity.js';
 import type { Label } from '../../labels/label.entity.js';
 import type { Project } from '../../projects/project.entity.js';
@@ -19,6 +20,7 @@ export interface Loaders {
   subIssuesByParentId: DataLoader<string, Issue[]>;
   membersByProjectId: DataLoader<string, User[]>;
   labelsByIssueId: DataLoader<string, Label[]>;
+  commentsByIssueId: DataLoader<string, Comment[]>;
   progressByProjectId: DataLoader<string, ProgressStats>;
   progressByReleaseId: DataLoader<string, ProgressStats>;
   progressByParentId: DataLoader<string, ProgressStats>;

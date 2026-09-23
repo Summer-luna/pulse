@@ -1,4 +1,5 @@
 import type {
+  CommentFieldsFragment,
   IssueDetailQuery,
   IssueFieldsFragment,
   LabelFieldsFragment,
@@ -14,6 +15,7 @@ export type Release = ReleaseFieldsFragment
 export type ReleasePipeline = ReleasePipelineFieldsFragment
 export type User = UserFieldsFragment
 export type Label = LabelFieldsFragment
+export type Comment = CommentFieldsFragment
 
 export type IssueDetail = IssueDetailQuery['issueByIdentifier']
 

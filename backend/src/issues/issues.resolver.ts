@@ -1,4 +1,6 @@
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { CurrentUser } from '../auth/current-user.decorator.js';
+import { Comment } from '../comments/comment.entity.js';
 import type { GraphQLContext } from '../common/loaders/loaders.js';
 import { Progress } from '../common/progress.model.js';
 import { Label } from '../labels/label.entity.js';
@@ -31,8 +33,11 @@ export class IssuesResolver {
   }
 
   @Mutation(() => Issue)
-  createIssue(@Args('input', { type: () => CreateIssueInput }) input: CreateIssueInput): Promise<Issue> {
-    return this.issues.create(input);
+  createIssue(
+    @Args('input', { type: () => CreateIssueInput }) input: CreateIssueInput,
+    @CurrentUser() user: User,
+  ): Promise<Issue> {
+    return this.issues.create(input, user.id);
   }
 
   @Mutation(() => Issue)
@@ -62,6 +67,16 @@ export class IssuesResolver {
   @ResolveField(() => User, { nullable: true })
   assignee(@Parent() issue: Issue, @Context() ctx: GraphQLContext): Promise<User | null> {
     return issue.assigneeId ? ctx.loaders.userById.load(issue.assigneeId) : Promise.resolve(null);
+  }
+
+  @ResolveField(() => User, { nullable: true })
+  creator(@Parent() issue: Issue, @Context() ctx: GraphQLContext): Promise<User | null> {
+    return issue.creatorId ? ctx.loaders.userById.load(issue.creatorId) : Promise.resolve(null);
+  }
+
+  @ResolveField(() => [Comment])
+  comments(@Parent() issue: Issue, @Context() ctx: GraphQLContext): Promise<Comment[]> {
+    return ctx.loaders.commentsByIssueId.load(issue.id);
   }
 
   @ResolveField(() => Issue, { nullable: true })

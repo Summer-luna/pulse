@@ -81,6 +81,18 @@ export const ReleasePipelineFields = graphql(`
   }
 `)
 
+export const CommentFields = graphql(`
+  fragment CommentFields on Comment {
+    id
+    issueId
+    body
+    createdAt
+    author {
+      ...UserFields
+    }
+  }
+`)
+
 export const LabelFields = graphql(`
   fragment LabelFields on Label {
     id

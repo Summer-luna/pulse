@@ -1,6 +1,7 @@
 import { ChevronRight, Trash2 } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { EstimatePicker } from '@/components/EstimatePicker'
+import { IssueActivity } from '@/components/IssueActivity'
 import { IssuePriorityPicker } from '@/components/IssuePriorityPicker'
 import { IssueStatusPicker } from '@/components/IssueStatusPicker'
 import { LabelPicker } from '@/components/LabelPicker'
@@ -89,6 +90,16 @@ export function IssuePage() {
             </div>
             <SubIssuesSection issue={issue} onCreate={controller.createSubIssue} onUpdate={controller.updateSubIssue} />
             {controller.mutationError && <p className="mt-4 text-danger">{controller.mutationError}</p>}
+            <div className="mt-6 border-t border-line pt-6">
+              <IssueActivity
+                createdAt={issue.createdAt}
+                creator={issue.creator ?? null}
+                comments={issue.comments}
+                onAddComment={controller.addComment}
+                isAddingComment={controller.isAddingComment}
+                onRemoveComment={controller.removeComment}
+              />
+            </div>
           </div>
         </div>
 

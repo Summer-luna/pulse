@@ -74,13 +74,13 @@ export class IssuesService {
     return issue;
   }
 
-  async create(input: CreateIssueInput): Promise<Issue> {
+  async create(input: CreateIssueInput, creatorId: string): Promise<Issue> {
     await this.projects.get(input.projectId);
     await this.assertRelations(input.projectId, input);
     const { labelIds, ...patch } = input;
     const resolvedLabelIds = await this.labels.resolveLabelIds(labelIds);
     const number = await this.projects.allocateIssueNumber(input.projectId);
-    const issue = await this.issues.create({ ...patch, number, ...this.completedAtFor(input.status) });
+    const issue = await this.issues.create({ ...patch, number, creatorId, ...this.completedAtFor(input.status) });
     await this.labels.setIssueLabels(issue.id, resolvedLabelIds);
     return issue;
   }

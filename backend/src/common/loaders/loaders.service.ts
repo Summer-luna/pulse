@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CommentsService } from '../../comments/comments.service.js';
 import { IssuesService } from '../../issues/issues.service.js';
 import { LabelsService } from '../../labels/labels.service.js';
 import { ProjectsService } from '../../projects/projects.service.js';
@@ -15,6 +16,7 @@ export class LoadersService {
     private readonly releases: ReleasesService,
     private readonly issues: IssuesService,
     private readonly labels: LabelsService,
+    private readonly comments: CommentsService,
   ) {}
 
   create(): Loaders {
@@ -36,6 +38,10 @@ export class LoadersService {
         (ids) => this.labels.labelsByIssueIds(ids),
         (row) => row.issueId,
         (row) => row.label,
+      ),
+      commentsByIssueId: groupedLoader(
+        (ids) => this.comments.listByIssueIds(ids),
+        (comment) => comment.issueId,
       ),
       progressByProjectId: progressLoader((ids) => this.issues.progressByProjectIds(ids)),
       progressByReleaseId: progressLoader((ids) => this.issues.progressByReleaseIds(ids)),

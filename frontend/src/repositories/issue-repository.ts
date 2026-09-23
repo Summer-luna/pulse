@@ -34,6 +34,12 @@ const issueDetailDocument = graphql(`
       subIssues {
         ...IssueFields
       }
+      creator {
+        ...UserFields
+      }
+      comments {
+        ...CommentFields
+      }
     }
   }
 `)

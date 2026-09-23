@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { GraphQLSchemaBuilderModule, GraphQLSchemaFactory } from '@nestjs/graphql';
 import { lexicographicSortSchema, printSchema } from 'graphql';
 import { AuthResolver } from '../auth/auth.resolver.js';
+import { CommentsResolver } from '../comments/comments.resolver.js';
 import { DateScalar } from '../common/date.scalar.js';
 import { IssuesResolver } from '../issues/issues.resolver.js';
 import { LabelsResolver } from '../labels/labels.resolver.js';
@@ -19,7 +20,16 @@ await app.init();
 const schema = await app
   .get(GraphQLSchemaFactory)
   .create(
-    [AuthResolver, UsersResolver, ProjectsResolver, ReleasesResolver, ReleasePipelinesResolver, IssuesResolver, LabelsResolver],
+    [
+      AuthResolver,
+      UsersResolver,
+      ProjectsResolver,
+      ReleasesResolver,
+      ReleasePipelinesResolver,
+      IssuesResolver,
+      LabelsResolver,
+      CommentsResolver,
+    ],
     [DateScalar],
   );
 

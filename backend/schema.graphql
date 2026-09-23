@@ -3,6 +3,21 @@ type AuthPayload {
   user: User!
 }
 
+type Comment {
+  author: User
+  authorId: ID
+  body: String!
+  createdAt: DateTime!
+  id: ID!
+  issueId: ID!
+  updatedAt: DateTime!
+}
+
+input CreateCommentInput {
+  body: String!
+  issueId: ID!
+}
+
 input CreateIssueInput {
   assigneeId: ID
   description: String
@@ -63,8 +78,11 @@ scalar DateTime
 type Issue {
   assignee: User
   assigneeId: ID
+  comments: [Comment!]!
   completedAt: DateTime
   createdAt: DateTime!
+  creator: User
+  creatorId: ID
   description: String!
   dueDate: Date
 
@@ -136,10 +154,12 @@ input LoginInput {
 }
 
 type Mutation {
+  createComment(input: CreateCommentInput!): Comment!
   createIssue(input: CreateIssueInput!): Issue!
   createProject(input: CreateProjectInput!): Project!
   createRelease(input: CreateReleaseInput!): Release!
   createReleasePipeline(input: CreateReleasePipelineInput!): ReleasePipeline!
+  deleteComment(id: ID!): Comment!
 
   """Sub-issues of the deleted issue become top-level issues"""
   deleteIssue(id: ID!): Issue!

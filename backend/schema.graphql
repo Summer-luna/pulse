@@ -80,7 +80,7 @@ input CreateReleasePipelineInput {
 input CreateRequestInput {
   customerId: ID
   description: String
-  projectId: ID!
+  projectId: ID
   requestor: String!
   source: RequestSource
   title: String!
@@ -111,8 +111,8 @@ type CustomerRequest {
   customerId: ID
   description: String!
   id: ID!
-  project: Project!
-  projectId: ID!
+  project: Project
+  projectId: ID
   requestor: String!
   source: RequestSource!
   status: RequestStatus!

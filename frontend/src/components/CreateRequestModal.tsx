@@ -1,12 +1,10 @@
 import type { FormEvent } from 'react'
-import { useProjectsController } from '@/controllers/use-projects-controller'
 import { useCreateRequestController } from '@/controllers/use-requests-controller'
 import { REQUEST_SOURCE_LABEL, REQUEST_SOURCES } from '@/domain/request'
 import { DescriptionField } from '@/ui/DescriptionField'
 import { Modal } from '@/ui/Modal'
 import { Picker } from '@/ui/Picker'
 import { CustomerPicker } from './CustomerPicker'
-import { ProjectPicker } from './ProjectPicker'
 
 interface Props {
   projectId?: string
@@ -19,7 +17,6 @@ const SOURCE_OPTIONS = REQUEST_SOURCES.map((source) => ({ value: source, label: 
 
 export function CreateRequestModal({ projectId, customerId, customerName, onClose }: Props) {
   const controller = useCreateRequestController(projectId, customerId, customerName)
-  const { projects } = useProjectsController()
   const { draft, updateDraft } = controller
 
   async function onSubmit(event: FormEvent) {
@@ -65,7 +62,6 @@ export function CreateRequestModal({ projectId, customerId, customerName, onClos
             onChange={(next) => next && updateDraft({ source: next })}
             placeholder="Source"
           />
-          {!projectId && <ProjectPicker value={draft.projectId} projects={projects} onChange={(next) => updateDraft({ projectId: next })} />}
           {!customerId && <CustomerPicker value={draft.customerId} onChange={(next) => updateDraft({ customerId: next })} />}
         </div>
         <div className="flex items-center justify-end gap-2 border-t border-line pt-3">

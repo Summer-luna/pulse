@@ -28,8 +28,10 @@ export class RequestsService {
   }
 
   async create(input: CreateRequestInput): Promise<CustomerRequest> {
-    await this.projects.get(input.projectId);
-    return this.requests.create(input);
+    if (input.projectId) {
+      await this.projects.get(input.projectId);
+    }
+    return this.requests.create({ ...input, projectId: input.projectId ?? null });
   }
 
   async update(id: string, input: UpdateRequestInput): Promise<CustomerRequest> {
@@ -50,7 +52,7 @@ export class RequestsService {
       throw new BadRequestException('This request has already been converted to an issue');
     }
     const issue = await this.issues.get(issueId);
-    if (issue.projectId !== request.projectId) {
+    if (request.projectId && issue.projectId !== request.projectId) {
       throw new BadRequestException('The issue must be in the same project as the request');
     }
     await this.requests.update(id, { convertedIssueId: issueId, status: RequestStatus.CONVERTED });

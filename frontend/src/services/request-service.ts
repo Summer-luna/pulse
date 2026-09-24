@@ -3,7 +3,7 @@ import type { CreateRequestInput, RequestSource, UpdateRequestInput } from '@/gr
 import { requestRepository } from '@/repositories/request-repository'
 
 export interface RequestDraft {
-  projectId: string
+  projectId: string | null
   title: string
   description: string
   requestor: string
@@ -32,7 +32,7 @@ class RequestService {
     return requestRepository.convertToIssue(id, issueId)
   }
 
-  emptyDraft(projectId = '', customerId: string | null = null, requestor = ''): RequestDraft {
+  emptyDraft(projectId: string | null = null, customerId: string | null = null, requestor = ''): RequestDraft {
     return { projectId, title: '', description: '', requestor, source: 'EXTERNAL', customerId }
   }
 
@@ -43,9 +43,6 @@ class RequestService {
     }
     if (!draft.requestor.trim()) {
       throw new Error('Requestor is required')
-    }
-    if (!draft.projectId) {
-      throw new Error('Project is required')
     }
     return {
       projectId: draft.projectId,

@@ -51,9 +51,9 @@ export class RequestsResolver {
     return this.requests.linkToIssue(id, issueId);
   }
 
-  @ResolveField(() => Project)
-  async project(@Parent() request: CustomerRequest, @Context() ctx: GraphQLContext): Promise<Project> {
-    return (await ctx.loaders.projectById.load(request.projectId))!;
+  @ResolveField(() => Project, { nullable: true })
+  project(@Parent() request: CustomerRequest, @Context() ctx: GraphQLContext): Promise<Project | null> {
+    return request.projectId ? ctx.loaders.projectById.load(request.projectId) : Promise.resolve(null);
   }
 
   @ResolveField(() => Issue, { nullable: true })

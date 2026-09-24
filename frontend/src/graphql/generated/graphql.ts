@@ -67,7 +67,7 @@ export type CreateReleasePipelineInput = {
 export type CreateRequestInput = {
   customerId?: string | number | null | undefined;
   description?: string | null | undefined;
-  projectId: string | number;
+  projectId?: string | number | null | undefined;
   requestor: string;
   source?: RequestSource | null | undefined;
   title: string;
@@ -317,7 +317,7 @@ export type ReleasePipelineFieldsFragment = { id: string, projectId: string, nam
 
 export type CommentFieldsFragment = { id: string, issueId: string, body: string, createdAt: string, author: { id: string, name: string, email: string, color: string, role: UserRole, createdAt: string } | null };
 
-export type RequestFieldsFragment = { id: string, projectId: string, title: string, description: string, requestor: string, source: RequestSource, status: RequestStatus, convertedIssueId: string | null, customerId: string | null, createdAt: string, convertedIssue: { id: string, identifier: string, title: string } | null, customer: { id: string, name: string } | null };
+export type RequestFieldsFragment = { id: string, projectId: string | null, title: string, description: string, requestor: string, source: RequestSource, status: RequestStatus, convertedIssueId: string | null, customerId: string | null, createdAt: string, convertedIssue: { id: string, identifier: string, title: string } | null, customer: { id: string, name: string } | null };
 
 export type CustomerFieldsFragment = { id: string, name: string, status: CustomerStatus, tier: CustomerTier | null, annualRevenue: number | null, size: string | null, domains: Array<string>, ownerId: string | null, requestCount: number, createdAt: string, owner: { id: string, name: string, email: string, color: string, role: UserRole, createdAt: string } | null };
 
@@ -478,14 +478,14 @@ export type RequestsQueryVariables = Exact<{
 }>;
 
 
-export type RequestsQuery = { requests: Array<{ id: string, projectId: string, title: string, description: string, requestor: string, source: RequestSource, status: RequestStatus, convertedIssueId: string | null, customerId: string | null, createdAt: string, convertedIssue: { id: string, identifier: string, title: string } | null, customer: { id: string, name: string } | null }> };
+export type RequestsQuery = { requests: Array<{ id: string, projectId: string | null, title: string, description: string, requestor: string, source: RequestSource, status: RequestStatus, convertedIssueId: string | null, customerId: string | null, createdAt: string, convertedIssue: { id: string, identifier: string, title: string } | null, customer: { id: string, name: string } | null }> };
 
 export type CreateRequestMutationVariables = Exact<{
   input: CreateRequestInput;
 }>;
 
 
-export type CreateRequestMutation = { createRequest: { id: string, projectId: string, title: string, description: string, requestor: string, source: RequestSource, status: RequestStatus, convertedIssueId: string | null, customerId: string | null, createdAt: string, convertedIssue: { id: string, identifier: string, title: string } | null, customer: { id: string, name: string } | null } };
+export type CreateRequestMutation = { createRequest: { id: string, projectId: string | null, title: string, description: string, requestor: string, source: RequestSource, status: RequestStatus, convertedIssueId: string | null, customerId: string | null, createdAt: string, convertedIssue: { id: string, identifier: string, title: string } | null, customer: { id: string, name: string } | null } };
 
 export type UpdateRequestMutationVariables = Exact<{
   id: string | number;
@@ -493,7 +493,7 @@ export type UpdateRequestMutationVariables = Exact<{
 }>;
 
 
-export type UpdateRequestMutation = { updateRequest: { id: string, projectId: string, title: string, description: string, requestor: string, source: RequestSource, status: RequestStatus, convertedIssueId: string | null, customerId: string | null, createdAt: string, convertedIssue: { id: string, identifier: string, title: string } | null, customer: { id: string, name: string } | null } };
+export type UpdateRequestMutation = { updateRequest: { id: string, projectId: string | null, title: string, description: string, requestor: string, source: RequestSource, status: RequestStatus, convertedIssueId: string | null, customerId: string | null, createdAt: string, convertedIssue: { id: string, identifier: string, title: string } | null, customer: { id: string, name: string } | null } };
 
 export type DeleteRequestMutationVariables = Exact<{
   id: string | number;
@@ -508,7 +508,7 @@ export type ConvertRequestToIssueMutationVariables = Exact<{
 }>;
 
 
-export type ConvertRequestToIssueMutation = { convertRequestToIssue: { id: string, projectId: string, title: string, description: string, requestor: string, source: RequestSource, status: RequestStatus, convertedIssueId: string | null, customerId: string | null, createdAt: string, convertedIssue: { id: string, identifier: string, title: string } | null, customer: { id: string, name: string } | null } };
+export type ConvertRequestToIssueMutation = { convertRequestToIssue: { id: string, projectId: string | null, title: string, description: string, requestor: string, source: RequestSource, status: RequestStatus, convertedIssueId: string | null, customerId: string | null, createdAt: string, convertedIssue: { id: string, identifier: string, title: string } | null, customer: { id: string, name: string } | null } };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 

@@ -60,7 +60,7 @@ export function RequestList({ requests, onConvert, onRemove }: Props) {
       ))}
       {converting && (
         <CreateIssueModal
-          defaults={{ projectId: converting.projectId, title: converting.title, description: converting.description }}
+          defaults={{ projectId: converting.projectId ?? undefined, title: converting.title, description: converting.description }}
           onClose={() => setConverting(null)}
           onCreated={(issue) => {
             onConvert(converting.id, issue.id)

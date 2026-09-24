@@ -32,8 +32,8 @@ class RequestService {
     return requestRepository.convertToIssue(id, issueId)
   }
 
-  emptyDraft(projectId = '', customerId: string | null = null): RequestDraft {
-    return { projectId, title: '', description: '', requestor: '', source: 'EXTERNAL', customerId }
+  emptyDraft(projectId = '', customerId: string | null = null, requestor = ''): RequestDraft {
+    return { projectId, title: '', description: '', requestor, source: 'EXTERNAL', customerId }
   }
 
   toCreateInput(draft: RequestDraft): CreateRequestInput {

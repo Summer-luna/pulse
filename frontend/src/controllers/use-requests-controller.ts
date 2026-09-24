@@ -33,9 +33,9 @@ export function useRequestsController(projectId?: string, customerId?: string) {
   }
 }
 
-export function useCreateRequestController(projectId?: string, customerId?: string | null) {
+export function useCreateRequestController(projectId?: string, customerId?: string | null, requestor?: string) {
   const refresh = useRefreshAll()
-  const [draft, setDraft] = useState<RequestDraft>(() => requestService.emptyDraft(projectId, customerId))
+  const [draft, setDraft] = useState<RequestDraft>(() => requestService.emptyDraft(projectId, customerId, requestor))
   const create = useMutation({ mutationFn: (value: RequestDraft) => requestService.create(value), onSuccess: refresh })
 
   return {

@@ -11,13 +11,14 @@ import { ProjectPicker } from './ProjectPicker'
 interface Props {
   projectId?: string
   customerId?: string
+  customerName?: string
   onClose: () => void
 }
 
 const SOURCE_OPTIONS = REQUEST_SOURCES.map((source) => ({ value: source, label: REQUEST_SOURCE_LABEL[source] }))
 
-export function CreateRequestModal({ projectId, customerId, onClose }: Props) {
-  const controller = useCreateRequestController(projectId, customerId)
+export function CreateRequestModal({ projectId, customerId, customerName, onClose }: Props) {
+  const controller = useCreateRequestController(projectId, customerId, customerName)
   const { projects } = useProjectsController()
   const { draft, updateDraft } = controller
 
@@ -49,13 +50,15 @@ export function CreateRequestModal({ projectId, customerId, onClose }: Props) {
           className="min-h-20"
         />
         <div className="flex flex-wrap items-center gap-2">
-          <input
-            value={draft.requestor}
-            onChange={(event) => updateDraft({ requestor: event.target.value })}
-            placeholder="Requestor"
-            maxLength={120}
-            className="field h-7 w-40"
-          />
+          {!customerId && (
+            <input
+              value={draft.requestor}
+              onChange={(event) => updateDraft({ requestor: event.target.value })}
+              placeholder="Requestor"
+              maxLength={120}
+              className="field h-7 w-40"
+            />
+          )}
           <Picker
             value={draft.source}
             options={SOURCE_OPTIONS}

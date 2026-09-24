@@ -86,7 +86,7 @@ export function CustomerPage() {
           </div>
         </div>
       </div>
-      {creating && <CreateRequestModal customerId={customerId} onClose={() => setCreating(false)} />}
+      {creating && <CreateRequestModal customerId={customerId} customerName={customer.name} onClose={() => setCreating(false)} />}
     </div>
   )
 }

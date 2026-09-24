@@ -176,6 +176,9 @@ type Issue {
   projectId: ID!
   release: Release
   releaseId: ID
+
+  """The customer request this issue was converted from, if any"""
+  sourceRequest: CustomerRequest
   status: IssueStatus!
 
   """Null when the issue has no sub-issues"""

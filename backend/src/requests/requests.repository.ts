@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CustomerRequest } from './customer-request.entity.js';
 
 export type RequestPatch = Partial<Omit<CustomerRequest, 'id' | 'projectId' | 'createdAt' | 'updatedAt'>>;
@@ -18,6 +18,10 @@ export class RequestsRepository {
 
   findById(id: string): Promise<CustomerRequest | null> {
     return this.repo.findOneBy({ id });
+  }
+
+  findByConvertedIssueIds(issueIds: string[]): Promise<CustomerRequest[]> {
+    return this.repo.findBy({ convertedIssueId: In(issueIds) });
   }
 
   create(data: Pick<CustomerRequest, 'projectId' | 'title' | 'requestor'> & RequestPatch): Promise<CustomerRequest> {

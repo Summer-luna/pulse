@@ -19,6 +19,10 @@ export class RequestsService {
     return this.requests.findAll(projectId, customerId);
   }
 
+  findByConvertedIssueIds(issueIds: string[]): Promise<CustomerRequest[]> {
+    return this.requests.findByConvertedIssueIds(issueIds);
+  }
+
   async get(id: string): Promise<CustomerRequest> {
     const request = await this.requests.findById(id);
     if (!request) {

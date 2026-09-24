@@ -5,8 +5,9 @@ import { IssuesService } from '../../issues/issues.service.js';
 import { LabelsService } from '../../labels/labels.service.js';
 import { ProjectsService } from '../../projects/projects.service.js';
 import { ReleasesService } from '../../releases/releases.service.js';
+import { RequestsService } from '../../requests/requests.service.js';
 import { UsersService } from '../../users/users.service.js';
-import { entityLoader, groupedLoader, groupedValueLoader, progressLoader } from './batch.js';
+import { entityLoader, groupedLoader, groupedValueLoader, keyedLoader, progressLoader } from './batch.js';
 import type { Loaders } from './loaders.js';
 
 @Injectable()
@@ -19,6 +20,7 @@ export class LoadersService {
     private readonly labels: LabelsService,
     private readonly comments: CommentsService,
     private readonly customers: CustomersService,
+    private readonly requests: RequestsService,
   ) {}
 
   create(): Loaders {
@@ -45,6 +47,10 @@ export class LoadersService {
       commentsByIssueId: groupedLoader(
         (ids) => this.comments.listByIssueIds(ids),
         (comment) => comment.issueId,
+      ),
+      requestByConvertedIssueId: keyedLoader(
+        (ids) => this.requests.findByConvertedIssueIds(ids),
+        (request) => request.convertedIssueId,
       ),
       progressByProjectId: progressLoader((ids) => this.issues.progressByProjectIds(ids)),
       progressByReleaseId: progressLoader((ids) => this.issues.progressByReleaseIds(ids)),

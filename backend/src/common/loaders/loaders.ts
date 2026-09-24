@@ -6,6 +6,7 @@ import type { Issue } from '../../issues/issue.entity.js';
 import type { Label } from '../../labels/label.entity.js';
 import type { Project } from '../../projects/project.entity.js';
 import type { Release } from '../../releases/release.entity.js';
+import type { CustomerRequest } from '../../requests/customer-request.entity.js';
 import type { User } from '../../users/user.entity.js';
 
 export interface ProgressStats {
@@ -23,6 +24,7 @@ export interface Loaders {
   membersByProjectId: DataLoader<string, User[]>;
   labelsByIssueId: DataLoader<string, Label[]>;
   commentsByIssueId: DataLoader<string, Comment[]>;
+  requestByConvertedIssueId: DataLoader<string, CustomerRequest | null>;
   progressByProjectId: DataLoader<string, ProgressStats>;
   progressByReleaseId: DataLoader<string, ProgressStats>;
   progressByParentId: DataLoader<string, ProgressStats>;

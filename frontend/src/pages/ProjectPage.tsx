@@ -40,6 +40,9 @@ export function ProjectPage() {
           <NavLink to="releases" className={tabClass}>
             Releases
           </NavLink>
+          <NavLink to="requests" className={tabClass}>
+            Requests
+          </NavLink>
         </nav>
       </PageHeader>
       <div className="min-h-0 flex-1">

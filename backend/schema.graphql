@@ -18,6 +18,16 @@ input CreateCommentInput {
   issueId: ID!
 }
 
+input CreateCustomerInput {
+  annualRevenue: Int
+  domains: [String!]
+  name: String!
+  ownerId: ID
+  size: String
+  status: CustomerStatus
+  tier: CustomerTier
+}
+
 input CreateIssueInput {
   assigneeId: ID
   description: String
@@ -65,6 +75,62 @@ input CreateReleasePipelineInput {
   name: String!
   projectId: ID!
   type: ReleasePipelineType
+}
+
+input CreateRequestInput {
+  customerId: ID
+  description: String
+  projectId: ID!
+  requestor: String!
+  source: RequestSource
+  title: String!
+}
+
+type Customer {
+  """Annual revenue in whole dollars"""
+  annualRevenue: Int
+  createdAt: DateTime!
+  domains: [String!]!
+  id: ID!
+  name: String!
+  owner: User
+  ownerId: ID
+  requestCount: Int!
+  size: String
+  status: CustomerStatus!
+  tier: CustomerTier
+}
+
+type CustomerRequest {
+  convertedIssue: Issue
+
+  """Set once this request has been converted into an issue"""
+  convertedIssueId: ID
+  createdAt: DateTime!
+  customer: Customer
+  customerId: ID
+  description: String!
+  id: ID!
+  project: Project!
+  projectId: ID!
+  requestor: String!
+  source: RequestSource!
+  status: RequestStatus!
+  title: String!
+  updatedAt: DateTime!
+}
+
+enum CustomerStatus {
+  ACTIVE
+  CHURNED
+  LOST
+  PROSPECT
+}
+
+enum CustomerTier {
+  TIER_1
+  TIER_2
+  TIER_3
 }
 
 """Calendar date in YYYY-MM-DD format"""
@@ -166,18 +232,24 @@ input LoginInput {
 }
 
 type Mutation {
+  """Links this request to an existing issue and marks it converted"""
+  convertRequestToIssue(id: ID!, issueId: ID!): CustomerRequest!
   createComment(input: CreateCommentInput!): Comment!
+  createCustomer(input: CreateCustomerInput!): Customer!
   createIssue(input: CreateIssueInput!): Issue!
   createProject(input: CreateProjectInput!): Project!
   createRelease(input: CreateReleaseInput!): Release!
   createReleasePipeline(input: CreateReleasePipelineInput!): ReleasePipeline!
+  createRequest(input: CreateRequestInput!): CustomerRequest!
   deleteComment(id: ID!): Comment!
+  deleteCustomer(id: ID!): Customer!
 
   """Sub-issues of the deleted issue become top-level issues"""
   deleteIssue(id: ID!): Issue!
   deleteProject(id: ID!): Project!
   deleteRelease(id: ID!): Release!
   deleteReleasePipeline(id: ID!): ReleasePipeline!
+  deleteRequest(id: ID!): CustomerRequest!
 
   """
   Admin only. Returns each invited member with a one-time temporary password.
@@ -188,10 +260,12 @@ type Mutation {
 
   """Admin only."""
   removeMember(id: ID!): User!
+  updateCustomer(id: ID!, input: UpdateCustomerInput!): Customer!
   updateIssue(id: ID!, input: UpdateIssueInput!): Issue!
   updateProject(id: ID!, input: UpdateProjectInput!): Project!
   updateRelease(id: ID!, input: UpdateReleaseInput!): Release!
   updateReleasePipeline(id: ID!, input: UpdateReleasePipelineInput!): ReleasePipeline!
+  updateRequest(id: ID!, input: UpdateRequestInput!): CustomerRequest!
 }
 
 type Progress {
@@ -233,6 +307,8 @@ enum ProjectStatus {
 }
 
 type Query {
+  customer(id: ID!): Customer!
+  customers: [Customer!]!
   issue(id: ID!): Issue!
 
   """Look up an issue by its human readable identifier, e.g. ENG-12"""
@@ -246,6 +322,8 @@ type Query {
   releasePipeline(id: ID!): ReleasePipeline!
   releasePipelines(projectId: ID): [ReleasePipeline!]!
   releases(projectId: ID): [Release!]!
+  request(id: ID!): CustomerRequest!
+  requests(projectId: ID): [CustomerRequest!]!
   users: [User!]!
 }
 
@@ -296,6 +374,36 @@ enum ReleaseStatus {
   PLANNED
 }
 
+enum RequestSource {
+  EXTERNAL
+  INTERNAL
+}
+
+enum RequestStatus {
+  CONVERTED
+  DECLINED
+  OPEN
+}
+
+input UpdateCustomerInput {
+  """Pass null to clear"""
+  annualRevenue: Int
+
+  """Replaces the full domain list"""
+  domains: [String!]
+  name: String
+
+  """Pass null to unassign"""
+  ownerId: ID
+
+  """Pass null to clear"""
+  size: String
+  status: CustomerStatus
+
+  """Pass null to clear"""
+  tier: CustomerTier
+}
+
 input UpdateIssueInput {
   """Pass null to unassign"""
   assigneeId: ID
@@ -313,6 +421,9 @@ input UpdateIssueInput {
   """Pass null to turn a sub-issue back into a top-level issue"""
   parentId: ID
   priority: IssuePriority
+
+  """Move the issue to a different project; clears parentId and releaseId"""
+  projectId: ID
 
   """Pass null to remove from the release"""
   releaseId: ID
@@ -344,6 +455,16 @@ input UpdateReleaseInput {
 input UpdateReleasePipelineInput {
   name: String
   type: ReleasePipelineType
+}
+
+input UpdateRequestInput {
+  """Pass null to unassign"""
+  customerId: ID
+  description: String
+  requestor: String
+  source: RequestSource
+  status: RequestStatus
+  title: String
 }
 
 type User {

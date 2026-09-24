@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { JwtAuthGuard } from './auth/jwt-auth.guard.js';
 import { CommentsModule } from './comments/comments.module.js';
 import { CommonModule } from './common/common.module.js';
+import { CustomersModule } from './customers/customers.module.js';
 import type { GraphQLContext } from './common/loaders/loaders.js';
 import { LoadersModule } from './common/loaders/loaders.module.js';
 import { LoadersService } from './common/loaders/loaders.service.js';
@@ -17,6 +18,7 @@ import { LabelsModule } from './labels/labels.module.js';
 import { ProjectsModule } from './projects/projects.module.js';
 import { ReleasePipelinesModule } from './release-pipelines/release-pipelines.module.js';
 import { ReleasesModule } from './releases/releases.module.js';
+import { RequestsModule } from './requests/requests.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
 import { UsersModule } from './users/users.module.js';
 
@@ -51,6 +53,8 @@ import { UsersModule } from './users/users.module.js';
     LabelsModule,
     UploadsModule,
     CommentsModule,
+    RequestsModule,
+    CustomersModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })

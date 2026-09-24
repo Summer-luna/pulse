@@ -104,6 +104,48 @@ export const CommentFields = graphql(`
   }
 `)
 
+export const RequestFields = graphql(`
+  fragment RequestFields on CustomerRequest {
+    id
+    projectId
+    title
+    description
+    requestor
+    source
+    status
+    convertedIssueId
+    customerId
+    createdAt
+    convertedIssue {
+      id
+      identifier
+      title
+    }
+    customer {
+      id
+      name
+    }
+  }
+`)
+
+export const CustomerFields = graphql(`
+  fragment CustomerFields on Customer {
+    id
+    name
+    status
+    tier
+    annualRevenue
+    size
+    domains
+    ownerId
+    requestCount
+    createdAt
+    owner {
+      ...UserFields
+    }
+  }
+`)
+
 export const LabelFields = graphql(`
   fragment LabelFields on Label {
     id

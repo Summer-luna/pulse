@@ -1,6 +1,7 @@
 import { MoreHorizontal } from 'lucide-react'
 import { type FormEvent, useRef, useState } from 'react'
 import { useCreateIssueController } from '@/controllers/use-create-issue-controller'
+import type { Issue } from '@/domain/types'
 import type { IssueDraft } from '@/services/issue-service'
 import { DescriptionField } from '@/ui/DescriptionField'
 import { Modal } from '@/ui/Modal'
@@ -17,9 +18,10 @@ import { UserPicker } from './UserPicker'
 interface Props {
   defaults: Partial<IssueDraft>
   onClose: () => void
+  onCreated?: (issue: Issue) => void
 }
 
-export function CreateIssueModal({ defaults, onClose }: Props) {
+export function CreateIssueModal({ defaults, onClose, onCreated }: Props) {
   const controller = useCreateIssueController(defaults)
   const { draft, updateDraft } = controller
   const [createMore, setCreateMore] = useState(false)
@@ -30,7 +32,8 @@ export function CreateIssueModal({ defaults, onClose }: Props) {
   async function onSubmit(event: FormEvent) {
     event.preventDefault()
     try {
-      await controller.submit()
+      const issue = await controller.submit()
+      onCreated?.(issue)
       if (createMore) {
         updateDraft({ title: '', description: '' })
         titleRef.current?.focus()

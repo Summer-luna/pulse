@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CommentsService } from '../../comments/comments.service.js';
+import { CustomersService } from '../../customers/customers.service.js';
 import { IssuesService } from '../../issues/issues.service.js';
 import { LabelsService } from '../../labels/labels.service.js';
 import { ProjectsService } from '../../projects/projects.service.js';
@@ -17,12 +18,14 @@ export class LoadersService {
     private readonly issues: IssuesService,
     private readonly labels: LabelsService,
     private readonly comments: CommentsService,
+    private readonly customers: CustomersService,
   ) {}
 
   create(): Loaders {
     return {
       userById: entityLoader((ids) => this.users.findByIds(ids)),
       projectById: entityLoader((ids) => this.projects.findByIds(ids)),
+      customerById: entityLoader((ids) => this.customers.findByIds(ids)),
       releaseById: entityLoader((ids) => this.releases.findByIds(ids)),
       issueById: entityLoader((ids) => this.issues.findByIds(ids)),
       subIssuesByParentId: groupedLoader(

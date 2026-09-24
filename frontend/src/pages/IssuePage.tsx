@@ -7,10 +7,12 @@ import { IssueStatusPicker } from '@/components/IssueStatusPicker'
 import { LabelPicker } from '@/components/LabelPicker'
 import { PageHeader } from '@/components/PageHeader'
 import { ProjectBadge } from '@/components/ProjectBadge'
+import { ProjectPicker } from '@/components/ProjectPicker'
 import { ReleasePicker } from '@/components/ReleasePicker'
 import { SubIssuesSection } from '@/components/SubIssuesSection'
 import { UserPicker } from '@/components/UserPicker'
 import { useIssueController } from '@/controllers/use-issue-controller'
+import { useProjectsController } from '@/controllers/use-projects-controller'
 import { formatFullDate } from '@/lib/format-date'
 import { DescriptionEditor } from '@/ui/DescriptionEditor'
 import { EditableText } from '@/ui/EditableText'
@@ -22,6 +24,7 @@ export function IssuePage() {
   const { identifier = '' } = useParams()
   const navigate = useNavigate()
   const controller = useIssueController(identifier)
+  const { projects } = useProjectsController()
   const { issue } = controller
 
   if (!issue) {
@@ -33,6 +36,11 @@ export function IssuePage() {
       await controller.deleteIssue()
       navigate(`/projects/${issue!.projectId}/issues`)
     }
+  }
+
+  async function onMoveProject(projectId: string) {
+    const moved = await controller.updateIssue({ projectId })
+    navigate(`/issues/${moved.identifier}`)
   }
 
   const parentOptions = controller.parentCandidates.map((candidate) => ({
@@ -136,6 +144,10 @@ export function IssuePage() {
                 align="right"
                 onChange={(releaseId) => controller.updateIssue({ releaseId })}
               />
+            </dd>
+            <dt className="text-dim">Project</dt>
+            <dd>
+              <ProjectPicker value={issue.projectId} projects={projects} onChange={onMoveProject} align="right" />
             </dd>
             <dt className="text-dim">Parent</dt>
             <dd>

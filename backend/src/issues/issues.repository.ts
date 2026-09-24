@@ -63,6 +63,14 @@ export class IssuesRepository {
     await this.repo.update(id, patch);
   }
 
+  async moveToProject(id: string, projectId: string, number: number): Promise<void> {
+    await this.repo.update(id, { projectId, number, parentId: null, releaseId: null });
+  }
+
+  async detachChildren(parentId: string): Promise<void> {
+    await this.repo.update({ parentId }, { parentId: null });
+  }
+
   async remove(id: string): Promise<void> {
     await this.repo.delete(id);
   }

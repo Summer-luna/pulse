@@ -7,9 +7,10 @@ import { IssueRow } from './IssueRow'
 interface Props {
   sections: StatusSection[]
   onUpdate: (id: string, input: UpdateIssueInput) => void
+  onRemove?: (id: string) => void
 }
 
-export function IssueList({ sections, onUpdate }: Props) {
+export function IssueList({ sections, onUpdate, onRemove }: Props) {
   return (
     <div>
       {sections.map((section) => (
@@ -20,7 +21,7 @@ export function IssueList({ sections, onUpdate }: Props) {
             <span className="text-dim">{section.issues.length}</span>
           </header>
           {issueService.nest(section.issues).map(({ issue, depth }) => (
-            <IssueRow key={issue.id} issue={issue} depth={depth} onUpdate={onUpdate} />
+            <IssueRow key={issue.id} issue={issue} depth={depth} onUpdate={onUpdate} onRemove={onRemove} />
           ))}
         </section>
       ))}

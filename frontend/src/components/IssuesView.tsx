@@ -65,7 +65,7 @@ export function IssuesView({ scope, emptyTitle = 'No issues yet', emptyDescripti
           />
         )}
         {view === 'list' ? (
-          <IssueList sections={sections} onUpdate={controller.updateIssue} />
+          <IssueList sections={sections} onUpdate={controller.updateIssue} onRemove={controller.removeIssue} />
         ) : (
           <IssueBoard sections={sections} onUpdate={controller.updateIssue} />
         )}

@@ -13,6 +13,11 @@ export class UpdateIssueInput {
   @Length(1, 200)
   title?: string;
 
+  @Field(() => ID, { nullable: true, description: 'Move the issue to a different project; clears parentId and releaseId' })
+  @IsOptional()
+  @IsUUID()
+  projectId?: string;
+
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString()

@@ -48,6 +48,7 @@ export function useIssuesViewController(scope: IssuesFilterInput) {
     },
     onSettled: refresh,
   })
+  const remove = useMutation({ mutationFn: (id: string) => issueService.remove(id), onSuccess: refresh })
 
   function setView(next: IssuesViewMode) {
     setViewState(next)
@@ -70,5 +71,6 @@ export function useIssuesViewController(scope: IssuesFilterInput) {
     hideSubIssues,
     setHideSubIssues,
     updateIssue: (id: string, input: UpdateIssueInput) => update.mutate({ id, input }),
+    removeIssue: remove.mutateAsync,
   }
 }

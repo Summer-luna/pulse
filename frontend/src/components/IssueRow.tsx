@@ -1,10 +1,12 @@
 import { ListTree, Package } from 'lucide-react'
+import { type MouseEvent, useState } from 'react'
 import { useNavigate } from 'react-router'
 import type { Issue } from '@/domain/types'
 import type { UpdateIssueInput } from '@/graphql/generated/graphql'
 import { formatShortDate } from '@/lib/format-date'
 import { EstimateIcon } from '@/ui/EstimateIcon'
 import { LabelChip } from '@/ui/LabelChip'
+import { IssueContextMenu } from './IssueContextMenu'
 import { IssuePriorityPicker } from './IssuePriorityPicker'
 import { IssueStatusPicker } from './IssueStatusPicker'
 import { UserPicker } from './UserPicker'
@@ -13,11 +15,25 @@ interface Props {
   issue: Issue
   depth?: number
   onUpdate: (id: string, input: UpdateIssueInput) => void
+  onRemove?: (id: string) => void
 }
 
-export function IssueRow({ issue, depth = 0, onUpdate }: Props) {
+export function IssueRow({ issue, depth = 0, onUpdate, onRemove }: Props) {
   const navigate = useNavigate()
   const open = () => navigate(`/issues/${issue.identifier}`)
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null)
+
+  function onContextMenu(event: MouseEvent) {
+    event.preventDefault()
+    setMenu({ x: event.clientX, y: event.clientY })
+  }
+
+  async function onDelete() {
+    setMenu(null)
+    if (onRemove && window.confirm(`Delete ${issue.identifier}? Its sub-issues will become top-level issues.`)) {
+      await onRemove(issue.id)
+    }
+  }
 
   return (
     <div className="relative">
@@ -33,6 +49,7 @@ export function IssueRow({ issue, depth = 0, onUpdate }: Props) {
         tabIndex={0}
         onClick={open}
         onKeyDown={(event) => event.key === 'Enter' && open()}
+        onContextMenu={onContextMenu}
         style={depth > 0 ? { paddingLeft: `${1 + depth * 1.5}rem` } : undefined}
         className="flex h-10 cursor-pointer items-center gap-2.5 border-b border-line/60 px-4 outline-none hover:bg-hover focus-visible:bg-hover"
       >
@@ -82,6 +99,18 @@ export function IssueRow({ issue, depth = 0, onUpdate }: Props) {
         />
         <span className="w-12 shrink-0 text-right text-xs text-faint">{formatShortDate(issue.createdAt)}</span>
       </div>
+      {menu && (
+        <IssueContextMenu
+          issue={issue}
+          position={menu}
+          onClose={() => setMenu(null)}
+          onDelete={onDelete}
+          onMoveProject={(projectId) => {
+            setMenu(null)
+            onUpdate(issue.id, { projectId })
+          }}
+        />
+      )}
     </div>
   )
 }

@@ -6,9 +6,10 @@ interface Props {
   value: string
   projects: Project[]
   onChange: (projectId: string) => void
+  align?: 'left' | 'right'
 }
 
-export function ProjectPicker({ value, projects, onChange }: Props) {
+export function ProjectPicker({ value, projects, onChange, align = 'left' }: Props) {
   const options = projects.map((project) => ({
     value: project.id,
     label: project.name,
@@ -16,5 +17,5 @@ export function ProjectPicker({ value, projects, onChange }: Props) {
     icon: <ProjectBadge projectKey={project.key} size={16} />,
   }))
 
-  return <Picker value={value} options={options} onChange={(next) => next && onChange(next)} placeholder="Project" />
+  return <Picker value={value} options={options} onChange={(next) => next && onChange(next)} placeholder="Project" align={align} searchable />
 }

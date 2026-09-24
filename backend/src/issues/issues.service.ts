@@ -87,10 +87,23 @@ export class IssuesService {
 
   async update(id: string, input: UpdateIssueInput): Promise<Issue> {
     const issue = await this.get(id);
-    await this.assertRelations(issue.projectId, input, id);
-    const { labelIds, ...patch } = input;
+    const movingProject = input.projectId !== undefined && input.projectId !== issue.projectId;
+    await this.assertRelations(movingProject ? input.projectId! : issue.projectId, input, id);
+
+    if (movingProject) {
+      await this.projects.get(input.projectId!);
+      const number = await this.projects.allocateIssueNumber(input.projectId!);
+      await this.issues.moveToProject(id, input.projectId!, number);
+      await this.issues.detachChildren(id);
+    }
+
+    const { labelIds, projectId: _projectId, parentId, releaseId, ...patch } = input;
     const statusChanged = input.status !== undefined && input.status !== issue.status;
-    await this.issues.update(id, { ...patch, ...(statusChanged ? this.completedAtFor(input.status) : {}) });
+    await this.issues.update(id, {
+      ...patch,
+      ...(movingProject ? {} : { parentId, releaseId }),
+      ...(statusChanged ? this.completedAtFor(input.status) : {}),
+    });
     if (labelIds) {
       await this.labels.setIssueLabels(id, await this.labels.resolveLabelIds(labelIds));
     }

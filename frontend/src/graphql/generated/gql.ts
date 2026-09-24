@@ -20,6 +20,7 @@ type Documents = {
     "\n  mutation CreateComment($input: CreateCommentInput!) {\n    createComment(input: $input) {\n      ...CommentFields\n    }\n  }\n": typeof types.CreateCommentDocument,
     "\n  mutation DeleteComment($id: ID!) {\n    deleteComment(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteCommentDocument,
     "\n  query Customers {\n    customers {\n      ...CustomerFields\n    }\n  }\n": typeof types.CustomersDocument,
+    "\n  query Customer($id: ID!) {\n    customer(id: $id) {\n      ...CustomerFields\n    }\n  }\n": typeof types.CustomerDocument,
     "\n  mutation CreateCustomer($input: CreateCustomerInput!) {\n    createCustomer(input: $input) {\n      ...CustomerFields\n    }\n  }\n": typeof types.CreateCustomerDocument,
     "\n  mutation UpdateCustomer($id: ID!, $input: UpdateCustomerInput!) {\n    updateCustomer(id: $id, input: $input) {\n      ...CustomerFields\n    }\n  }\n": typeof types.UpdateCustomerDocument,
     "\n  mutation DeleteCustomer($id: ID!) {\n    deleteCustomer(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteCustomerDocument,
@@ -54,7 +55,7 @@ type Documents = {
     "\n  mutation CreateRelease($input: CreateReleaseInput!) {\n    createRelease(input: $input) {\n      ...ReleaseFields\n    }\n  }\n": typeof types.CreateReleaseDocument,
     "\n  mutation UpdateRelease($id: ID!, $input: UpdateReleaseInput!) {\n    updateRelease(id: $id, input: $input) {\n      ...ReleaseFields\n    }\n  }\n": typeof types.UpdateReleaseDocument,
     "\n  mutation DeleteRelease($id: ID!) {\n    deleteRelease(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteReleaseDocument,
-    "\n  query Requests($projectId: ID) {\n    requests(projectId: $projectId) {\n      ...RequestFields\n    }\n  }\n": typeof types.RequestsDocument,
+    "\n  query Requests($projectId: ID, $customerId: ID) {\n    requests(projectId: $projectId, customerId: $customerId) {\n      ...RequestFields\n    }\n  }\n": typeof types.RequestsDocument,
     "\n  mutation CreateRequest($input: CreateRequestInput!) {\n    createRequest(input: $input) {\n      ...RequestFields\n    }\n  }\n": typeof types.CreateRequestDocument,
     "\n  mutation UpdateRequest($id: ID!, $input: UpdateRequestInput!) {\n    updateRequest(id: $id, input: $input) {\n      ...RequestFields\n    }\n  }\n": typeof types.UpdateRequestDocument,
     "\n  mutation DeleteRequest($id: ID!) {\n    deleteRequest(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteRequestDocument,
@@ -70,6 +71,7 @@ const documents: Documents = {
     "\n  mutation CreateComment($input: CreateCommentInput!) {\n    createComment(input: $input) {\n      ...CommentFields\n    }\n  }\n": types.CreateCommentDocument,
     "\n  mutation DeleteComment($id: ID!) {\n    deleteComment(id: $id) {\n      id\n    }\n  }\n": types.DeleteCommentDocument,
     "\n  query Customers {\n    customers {\n      ...CustomerFields\n    }\n  }\n": types.CustomersDocument,
+    "\n  query Customer($id: ID!) {\n    customer(id: $id) {\n      ...CustomerFields\n    }\n  }\n": types.CustomerDocument,
     "\n  mutation CreateCustomer($input: CreateCustomerInput!) {\n    createCustomer(input: $input) {\n      ...CustomerFields\n    }\n  }\n": types.CreateCustomerDocument,
     "\n  mutation UpdateCustomer($id: ID!, $input: UpdateCustomerInput!) {\n    updateCustomer(id: $id, input: $input) {\n      ...CustomerFields\n    }\n  }\n": types.UpdateCustomerDocument,
     "\n  mutation DeleteCustomer($id: ID!) {\n    deleteCustomer(id: $id) {\n      id\n    }\n  }\n": types.DeleteCustomerDocument,
@@ -104,7 +106,7 @@ const documents: Documents = {
     "\n  mutation CreateRelease($input: CreateReleaseInput!) {\n    createRelease(input: $input) {\n      ...ReleaseFields\n    }\n  }\n": types.CreateReleaseDocument,
     "\n  mutation UpdateRelease($id: ID!, $input: UpdateReleaseInput!) {\n    updateRelease(id: $id, input: $input) {\n      ...ReleaseFields\n    }\n  }\n": types.UpdateReleaseDocument,
     "\n  mutation DeleteRelease($id: ID!) {\n    deleteRelease(id: $id) {\n      id\n    }\n  }\n": types.DeleteReleaseDocument,
-    "\n  query Requests($projectId: ID) {\n    requests(projectId: $projectId) {\n      ...RequestFields\n    }\n  }\n": types.RequestsDocument,
+    "\n  query Requests($projectId: ID, $customerId: ID) {\n    requests(projectId: $projectId, customerId: $customerId) {\n      ...RequestFields\n    }\n  }\n": types.RequestsDocument,
     "\n  mutation CreateRequest($input: CreateRequestInput!) {\n    createRequest(input: $input) {\n      ...RequestFields\n    }\n  }\n": types.CreateRequestDocument,
     "\n  mutation UpdateRequest($id: ID!, $input: UpdateRequestInput!) {\n    updateRequest(id: $id, input: $input) {\n      ...RequestFields\n    }\n  }\n": types.UpdateRequestDocument,
     "\n  mutation DeleteRequest($id: ID!) {\n    deleteRequest(id: $id) {\n      id\n    }\n  }\n": types.DeleteRequestDocument,
@@ -152,6 +154,10 @@ export function graphql(source: "\n  mutation DeleteComment($id: ID!) {\n    del
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query Customers {\n    customers {\n      ...CustomerFields\n    }\n  }\n"): (typeof documents)["\n  query Customers {\n    customers {\n      ...CustomerFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Customer($id: ID!) {\n    customer(id: $id) {\n      ...CustomerFields\n    }\n  }\n"): (typeof documents)["\n  query Customer($id: ID!) {\n    customer(id: $id) {\n      ...CustomerFields\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -291,7 +297,7 @@ export function graphql(source: "\n  mutation DeleteRelease($id: ID!) {\n    del
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Requests($projectId: ID) {\n    requests(projectId: $projectId) {\n      ...RequestFields\n    }\n  }\n"): (typeof documents)["\n  query Requests($projectId: ID) {\n    requests(projectId: $projectId) {\n      ...RequestFields\n    }\n  }\n"];
+export function graphql(source: "\n  query Requests($projectId: ID, $customerId: ID) {\n    requests(projectId: $projectId, customerId: $customerId) {\n      ...RequestFields\n    }\n  }\n"): (typeof documents)["\n  query Requests($projectId: ID, $customerId: ID) {\n    requests(projectId: $projectId, customerId: $customerId) {\n      ...RequestFields\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

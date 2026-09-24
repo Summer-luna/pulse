@@ -10,6 +10,14 @@ const CustomersQuery = graphql(`
   }
 `)
 
+const CustomerQuery = graphql(`
+  query Customer($id: ID!) {
+    customer(id: $id) {
+      ...CustomerFields
+    }
+  }
+`)
+
 const CreateCustomerMutation = graphql(`
   mutation CreateCustomer($input: CreateCustomerInput!) {
     createCustomer(input: $input) {
@@ -38,6 +46,11 @@ class CustomerRepository {
   async list(): Promise<CustomerFieldsFragment[]> {
     const data = await graphqlClient.request(CustomersQuery)
     return data.customers
+  }
+
+  async get(id: string): Promise<CustomerFieldsFragment> {
+    const data = await graphqlClient.request(CustomerQuery, { id })
+    return data.customer
   }
 
   async create(input: CreateCustomerInput): Promise<CustomerFieldsFragment> {

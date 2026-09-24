@@ -15,8 +15,8 @@ export class RequestsService {
     private readonly issues: IssuesService,
   ) {}
 
-  list(projectId?: string): Promise<CustomerRequest[]> {
-    return this.requests.findAll(projectId);
+  list(projectId?: string, customerId?: string): Promise<CustomerRequest[]> {
+    return this.requests.findAll(projectId, customerId);
   }
 
   async get(id: string): Promise<CustomerRequest> {

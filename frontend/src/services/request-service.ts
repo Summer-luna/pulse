@@ -12,8 +12,8 @@ export interface RequestDraft {
 }
 
 class RequestService {
-  list(projectId?: string): Promise<CustomerRequest[]> {
-    return requestRepository.list(projectId)
+  list(projectId?: string, customerId?: string): Promise<CustomerRequest[]> {
+    return requestRepository.list(projectId, customerId)
   }
 
   create(draft: RequestDraft): Promise<CustomerRequest> {
@@ -32,8 +32,8 @@ class RequestService {
     return requestRepository.convertToIssue(id, issueId)
   }
 
-  emptyDraft(projectId: string): RequestDraft {
-    return { projectId, title: '', description: '', requestor: '', source: 'EXTERNAL', customerId: null }
+  emptyDraft(projectId = '', customerId: string | null = null): RequestDraft {
+    return { projectId, title: '', description: '', requestor: '', source: 'EXTERNAL', customerId }
   }
 
   toCreateInput(draft: RequestDraft): CreateRequestInput {
@@ -43,6 +43,9 @@ class RequestService {
     }
     if (!draft.requestor.trim()) {
       throw new Error('Requestor is required')
+    }
+    if (!draft.projectId) {
+      throw new Error('Project is required')
     }
     return {
       projectId: draft.projectId,

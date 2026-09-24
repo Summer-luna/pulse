@@ -30,6 +30,22 @@ export function useCustomersController() {
   }
 }
 
+export function useCustomerController(id: string) {
+  const refresh = useRefreshAll()
+  const query = useQuery({ queryKey: queryKeys.customer(id), queryFn: () => customerService.get(id), enabled: !!id })
+  const update = useMutation({
+    mutationFn: (input: UpdateCustomerInput) => customerService.update(id, input),
+    onSuccess: refresh,
+  })
+
+  return {
+    customer: query.data ?? null,
+    isLoading: query.isLoading,
+    error: errorMessage(query.error),
+    updateCustomer: update.mutateAsync,
+  }
+}
+
 export function useCreateCustomerController() {
   const refresh = useRefreshAll()
   const [draft, setDraft] = useState<CustomerDraft>(() => customerService.emptyDraft())

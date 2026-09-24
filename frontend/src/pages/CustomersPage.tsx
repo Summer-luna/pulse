@@ -1,5 +1,6 @@
 import { Plus, Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { CreateCustomerModal } from '@/components/CreateCustomerModal'
 import { CustomerStatusPicker } from '@/components/CustomerStatusPicker'
 import { PageHeader } from '@/components/PageHeader'
@@ -14,6 +15,7 @@ import { PageState } from '@/ui/PageState'
 export function CustomersPage() {
   const { customers, total, isLoading, error, search, setSearch, removeCustomer, updateCustomer } = useCustomersController()
   const [creating, setCreating] = useState(false)
+  const navigate = useNavigate()
 
   const statusCounts = useMemo(() => {
     const counts = Object.fromEntries(CUSTOMER_STATUSES.map((status) => [status, 0])) as Record<CustomerStatus, number>
@@ -83,7 +85,14 @@ export function CustomersPage() {
               <span className="w-16 shrink-0" />
             </div>
             {customers.map((customer) => (
-              <div key={customer.id} className="flex h-11 items-center gap-4 border-b border-line/60 px-4">
+              <div
+                key={customer.id}
+                role="link"
+                tabIndex={0}
+                onClick={() => navigate(`/customers/${customer.id}`)}
+                onKeyDown={(event) => event.key === 'Enter' && navigate(`/customers/${customer.id}`)}
+                className="flex h-11 cursor-pointer items-center gap-4 border-b border-line/60 px-4 outline-none hover:bg-hover focus-visible:bg-hover"
+              >
                 <span className="flex min-w-0 flex-1 items-center gap-2">
                   <span
                     className="flex size-5 shrink-0 items-center justify-center rounded text-[10px] font-semibold text-white"
@@ -116,7 +125,10 @@ export function CustomersPage() {
                   <button
                     type="button"
                     className="cursor-pointer text-xs text-faint hover:text-danger"
-                    onClick={() => onRemove(customer.id, customer.name)}
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      onRemove(customer.id, customer.name)
+                    }}
                   >
                     Delete
                   </button>

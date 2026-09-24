@@ -323,7 +323,7 @@ type Query {
   releasePipelines(projectId: ID): [ReleasePipeline!]!
   releases(projectId: ID): [Release!]!
   request(id: ID!): CustomerRequest!
-  requests(projectId: ID): [CustomerRequest!]!
+  requests(customerId: ID, projectId: ID): [CustomerRequest!]!
   users: [User!]!
 }
 

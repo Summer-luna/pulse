@@ -17,6 +17,7 @@ interface Props<T extends string> {
   placeholder: string
   noneLabel?: string
   noneIcon?: ReactNode
+  noneHint?: string
   searchable?: boolean
   iconOnly?: boolean
   align?: 'left' | 'right'
@@ -31,6 +32,7 @@ export function Picker<T extends string>({
   placeholder,
   noneLabel,
   noneIcon,
+  noneHint,
   searchable = false,
   iconOnly = false,
   align = 'left',
@@ -92,7 +94,13 @@ export function Picker<T extends string>({
             )}
             <ul className="max-h-64 overflow-y-auto">
               {noneLabel && !needle && (
-                <PickerItem label={noneLabel} icon={noneIcon} selected={value === null} onSelect={() => choose(null)} />
+                <PickerItem
+                  label={noneLabel}
+                  icon={noneIcon}
+                  hint={noneHint}
+                  selected={value === null}
+                  onSelect={() => choose(null)}
+                />
               )}
               {visible.map((option) => (
                 <PickerItem

@@ -1,18 +1,40 @@
 import { Plus, Search } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { CreateCustomerModal } from '@/components/CreateCustomerModal'
+import { CustomerStatusPicker } from '@/components/CustomerStatusPicker'
 import { PageHeader } from '@/components/PageHeader'
+import { UserPicker } from '@/components/UserPicker'
 import { useCustomersController } from '@/controllers/use-customers-controller'
-import { CUSTOMER_STATUS_COLOR, CUSTOMER_STATUS_LABEL, CUSTOMER_TIER_LABEL } from '@/domain/customer'
+import { CUSTOMER_STATUSES, CUSTOMER_TIER_LABEL } from '@/domain/customer'
+import type { CustomerStatus } from '@/graphql/generated/graphql'
 import { keyColor } from '@/lib/key-color'
-import { Avatar } from '@/ui/Avatar'
 import { EmptyState } from '@/ui/EmptyState'
 import { PageState } from '@/ui/PageState'
-import { StatusDot } from '@/ui/StatusDot'
 
 export function CustomersPage() {
-  const { customers, total, isLoading, error, search, setSearch, removeCustomer } = useCustomersController()
+  const { customers, total, isLoading, error, search, setSearch, removeCustomer, updateCustomer } = useCustomersController()
   const [creating, setCreating] = useState(false)
+
+  const statusCounts = useMemo(() => {
+    const counts = Object.fromEntries(CUSTOMER_STATUSES.map((status) => [status, 0])) as Record<CustomerStatus, number>
+    for (const customer of customers) {
+      counts[customer.status] += 1
+    }
+    return counts
+  }, [customers])
+
+  const ownerCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    let unowned = 0
+    for (const customer of customers) {
+      if (customer.owner) {
+        counts[customer.owner.id] = (counts[customer.owner.id] ?? 0) + 1
+      } else {
+        unowned += 1
+      }
+    }
+    return { counts, unowned }
+  }, [customers])
 
   async function onRemove(id: string, name: string) {
     if (window.confirm(`Delete customer ${name}?`)) {
@@ -73,18 +95,22 @@ export function CustomersPage() {
                 </span>
                 <span className="w-20 shrink-0 text-right text-xs tabular-nums text-dim">{customer.requestCount}</span>
                 <span className="w-24 shrink-0">
-                  <StatusDot color={CUSTOMER_STATUS_COLOR[customer.status]} label={CUSTOMER_STATUS_LABEL[customer.status]} />
+                  <CustomerStatusPicker
+                    value={customer.status}
+                    counts={statusCounts}
+                    onChange={(status) => updateCustomer(customer.id, { status })}
+                  />
                 </span>
                 <span className="w-20 shrink-0 text-xs text-dim">{customer.tier ? CUSTOMER_TIER_LABEL[customer.tier] : '—'}</span>
-                <span className="flex w-40 shrink-0 items-center gap-1.5 truncate text-xs text-dim">
-                  {customer.owner ? (
-                    <>
-                      <Avatar name={customer.owner.name} color={customer.owner.color} size={16} />
-                      {customer.owner.name}
-                    </>
-                  ) : (
-                    'No owner'
-                  )}
+                <span className="w-40 shrink-0">
+                  <UserPicker
+                    value={customer.ownerId}
+                    onChange={(ownerId) => updateCustomer(customer.id, { ownerId })}
+                    placeholder="Owner"
+                    noneLabel="No owner"
+                    noneCount={ownerCounts.unowned}
+                    counts={ownerCounts.counts}
+                  />
                 </span>
                 <span className="w-16 shrink-0 text-right">
                   <button

@@ -9,13 +9,16 @@ interface Props {
   noneLabel: string
   iconOnly?: boolean
   align?: 'left' | 'right'
+  counts?: Record<string, number>
+  noneCount?: number
 }
 
-export function UserPicker({ value, onChange, placeholder, noneLabel, iconOnly, align }: Props) {
+export function UserPicker({ value, onChange, placeholder, noneLabel, iconOnly, align, counts, noneCount }: Props) {
   const { users } = useUsersController()
   const options = users.map((user) => ({
     value: user.id,
     label: user.name,
+    hint: counts ? String(counts[user.id] ?? 0) : undefined,
     icon: <Avatar name={user.name} color={user.color} />,
   }))
 
@@ -27,6 +30,7 @@ export function UserPicker({ value, onChange, placeholder, noneLabel, iconOnly, 
       placeholder={placeholder}
       noneLabel={noneLabel}
       noneIcon={<UnassignedAvatar />}
+      noneHint={noneCount !== undefined ? String(noneCount) : undefined}
       iconOnly={iconOnly}
       align={align}
       searchable

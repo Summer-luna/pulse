@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
+import type { UpdateCustomerInput } from '@/graphql/generated/graphql'
 import { errorMessage } from '@/lib/error-message'
 import { type CustomerDraft, customerService } from '@/services/customer-service'
 import { queryKeys } from './query-keys'
@@ -12,6 +13,10 @@ export function useCustomersController() {
   const customers = useMemo(() => customerService.filter(query.data ?? [], search), [query.data, search])
 
   const remove = useMutation({ mutationFn: (id: string) => customerService.remove(id), onSuccess: refresh })
+  const update = useMutation({
+    mutationFn: ({ id, input }: { id: string; input: UpdateCustomerInput }) => customerService.update(id, input),
+    onSuccess: refresh,
+  })
 
   return {
     customers,
@@ -21,6 +26,7 @@ export function useCustomersController() {
     search,
     setSearch,
     removeCustomer: remove.mutateAsync,
+    updateCustomer: (id: string, input: UpdateCustomerInput) => update.mutateAsync({ id, input }),
   }
 }
 

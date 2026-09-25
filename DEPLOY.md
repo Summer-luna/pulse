@@ -62,6 +62,30 @@ docker compose exec backend node dist/cli/seed.js
 
 ## 5. 更新部署
 
+当前 Proxmox LXC 环境中，Docker build 会受到 AppArmor 限制。推荐在 Windows
+开发机上构建，再把产物交给服务器上的 Docker 容器运行：
+
+```powershell
+git checkout main
+git pull origin main
+.\deploy.ps1
+```
+
+脚本会执行 `npm.cmd ci`、构建前后端、上传版本化产物、重建前后端容器并执行
+GraphQL 健康检查。PostgreSQL 数据卷和上传图片卷不会被删除。部署失败时会自动
+切回上一个版本。
+
+如果已经手动完成依赖安装或构建，可以使用：
+
+```powershell
+.\deploy.ps1 -SkipInstall
+.\deploy.ps1 -SkipInstall -SkipBuild
+```
+
+建议配置 SSH key，否则部署过程中 `ssh` 和 `scp` 会分别要求输入服务器密码。
+
+### 传统 Docker build 方式
+
 以后改了代码（不管是在这边 develop 还是别处），在容器里：
 
 ```bash

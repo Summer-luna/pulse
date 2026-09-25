@@ -4,6 +4,7 @@ import { AppShell } from '@/components/AppShell'
 import { SettingsLayout } from '@/components/SettingsLayout'
 import { CustomerPage } from '@/pages/CustomerPage'
 import { CustomersPage } from '@/pages/CustomersPage'
+import { DataSettingsPage } from '@/pages/DataSettingsPage'
 import { IssuePage } from '@/pages/IssuePage'
 import { IssuesPage } from '@/pages/IssuesPage'
 import { LoginPage } from '@/pages/LoginPage'
@@ -71,6 +72,7 @@ export function App() {
                 <Route path="settings" element={<SettingsLayout />}>
                   <Route index element={<SettingsPage />} />
                   <Route path="members" element={<MembersPage />} />
+                  <Route path="data" element={<DataSettingsPage />} />
                 </Route>
               </Route>
             </Route>

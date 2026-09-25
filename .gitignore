@@ -8,3 +8,5 @@ backend/.pgdata
 .idea/
 .workbuddy/
 backend/uploads/
+.deploy-backups/
+.deploy-temp/

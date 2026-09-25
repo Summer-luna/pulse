@@ -1,8 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
-import { BadRequestException, Controller, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import type { Request } from 'express';
 import { diskStorage } from 'multer';
 import { ALLOWED_IMAGE_TYPES, MAX_UPLOAD_BYTES, UPLOADS_DIR } from './uploads.constants.js';
 import type { UploadResponse } from './upload.model.js';
@@ -32,11 +31,10 @@ export class UploadsController {
       },
     }),
   )
-  upload(@UploadedFile() file: Express.Multer.File | undefined, @Req() req: Request): UploadResponse {
+  upload(@UploadedFile() file: Express.Multer.File | undefined): UploadResponse {
     if (!file) {
       throw new BadRequestException('Upload a PNG, JPEG, GIF or WebP image up to 8MB');
     }
-    const origin = `${req.protocol}://${req.get('host')}`;
-    return { url: `${origin}/uploads/${file.filename}` };
+    return { url: `/uploads/${file.filename}` };
   }
 }

@@ -9,10 +9,6 @@ async function bootstrap() {
   mkdirSync(UPLOADS_DIR, { recursive: true });
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // Behind a reverse proxy (nginx in front of this container), trust its
-  // X-Forwarded-* headers so req.protocol/req.get('host') reflect the
-  // public-facing URL instead of the proxy's internal one.
-  app.set('trust proxy', 1);
   const configuredOrigin = process.env.FRONTEND_ORIGIN;
   // Matches any http://<host>:5173 origin (localhost or a LAN IP) so the dev frontend
   // can be reached from other machines on the network without hardcoding an IP here.

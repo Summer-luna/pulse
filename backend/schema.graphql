@@ -60,6 +60,7 @@ input CreateProjectInput {
   startDate: Date
   status: ProjectStatus
   targetDate: Date
+  teamId: ID
 }
 
 input CreateReleaseInput {
@@ -84,6 +85,15 @@ input CreateRequestInput {
   requestor: String!
   source: RequestSource
   title: String!
+}
+
+input CreateTeamInput {
+  description: String
+
+  """2-5 letters"""
+  key: String!
+  memberIds: [ID!]
+  name: String!
 }
 
 type Customer {
@@ -244,6 +254,7 @@ type Mutation {
   createRelease(input: CreateReleaseInput!): Release!
   createReleasePipeline(input: CreateReleasePipelineInput!): ReleasePipeline!
   createRequest(input: CreateRequestInput!): CustomerRequest!
+  createTeam(input: CreateTeamInput!): Team!
   deleteComment(id: ID!): Comment!
   deleteCustomer(id: ID!): Customer!
 
@@ -253,11 +264,18 @@ type Mutation {
   deleteRelease(id: ID!): Release!
   deleteReleasePipeline(id: ID!): ReleasePipeline!
   deleteRequest(id: ID!): CustomerRequest!
+  deleteTeam(id: ID!): Team!
 
   """
   Admin only. Returns each invited member with a one-time temporary password.
   """
   inviteMembers(input: InviteMembersInput!): [InvitedMember!]!
+
+  """Adds the current user to the team"""
+  joinTeam(id: ID!): Team!
+
+  """Removes the current user from the team"""
+  leaveTeam(id: ID!): Team!
   login(input: LoginInput!): AuthPayload!
   register(input: RegisterInput!): AuthPayload!
 
@@ -269,6 +287,7 @@ type Mutation {
   updateRelease(id: ID!, input: UpdateReleaseInput!): Release!
   updateReleasePipeline(id: ID!, input: UpdateReleasePipelineInput!): ReleasePipeline!
   updateRequest(id: ID!, input: UpdateRequestInput!): CustomerRequest!
+  updateTeam(id: ID!, input: UpdateTeamInput!): Team!
 }
 
 type Progress {
@@ -290,6 +309,8 @@ type Project {
   startDate: Date
   status: ProjectStatus!
   targetDate: Date
+  team: Team
+  teamId: ID
   updatedAt: DateTime!
 }
 
@@ -327,6 +348,8 @@ type Query {
   releases(projectId: ID): [Release!]!
   request(id: ID!): CustomerRequest!
   requests(customerId: ID, projectId: ID): [CustomerRequest!]!
+  team(id: ID!): Team!
+  teams: [Team!]!
   users: [User!]!
 }
 
@@ -388,6 +411,20 @@ enum RequestStatus {
   OPEN
 }
 
+type Team {
+  activeProjectCount: Int!
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  isMember: Boolean!
+
+  """2-5 letters, shown next to the team name"""
+  key: String!
+  members: [User!]!
+  name: String!
+  updatedAt: DateTime!
+}
+
 input UpdateCustomerInput {
   """Pass null to clear"""
   annualRevenue: Int
@@ -445,6 +482,9 @@ input UpdateProjectInput {
   startDate: Date
   status: ProjectStatus
   targetDate: Date
+
+  """Pass null to unassign"""
+  teamId: ID
 }
 
 input UpdateReleaseInput {
@@ -468,6 +508,14 @@ input UpdateRequestInput {
   source: RequestSource
   status: RequestStatus
   title: String
+}
+
+input UpdateTeamInput {
+  description: String
+
+  """Replaces the full member list"""
+  memberIds: [ID!]
+  name: String
 }
 
 type User {

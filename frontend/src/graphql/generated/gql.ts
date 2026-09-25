@@ -26,7 +26,8 @@ type Documents = {
     "\n  mutation DeleteCustomer($id: ID!) {\n    deleteCustomer(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteCustomerDocument,
     "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n    role\n    createdAt\n  }\n": typeof types.UserFieldsFragmentDoc,
     "\n  fragment InvitedMemberFields on InvitedMember {\n    temporaryPassword\n    user {\n      ...UserFields\n    }\n  }\n": typeof types.InvitedMemberFieldsFragmentDoc,
-    "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": typeof types.ProjectFieldsFragmentDoc,
+    "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    teamId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    team {\n      id\n      name\n      key\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": typeof types.ProjectFieldsFragmentDoc,
+    "\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n": typeof types.TeamFieldsFragmentDoc,
     "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    pipelineId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": typeof types.ReleaseFieldsFragmentDoc,
     "\n  fragment ReleasePipelineFields on ReleasePipeline {\n    id\n    projectId\n    name\n    type\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    releaseCount\n    latestRelease {\n      id\n      name\n      version\n      status\n      releasedAt\n    }\n  }\n": typeof types.ReleasePipelineFieldsFragmentDoc,
     "\n  fragment CommentFields on Comment {\n    id\n    issueId\n    body\n    createdAt\n    author {\n      ...UserFields\n    }\n  }\n": typeof types.CommentFieldsFragmentDoc,
@@ -60,6 +61,12 @@ type Documents = {
     "\n  mutation UpdateRequest($id: ID!, $input: UpdateRequestInput!) {\n    updateRequest(id: $id, input: $input) {\n      ...RequestFields\n    }\n  }\n": typeof types.UpdateRequestDocument,
     "\n  mutation DeleteRequest($id: ID!) {\n    deleteRequest(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteRequestDocument,
     "\n  mutation ConvertRequestToIssue($id: ID!, $issueId: ID!) {\n    convertRequestToIssue(id: $id, issueId: $issueId) {\n      ...RequestFields\n    }\n  }\n": typeof types.ConvertRequestToIssueDocument,
+    "\n  query Teams {\n    teams {\n      ...TeamFields\n    }\n  }\n": typeof types.TeamsDocument,
+    "\n  mutation CreateTeam($input: CreateTeamInput!) {\n    createTeam(input: $input) {\n      ...TeamFields\n    }\n  }\n": typeof types.CreateTeamDocument,
+    "\n  mutation UpdateTeam($id: ID!, $input: UpdateTeamInput!) {\n    updateTeam(id: $id, input: $input) {\n      ...TeamFields\n    }\n  }\n": typeof types.UpdateTeamDocument,
+    "\n  mutation DeleteTeam($id: ID!) {\n    deleteTeam(id: $id) {\n      id\n    }\n  }\n": typeof types.DeleteTeamDocument,
+    "\n  mutation JoinTeam($id: ID!) {\n    joinTeam(id: $id) {\n      ...TeamFields\n    }\n  }\n": typeof types.JoinTeamDocument,
+    "\n  mutation LeaveTeam($id: ID!) {\n    leaveTeam(id: $id) {\n      ...TeamFields\n    }\n  }\n": typeof types.LeaveTeamDocument,
     "\n  query Users {\n    users {\n      ...UserFields\n    }\n  }\n": typeof types.UsersDocument,
     "\n  mutation InviteMembers($input: InviteMembersInput!) {\n    inviteMembers(input: $input) {\n      ...InvitedMemberFields\n    }\n  }\n": typeof types.InviteMembersDocument,
     "\n  mutation RemoveMember($id: ID!) {\n    removeMember(id: $id) {\n      id\n    }\n  }\n": typeof types.RemoveMemberDocument,
@@ -77,7 +84,8 @@ const documents: Documents = {
     "\n  mutation DeleteCustomer($id: ID!) {\n    deleteCustomer(id: $id) {\n      id\n    }\n  }\n": types.DeleteCustomerDocument,
     "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n    role\n    createdAt\n  }\n": types.UserFieldsFragmentDoc,
     "\n  fragment InvitedMemberFields on InvitedMember {\n    temporaryPassword\n    user {\n      ...UserFields\n    }\n  }\n": types.InvitedMemberFieldsFragmentDoc,
-    "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": types.ProjectFieldsFragmentDoc,
+    "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    teamId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    team {\n      id\n      name\n      key\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": types.ProjectFieldsFragmentDoc,
+    "\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n": types.TeamFieldsFragmentDoc,
     "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    pipelineId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": types.ReleaseFieldsFragmentDoc,
     "\n  fragment ReleasePipelineFields on ReleasePipeline {\n    id\n    projectId\n    name\n    type\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    releaseCount\n    latestRelease {\n      id\n      name\n      version\n      status\n      releasedAt\n    }\n  }\n": types.ReleasePipelineFieldsFragmentDoc,
     "\n  fragment CommentFields on Comment {\n    id\n    issueId\n    body\n    createdAt\n    author {\n      ...UserFields\n    }\n  }\n": types.CommentFieldsFragmentDoc,
@@ -111,6 +119,12 @@ const documents: Documents = {
     "\n  mutation UpdateRequest($id: ID!, $input: UpdateRequestInput!) {\n    updateRequest(id: $id, input: $input) {\n      ...RequestFields\n    }\n  }\n": types.UpdateRequestDocument,
     "\n  mutation DeleteRequest($id: ID!) {\n    deleteRequest(id: $id) {\n      id\n    }\n  }\n": types.DeleteRequestDocument,
     "\n  mutation ConvertRequestToIssue($id: ID!, $issueId: ID!) {\n    convertRequestToIssue(id: $id, issueId: $issueId) {\n      ...RequestFields\n    }\n  }\n": types.ConvertRequestToIssueDocument,
+    "\n  query Teams {\n    teams {\n      ...TeamFields\n    }\n  }\n": types.TeamsDocument,
+    "\n  mutation CreateTeam($input: CreateTeamInput!) {\n    createTeam(input: $input) {\n      ...TeamFields\n    }\n  }\n": types.CreateTeamDocument,
+    "\n  mutation UpdateTeam($id: ID!, $input: UpdateTeamInput!) {\n    updateTeam(id: $id, input: $input) {\n      ...TeamFields\n    }\n  }\n": types.UpdateTeamDocument,
+    "\n  mutation DeleteTeam($id: ID!) {\n    deleteTeam(id: $id) {\n      id\n    }\n  }\n": types.DeleteTeamDocument,
+    "\n  mutation JoinTeam($id: ID!) {\n    joinTeam(id: $id) {\n      ...TeamFields\n    }\n  }\n": types.JoinTeamDocument,
+    "\n  mutation LeaveTeam($id: ID!) {\n    leaveTeam(id: $id) {\n      ...TeamFields\n    }\n  }\n": types.LeaveTeamDocument,
     "\n  query Users {\n    users {\n      ...UserFields\n    }\n  }\n": types.UsersDocument,
     "\n  mutation InviteMembers($input: InviteMembersInput!) {\n    inviteMembers(input: $input) {\n      ...InvitedMemberFields\n    }\n  }\n": types.InviteMembersDocument,
     "\n  mutation RemoveMember($id: ID!) {\n    removeMember(id: $id) {\n      id\n    }\n  }\n": types.RemoveMemberDocument,
@@ -181,7 +195,11 @@ export function graphql(source: "\n  fragment InvitedMemberFields on InvitedMemb
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    progress {\n      total\n      completed\n    }\n  }\n"): (typeof documents)["\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    progress {\n      total\n      completed\n    }\n  }\n"];
+export function graphql(source: "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    teamId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    team {\n      id\n      name\n      key\n    }\n    progress {\n      total\n      completed\n    }\n  }\n"): (typeof documents)["\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    teamId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    team {\n      id\n      name\n      key\n    }\n    progress {\n      total\n      completed\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n"): (typeof documents)["\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -314,6 +332,30 @@ export function graphql(source: "\n  mutation DeleteRequest($id: ID!) {\n    del
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation ConvertRequestToIssue($id: ID!, $issueId: ID!) {\n    convertRequestToIssue(id: $id, issueId: $issueId) {\n      ...RequestFields\n    }\n  }\n"): (typeof documents)["\n  mutation ConvertRequestToIssue($id: ID!, $issueId: ID!) {\n    convertRequestToIssue(id: $id, issueId: $issueId) {\n      ...RequestFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Teams {\n    teams {\n      ...TeamFields\n    }\n  }\n"): (typeof documents)["\n  query Teams {\n    teams {\n      ...TeamFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateTeam($input: CreateTeamInput!) {\n    createTeam(input: $input) {\n      ...TeamFields\n    }\n  }\n"): (typeof documents)["\n  mutation CreateTeam($input: CreateTeamInput!) {\n    createTeam(input: $input) {\n      ...TeamFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateTeam($id: ID!, $input: UpdateTeamInput!) {\n    updateTeam(id: $id, input: $input) {\n      ...TeamFields\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateTeam($id: ID!, $input: UpdateTeamInput!) {\n    updateTeam(id: $id, input: $input) {\n      ...TeamFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation DeleteTeam($id: ID!) {\n    deleteTeam(id: $id) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteTeam($id: ID!) {\n    deleteTeam(id: $id) {\n      id\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation JoinTeam($id: ID!) {\n    joinTeam(id: $id) {\n      ...TeamFields\n    }\n  }\n"): (typeof documents)["\n  mutation JoinTeam($id: ID!) {\n    joinTeam(id: $id) {\n      ...TeamFields\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation LeaveTeam($id: ID!) {\n    leaveTeam(id: $id) {\n      ...TeamFields\n    }\n  }\n"): (typeof documents)["\n  mutation LeaveTeam($id: ID!) {\n    leaveTeam(id: $id) {\n      ...TeamFields\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

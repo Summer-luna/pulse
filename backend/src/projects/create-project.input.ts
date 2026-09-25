@@ -35,6 +35,11 @@ export class CreateProjectInput {
   @IsUUID()
   leadId?: string | null;
 
+  @Field(() => ID, { nullable: true })
+  @IsOptional()
+  @IsUUID()
+  teamId?: string | null;
+
   @Field(() => [ID], { nullable: true })
   @IsOptional()
   @IsArray()

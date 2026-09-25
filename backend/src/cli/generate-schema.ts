@@ -12,6 +12,7 @@ import { ProjectsResolver } from '../projects/projects.resolver.js';
 import { ReleasePipelinesResolver } from '../release-pipelines/release-pipelines.resolver.js';
 import { ReleasesResolver } from '../releases/releases.resolver.js';
 import { RequestsResolver } from '../requests/requests.resolver.js';
+import { TeamsResolver } from '../teams/teams.resolver.js';
 import { UsersResolver } from '../users/users.resolver.js';
 
 const OUTPUT = 'schema.graphql';
@@ -33,6 +34,7 @@ const schema = await app
       CommentsResolver,
       RequestsResolver,
       CustomersResolver,
+      TeamsResolver,
     ],
     [DateScalar],
   );

@@ -32,6 +32,11 @@ export class UpdateProjectInput {
   @IsUUID()
   leadId?: string | null;
 
+  @Field(() => ID, { nullable: true, description: 'Pass null to unassign' })
+  @IsOptional()
+  @IsUUID()
+  teamId?: string | null;
+
   @Field(() => [ID], { nullable: true, description: 'Replaces the full member list' })
   @IsOptional()
   @IsArray()

@@ -1,6 +1,7 @@
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import type { GraphQLContext } from '../common/loaders/loaders.js';
 import { Progress } from '../common/progress.model.js';
+import { Team } from '../teams/team.entity.js';
 import { User } from '../users/user.entity.js';
 import { CreateProjectInput } from './create-project.input.js';
 import { Project } from './project.entity.js';
@@ -52,5 +53,10 @@ export class ProjectsResolver {
   @ResolveField(() => [User])
   members(@Parent() project: Project, @Context() ctx: GraphQLContext): Promise<User[]> {
     return ctx.loaders.membersByProjectId.load(project.id);
+  }
+
+  @ResolveField(() => Team, { nullable: true })
+  team(@Parent() project: Project, @Context() ctx: GraphQLContext): Promise<Team | null> {
+    return project.teamId ? ctx.loaders.teamById.load(project.teamId) : Promise.resolve(null);
   }
 }

@@ -16,4 +16,5 @@ export const queryKeys = {
     ['requests', projectId ?? 'all', customerId ?? 'all'] as const,
   customers: ['customers'] as const,
   customer: (id: string) => ['customer', id] as const,
+  teams: ['teams'] as const,
 }

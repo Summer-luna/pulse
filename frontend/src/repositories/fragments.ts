@@ -29,6 +29,7 @@ export const ProjectFields = graphql(`
     status
     priority
     leadId
+    teamId
     startDate
     targetDate
     createdAt
@@ -38,9 +39,29 @@ export const ProjectFields = graphql(`
     members {
       ...UserFields
     }
+    team {
+      id
+      name
+      key
+    }
     progress {
       total
       completed
+    }
+  }
+`)
+
+export const TeamFields = graphql(`
+  fragment TeamFields on Team {
+    id
+    name
+    key
+    description
+    isMember
+    activeProjectCount
+    createdAt
+    members {
+      ...UserFields
     }
   }
 `)

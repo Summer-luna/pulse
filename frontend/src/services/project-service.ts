@@ -9,6 +9,7 @@ export interface ProjectDraft {
   status: ProjectStatus
   priority: ProjectPriority
   leadId: string | null
+  teamId: string | null
   memberIds: string[]
   startDate: string | null
   targetDate: string | null
@@ -45,6 +46,7 @@ class ProjectService {
       status: 'PLANNED',
       priority: 'NO_PRIORITY',
       leadId: null,
+      teamId: null,
       memberIds: [],
       startDate: null,
       targetDate: null,
@@ -73,6 +75,7 @@ class ProjectService {
       status: draft.status,
       priority: draft.priority,
       leadId: draft.leadId,
+      teamId: draft.teamId,
       memberIds: draft.memberIds,
       startDate: draft.startDate || null,
       targetDate: draft.targetDate || null,

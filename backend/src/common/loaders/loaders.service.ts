@@ -6,8 +6,9 @@ import { LabelsService } from '../../labels/labels.service.js';
 import { ProjectsService } from '../../projects/projects.service.js';
 import { ReleasesService } from '../../releases/releases.service.js';
 import { RequestsService } from '../../requests/requests.service.js';
+import { TeamsService } from '../../teams/teams.service.js';
 import { UsersService } from '../../users/users.service.js';
-import { entityLoader, groupedLoader, groupedValueLoader, keyedLoader, progressLoader } from './batch.js';
+import { countLoader, entityLoader, groupedLoader, groupedValueLoader, keyedLoader, progressLoader } from './batch.js';
 import type { Loaders } from './loaders.js';
 
 @Injectable()
@@ -21,12 +22,14 @@ export class LoadersService {
     private readonly comments: CommentsService,
     private readonly customers: CustomersService,
     private readonly requests: RequestsService,
+    private readonly teams: TeamsService,
   ) {}
 
   create(): Loaders {
     return {
       userById: entityLoader((ids) => this.users.findByIds(ids)),
       projectById: entityLoader((ids) => this.projects.findByIds(ids)),
+      teamById: entityLoader((ids) => this.teams.findByIds(ids)),
       customerById: entityLoader((ids) => this.customers.findByIds(ids)),
       releaseById: entityLoader((ids) => this.releases.findByIds(ids)),
       issueById: entityLoader((ids) => this.issues.findByIds(ids)),
@@ -52,6 +55,12 @@ export class LoadersService {
         (ids) => this.requests.findByConvertedIssueIds(ids),
         (request) => request.convertedIssueId,
       ),
+      membersByTeamId: groupedValueLoader(
+        (ids) => this.teams.membersByTeamIds(ids),
+        (row) => row.teamId,
+        (row) => row.user,
+      ),
+      activeProjectCountByTeamId: countLoader((ids) => this.teams.activeProjectCountsByTeamIds(ids)),
       progressByProjectId: progressLoader((ids) => this.issues.progressByProjectIds(ids)),
       progressByReleaseId: progressLoader((ids) => this.issues.progressByReleaseIds(ids)),
       progressByParentId: progressLoader((ids) => this.issues.progressByParentIds(ids)),

@@ -7,6 +7,7 @@ import { Project } from '../projects/project.entity.js';
 import { ReleasePipeline } from '../release-pipelines/release-pipeline.entity.js';
 import { Release } from '../releases/release.entity.js';
 import { CustomerRequest } from '../requests/customer-request.entity.js';
+import { Team } from '../teams/team.entity.js';
 import { User } from '../users/user.entity.js';
 import { AddPasswordHash1790000001000 } from './migrations/1790000001000-add-password-hash.js';
 import { AddProjectFields1790000002000 } from './migrations/1790000002000-add-project-fields.js';
@@ -21,6 +22,7 @@ import { AddRequests1790000010000 } from './migrations/1790000010000-add-request
 import { AddCustomers1790000011000 } from './migrations/1790000011000-add-customers.js';
 import { AddCustomerFields1790000012000 } from './migrations/1790000012000-add-customer-fields.js';
 import { MakeRequestProjectOptional1790000013000 } from './migrations/1790000013000-make-request-project-optional.js';
+import { AddTeams1790000014000 } from './migrations/1790000014000-add-teams.js';
 import { InitSchema1790000000000 } from './migrations/1790000000000-init-schema.js';
 import { SnakeNamingStrategy } from './snake-naming.strategy.js';
 
@@ -28,7 +30,7 @@ export function buildDataSourceOptions(url: string): DataSourceOptions {
   return {
     type: 'postgres',
     url,
-    entities: [User, Project, Release, Issue, Label, ReleasePipeline, Comment, CustomerRequest, Customer],
+    entities: [User, Project, Release, Issue, Label, ReleasePipeline, Comment, CustomerRequest, Customer, Team],
     migrations: [
       InitSchema1790000000000,
       AddPasswordHash1790000001000,
@@ -44,6 +46,7 @@ export function buildDataSourceOptions(url: string): DataSourceOptions {
       AddCustomers1790000011000,
       AddCustomerFields1790000012000,
       MakeRequestProjectOptional1790000013000,
+      AddTeams1790000014000,
     ],
     namingStrategy: new SnakeNamingStrategy(),
     uuidExtension: 'pgcrypto',

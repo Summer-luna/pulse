@@ -59,7 +59,9 @@ export function ProjectsPage() {
                         <ProjectBadge projectKey={project.key} size={20} />
                         <span className="truncate font-medium">{project.name}</span>
                         {project.visibility === 'PRIVATE' && (
-                          <Lock size={12} className="shrink-0 text-faint" title="Private to members" />
+                          <Lock size={12} className="shrink-0 text-faint" aria-label="Private to members">
+                            <title>Private to members</title>
+                          </Lock>
                         )}
                       </Link>
                     </td>

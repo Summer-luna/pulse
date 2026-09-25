@@ -73,7 +73,11 @@ export function TeamsPage() {
                   </span>
                   <span className="min-w-0 truncate font-medium">{team.name}</span>
                   <span className="shrink-0 font-mono text-xs text-faint">{team.key}</span>
-                  {team.access === 'PRIVATE' && <Lock size={12} className="shrink-0 text-faint" title="Private to team members" />}
+                  {team.access === 'PRIVATE' && (
+                    <Lock size={12} className="shrink-0 text-faint" aria-label="Private to team members">
+                      <title>Private to team members</title>
+                    </Lock>
+                  )}
                 </span>
                 <span className="w-48 shrink-0 truncate text-xs text-dim">{team.description || '—'}</span>
                 <span className="w-24 shrink-0">

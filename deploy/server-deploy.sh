@@ -89,11 +89,17 @@ if ! start_services "$release_dir"; then
   exit 1
 fi
 
-sleep 5
-graphql_response="$(curl -fsS \
-  -H 'Content-Type: application/json' \
-  --data '{"query":"query { __typename }"}' \
-  "http://127.0.0.1:${http_port}/graphql" || true)"
+graphql_response=''
+for attempt in $(seq 1 30); do
+  graphql_response="$(curl -fsS \
+    -H 'Content-Type: application/json' \
+    --data '{"query":"query { __typename }"}' \
+    "http://127.0.0.1:${http_port}/graphql" || true)"
+  if [[ "$graphql_response" == *'"__typename":"Query"'* ]]; then
+    break
+  fi
+  sleep 1
+done
 
 if [[ "$graphql_response" != *'"__typename":"Query"'* ]]; then
   echo 'Health check failed; rolling back.' >&2

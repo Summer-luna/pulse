@@ -9,13 +9,18 @@ async function bootstrap() {
   mkdirSync(UPLOADS_DIR, { recursive: true });
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const configuredOrigin = process.env.FRONTEND_ORIGIN;
+  const configuredOrigins = new Set(
+    (process.env.FRONTEND_ORIGIN ?? '')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean),
+  );
   // Matches any http://<host>:5173 origin (localhost or a LAN IP) so the dev frontend
   // can be reached from other machines on the network without hardcoding an IP here.
   const LAN_DEV_ORIGIN = /^http:\/\/[\w.-]+:5173$/;
   app.enableCors({
     origin: (origin, callback) => {
-      if (!origin || origin === configuredOrigin || LAN_DEV_ORIGIN.test(origin)) {
+      if (!origin || configuredOrigins.has(origin) || LAN_DEV_ORIGIN.test(origin)) {
         callback(null, true);
       } else {
         callback(new Error(`Origin ${origin} is not allowed by CORS`));

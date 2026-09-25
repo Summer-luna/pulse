@@ -1,4 +1,4 @@
-import { ChevronLeft, Users, Wrench } from 'lucide-react'
+import { ChevronLeft, Database, Users, Wrench } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router'
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
@@ -18,6 +18,9 @@ export function SettingsLayout() {
           </NavLink>
           <NavLink to="/settings/members" className={navClass}>
             <Users size={15} /> Members
+          </NavLink>
+          <NavLink to="/settings/data" className={navClass}>
+            <Database size={15} /> Data
           </NavLink>
         </nav>
       </aside>

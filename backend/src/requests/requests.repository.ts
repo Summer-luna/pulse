@@ -9,11 +9,18 @@ export type RequestPatch = Partial<Omit<CustomerRequest, 'id' | 'projectId' | 'c
 export class RequestsRepository {
   constructor(@InjectRepository(CustomerRequest) private readonly repo: Repository<CustomerRequest>) {}
 
-  findAll(projectId?: string, customerId?: string): Promise<CustomerRequest[]> {
-    return this.repo.find({
-      where: { ...(projectId ? { projectId } : {}), ...(customerId ? { customerId } : {}) },
-      order: { createdAt: 'DESC' },
-    });
+  findAll(projectId?: string, customerId?: string, excludedProjectIds: string[] = []): Promise<CustomerRequest[]> {
+    const qb = this.repo.createQueryBuilder('request').orderBy('request.createdAt', 'DESC');
+    if (projectId) {
+      qb.andWhere('request.projectId = :projectId', { projectId });
+    }
+    if (customerId) {
+      qb.andWhere('request.customerId = :customerId', { customerId });
+    }
+    if (excludedProjectIds.length > 0) {
+      qb.andWhere('(request.projectId IS NULL OR request.projectId NOT IN (:...excludedProjectIds))', { excludedProjectIds });
+    }
+    return qb.getMany();
   }
 
   findById(id: string): Promise<CustomerRequest | null> {

@@ -9,11 +9,15 @@ export type ReleasePatch = Partial<Omit<Release, 'id' | 'createdAt' | 'updatedAt
 export class ReleasesRepository {
   constructor(@InjectRepository(Release) private readonly repo: Repository<Release>) {}
 
-  findAll(projectId?: string): Promise<Release[]> {
-    return this.repo.find({
-      where: projectId ? { projectId } : {},
-      order: { createdAt: 'DESC' },
-    });
+  findAll(projectId?: string, excludedProjectIds: string[] = []): Promise<Release[]> {
+    const qb = this.repo.createQueryBuilder('release').orderBy('release.createdAt', 'DESC');
+    if (projectId) {
+      qb.andWhere('release.projectId = :projectId', { projectId });
+    }
+    if (excludedProjectIds.length > 0) {
+      qb.andWhere('release.projectId NOT IN (:...excludedProjectIds)', { excludedProjectIds });
+    }
+    return qb.getMany();
   }
 
   findById(id: string): Promise<Release | null> {

@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react'
+import { Lock, Plus } from 'lucide-react'
 import { Link } from 'react-router'
 import { useDialogs } from '@/app/dialogs-context'
 import { PageHeader } from '@/components/PageHeader'
@@ -58,6 +58,9 @@ export function ProjectsPage() {
                       >
                         <ProjectBadge projectKey={project.key} size={20} />
                         <span className="truncate font-medium">{project.name}</span>
+                        {project.visibility === 'PRIVATE' && (
+                          <Lock size={12} className="shrink-0 text-faint" title="Private to members" />
+                        )}
                       </Link>
                     </td>
                     <td className="px-2 py-1.5 font-mono text-xs text-faint">{project.key}</td>

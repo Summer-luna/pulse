@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { IssuesService } from '../issues/issues.service.js';
 import { ProjectsService } from '../projects/projects.service.js';
+import { User } from '../users/user.entity.js';
 import { CreateRequestInput } from './create-request.input.js';
 import { CustomerRequest } from './customer-request.entity.js';
 import { RequestStatus } from './request-status.enum.js';
@@ -19,6 +20,15 @@ export class RequestsService {
     return this.requests.findAll(projectId, customerId);
   }
 
+  async listForViewer(projectId: string | undefined, customerId: string | undefined, viewer: User): Promise<CustomerRequest[]> {
+    if (projectId) {
+      await this.projects.assertAccessible(projectId, viewer);
+      return this.requests.findAll(projectId, customerId);
+    }
+    const excluded = await this.projects.inaccessiblePrivateProjectIds(viewer);
+    return this.requests.findAll(undefined, customerId, excluded);
+  }
+
   findByConvertedIssueIds(issueIds: string[]): Promise<CustomerRequest[]> {
     return this.requests.findByConvertedIssueIds(issueIds);
   }
@@ -26,6 +36,14 @@ export class RequestsService {
   async get(id: string): Promise<CustomerRequest> {
     const request = await this.requests.findById(id);
     if (!request) {
+      throw new NotFoundException(`Request ${id} not found`);
+    }
+    return request;
+  }
+
+  async getForViewer(id: string, viewer: User): Promise<CustomerRequest> {
+    const request = await this.get(id);
+    if (request.projectId && !(await this.projects.canAccess(await this.projects.get(request.projectId), viewer))) {
       throw new NotFoundException(`Request ${id} not found`);
     }
     return request;

@@ -1,8 +1,10 @@
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { CurrentUser } from '../auth/current-user.decorator.js';
 import type { GraphQLContext } from '../common/loaders/loaders.js';
 import { Customer } from '../customers/customer.entity.js';
 import { Issue } from '../issues/issue.entity.js';
 import { Project } from '../projects/project.entity.js';
+import { User } from '../users/user.entity.js';
 import { CreateRequestInput } from './create-request.input.js';
 import { CustomerRequest } from './customer-request.entity.js';
 import { RequestsService } from './requests.service.js';
@@ -14,15 +16,16 @@ export class RequestsResolver {
 
   @Query(() => [CustomerRequest], { name: 'requests' })
   list(
-    @Args('projectId', { type: () => ID, nullable: true }) projectId?: string,
-    @Args('customerId', { type: () => ID, nullable: true }) customerId?: string,
+    @Args('projectId', { type: () => ID, nullable: true }) projectId: string | undefined,
+    @Args('customerId', { type: () => ID, nullable: true }) customerId: string | undefined,
+    @CurrentUser() user: User,
   ): Promise<CustomerRequest[]> {
-    return this.requests.list(projectId, customerId);
+    return this.requests.listForViewer(projectId, customerId, user);
   }
 
   @Query(() => CustomerRequest, { name: 'request' })
-  get(@Args('id', { type: () => ID }) id: string): Promise<CustomerRequest> {
-    return this.requests.get(id);
+  get(@Args('id', { type: () => ID }) id: string, @CurrentUser() user: User): Promise<CustomerRequest> {
+    return this.requests.getForViewer(id, user);
   }
 
   @Mutation(() => CustomerRequest)

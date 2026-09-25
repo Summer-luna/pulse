@@ -61,6 +61,9 @@ input CreateProjectInput {
   status: ProjectStatus
   targetDate: Date
   teamId: ID
+
+  """Defaults to PUBLIC"""
+  visibility: ProjectVisibility
 }
 
 input CreateReleaseInput {
@@ -314,6 +317,7 @@ type Project {
   team: Team
   teamId: ID
   updatedAt: DateTime!
+  visibility: ProjectVisibility!
 }
 
 enum ProjectPriority {
@@ -330,6 +334,11 @@ enum ProjectStatus {
   COMPLETED
   IN_PROGRESS
   PLANNED
+}
+
+enum ProjectVisibility {
+  PRIVATE
+  PUBLIC
 }
 
 type Query {
@@ -493,6 +502,7 @@ input UpdateProjectInput {
 
   """Pass null to unassign"""
   teamId: ID
+  visibility: ProjectVisibility
 }
 
 input UpdateReleaseInput {

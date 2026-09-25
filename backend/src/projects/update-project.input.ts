@@ -3,6 +3,7 @@ import { ArrayUnique, IsArray, IsDateString, IsEnum, IsOptional, IsString, IsUUI
 import { DateScalar } from '../common/date.scalar.js';
 import { ProjectPriority } from './project-priority.enum.js';
 import { ProjectStatus } from './project-status.enum.js';
+import { ProjectVisibility } from './project-visibility.enum.js';
 
 @InputType()
 export class UpdateProjectInput {
@@ -26,6 +27,11 @@ export class UpdateProjectInput {
   @IsOptional()
   @IsEnum(ProjectPriority)
   priority?: ProjectPriority;
+
+  @Field(() => ProjectVisibility, { nullable: true })
+  @IsOptional()
+  @IsEnum(ProjectVisibility)
+  visibility?: ProjectVisibility;
 
   @Field(() => ID, { nullable: true })
   @IsOptional()

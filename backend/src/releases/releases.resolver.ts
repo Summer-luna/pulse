@@ -1,9 +1,11 @@
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { CurrentUser } from '../auth/current-user.decorator.js';
 import type { GraphQLContext } from '../common/loaders/loaders.js';
 import { Progress } from '../common/progress.model.js';
 import { Project } from '../projects/project.entity.js';
 import { ReleasePipeline } from '../release-pipelines/release-pipeline.entity.js';
 import { ReleasePipelinesService } from '../release-pipelines/release-pipelines.service.js';
+import { User } from '../users/user.entity.js';
 import { CreateReleaseInput } from './create-release.input.js';
 import { Release } from './release.entity.js';
 import { ReleasesService } from './releases.service.js';
@@ -17,13 +19,16 @@ export class ReleasesResolver {
   ) {}
 
   @Query(() => [Release], { name: 'releases' })
-  list(@Args('projectId', { type: () => ID, nullable: true }) projectId?: string): Promise<Release[]> {
-    return this.releases.list(projectId);
+  list(
+    @Args('projectId', { type: () => ID, nullable: true }) projectId: string | undefined,
+    @CurrentUser() user: User,
+  ): Promise<Release[]> {
+    return this.releases.listForViewer(projectId, user);
   }
 
   @Query(() => Release, { name: 'release' })
-  get(@Args('id', { type: () => ID }) id: string): Promise<Release> {
-    return this.releases.get(id);
+  get(@Args('id', { type: () => ID }) id: string, @CurrentUser() user: User): Promise<Release> {
+    return this.releases.getForViewer(id, user);
   }
 
   @Mutation(() => Release)

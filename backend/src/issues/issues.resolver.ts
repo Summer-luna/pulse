@@ -19,18 +19,21 @@ export class IssuesResolver {
   constructor(private readonly issues: IssuesService) {}
 
   @Query(() => [Issue], { name: 'issues' })
-  list(@Args('filter', { type: () => IssuesFilterInput, nullable: true }) filter?: IssuesFilterInput): Promise<Issue[]> {
-    return this.issues.list(filter ?? {});
+  list(
+    @Args('filter', { type: () => IssuesFilterInput, nullable: true }) filter: IssuesFilterInput | undefined,
+    @CurrentUser() user: User,
+  ): Promise<Issue[]> {
+    return this.issues.listForViewer(filter ?? {}, user);
   }
 
   @Query(() => Issue, { name: 'issue' })
-  get(@Args('id', { type: () => ID }) id: string): Promise<Issue> {
-    return this.issues.get(id);
+  get(@Args('id', { type: () => ID }) id: string, @CurrentUser() user: User): Promise<Issue> {
+    return this.issues.getForViewer(id, user);
   }
 
   @Query(() => Issue, { name: 'issueByIdentifier', description: 'Look up an issue by its human readable identifier, e.g. ENG-12' })
-  getByIdentifier(@Args('identifier', { type: () => String }) identifier: string): Promise<Issue> {
-    return this.issues.getByIdentifier(identifier);
+  getByIdentifier(@Args('identifier', { type: () => String }) identifier: string, @CurrentUser() user: User): Promise<Issue> {
+    return this.issues.getByIdentifierForViewer(identifier, user);
   }
 
   @Mutation(() => Issue)

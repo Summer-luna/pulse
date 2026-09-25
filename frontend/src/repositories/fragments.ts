@@ -28,6 +28,7 @@ export const ProjectFields = graphql(`
     description
     status
     priority
+    visibility
     leadId
     teamId
     startDate

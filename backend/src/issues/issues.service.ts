@@ -3,6 +3,7 @@ import type { ProgressStats } from '../common/loaders/loaders.js';
 import { LabelsService } from '../labels/labels.service.js';
 import { ProjectsService } from '../projects/projects.service.js';
 import { ReleasesService } from '../releases/releases.service.js';
+import { User } from '../users/user.entity.js';
 import { UsersService } from '../users/users.service.js';
 import { CreateIssueInput } from './create-issue.input.js';
 import type { IssueQuery } from './issue-query.js';
@@ -33,6 +34,11 @@ export class IssuesService {
     return this.issues.findMany(query);
   }
 
+  async listForViewer(query: IssueQuery, viewer: User): Promise<Issue[]> {
+    const excluded = await this.projects.inaccessiblePrivateProjectIds(viewer);
+    return this.issues.findMany(query, excluded);
+  }
+
   findByIds(ids: string[]): Promise<Issue[]> {
     return this.issues.findByIds(ids);
   }
@@ -61,12 +67,36 @@ export class IssuesService {
     return issue;
   }
 
+  async getForViewer(id: string, viewer: User): Promise<Issue> {
+    const issue = await this.get(id);
+    if (!(await this.projects.canAccess(await this.projects.get(issue.projectId), viewer))) {
+      throw new NotFoundException(`Issue ${id} not found`);
+    }
+    return issue;
+  }
+
   async getByIdentifier(identifier: string): Promise<Issue> {
     const match = IDENTIFIER_PATTERN.exec(identifier);
     if (!match) {
       throw new BadRequestException(`Invalid issue identifier ${identifier}`);
     }
     const project = await this.projects.getByKey(match[1]);
+    const issue = await this.issues.findByProjectAndNumber(project.id, Number(match[2]));
+    if (!issue) {
+      throw new NotFoundException(`Issue ${identifier} not found`);
+    }
+    return issue;
+  }
+
+  async getByIdentifierForViewer(identifier: string, viewer: User): Promise<Issue> {
+    const match = IDENTIFIER_PATTERN.exec(identifier);
+    if (!match) {
+      throw new BadRequestException(`Invalid issue identifier ${identifier}`);
+    }
+    const project = await this.projects.getByKey(match[1]);
+    if (!(await this.projects.canAccess(project, viewer))) {
+      throw new NotFoundException(`Issue ${identifier} not found`);
+    }
     const issue = await this.issues.findByProjectAndNumber(project.id, Number(match[2]));
     if (!issue) {
       throw new NotFoundException(`Issue ${identifier} not found`);

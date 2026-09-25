@@ -24,6 +24,7 @@ import { AddCustomerFields1790000012000 } from './migrations/1790000012000-add-c
 import { MakeRequestProjectOptional1790000013000 } from './migrations/1790000013000-make-request-project-optional.js';
 import { AddTeams1790000014000 } from './migrations/1790000014000-add-teams.js';
 import { AddTeamAccess1790000015000 } from './migrations/1790000015000-add-team-access.js';
+import { AddProjectVisibility1790000016000 } from './migrations/1790000016000-add-project-visibility.js';
 import { InitSchema1790000000000 } from './migrations/1790000000000-init-schema.js';
 import { SnakeNamingStrategy } from './snake-naming.strategy.js';
 
@@ -49,6 +50,7 @@ export function buildDataSourceOptions(url: string): DataSourceOptions {
       MakeRequestProjectOptional1790000013000,
       AddTeams1790000014000,
       AddTeamAccess1790000015000,
+      AddProjectVisibility1790000016000,
     ],
     namingStrategy: new SnakeNamingStrategy(),
     uuidExtension: 'pgcrypto',

@@ -1,4 +1,5 @@
 import { Args, Context, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { CurrentUser } from '../auth/current-user.decorator.js';
 import type { GraphQLContext } from '../common/loaders/loaders.js';
 import { Progress } from '../common/progress.model.js';
 import { Team } from '../teams/team.entity.js';
@@ -13,13 +14,13 @@ export class ProjectsResolver {
   constructor(private readonly projects: ProjectsService) {}
 
   @Query(() => [Project], { name: 'projects' })
-  list(): Promise<Project[]> {
-    return this.projects.list();
+  list(@CurrentUser() user: User): Promise<Project[]> {
+    return this.projects.listAccessibleTo(user);
   }
 
   @Query(() => Project, { name: 'project' })
-  get(@Args('id', { type: () => ID }) id: string): Promise<Project> {
-    return this.projects.get(id);
+  get(@Args('id', { type: () => ID }) id: string, @CurrentUser() user: User): Promise<Project> {
+    return this.projects.assertAccessible(id, user);
   }
 
   @Mutation(() => Project)

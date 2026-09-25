@@ -9,6 +9,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard.js';
 import { CommentsModule } from './comments/comments.module.js';
 import { CommonModule } from './common/common.module.js';
 import { CustomersModule } from './customers/customers.module.js';
+import { DataTransferModule } from './data-transfer/data-transfer.module.js';
 import type { GraphQLContext } from './common/loaders/loaders.js';
 import { LoadersModule } from './common/loaders/loaders.module.js';
 import { LoadersService } from './common/loaders/loaders.service.js';
@@ -57,6 +58,7 @@ import { UsersModule } from './users/users.module.js';
     RequestsModule,
     CustomersModule,
     TeamsModule,
+    DataTransferModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })

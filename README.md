@@ -73,3 +73,7 @@ npm run dev:frontend                   # http://localhost:5173
 
 - 没有角色 / 权限分级：登录后所有人共用一个工作区，能看到和改动所有 project/issue/release
 - 前端开发服务器把 `/graphql` 代理到 `localhost:4000`；部署时可用 `VITE_GRAPHQL_URL` 指定后端地址
+
+## 部署
+
+用 Docker Compose 部署（前端 nginx + 后端 + Postgres），步骤见 [DEPLOY.md](./DEPLOY.md)。

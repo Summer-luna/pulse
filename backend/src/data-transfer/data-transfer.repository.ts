@@ -22,11 +22,16 @@ export class DataTransferRepository {
       const quotedTables = DATA_TABLES.map((table) => `"${table}"`).join(', ');
       await manager.query(`TRUNCATE TABLE ${quotedTables} RESTART IDENTITY CASCADE`);
 
+      const deferredParents: { id: unknown; parentId: unknown }[] = [];
+
       for (const table of DATA_TABLES) {
         for (const row of dump[table] ?? []) {
           const data: Record<string, unknown> = { ...row };
-          const deferredParentId = table === 'issues' ? data[ISSUES_SELF_REF_COLUMN] : undefined;
           if (table === 'issues') {
+            const parentId = data[ISSUES_SELF_REF_COLUMN];
+            if (parentId) {
+              deferredParents.push({ id: row.id, parentId });
+            }
             data[ISSUES_SELF_REF_COLUMN] = null;
           }
 
@@ -40,11 +45,11 @@ export class DataTransferRepository {
             `INSERT INTO "${table}" (${quotedColumns}) VALUES (${placeholders})`,
             columns.map((column) => data[column]),
           );
-
-          if (table === 'issues' && deferredParentId) {
-            await manager.query(`UPDATE "issues" SET "${ISSUES_SELF_REF_COLUMN}" = $1 WHERE id = $2`, [deferredParentId, row.id]);
-          }
         }
+      }
+
+      for (const { id, parentId } of deferredParents) {
+        await manager.query(`UPDATE "issues" SET "${ISSUES_SELF_REF_COLUMN}" = $1 WHERE id = $2`, [parentId, id]);
       }
     });
   }

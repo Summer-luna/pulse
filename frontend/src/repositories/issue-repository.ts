@@ -40,6 +40,14 @@ const issueDetailDocument = graphql(`
       comments {
         ...CommentFields
       }
+      sourceRequest {
+        id
+        title
+        customer {
+          id
+          name
+        }
+      }
     }
   }
 `)

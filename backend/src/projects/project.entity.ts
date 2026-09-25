@@ -35,6 +35,10 @@ export class Project {
   @Column({ type: 'uuid', nullable: true })
   leadId!: string | null;
 
+  @Field(() => ID, { nullable: true })
+  @Column({ type: 'uuid', nullable: true })
+  teamId!: string | null;
+
   @Field(() => DateScalar, { nullable: true })
   @Column({ type: 'date', nullable: true })
   startDate!: string | null;

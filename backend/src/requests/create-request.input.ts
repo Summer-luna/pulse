@@ -4,9 +4,10 @@ import { RequestSource } from './request-source.enum.js';
 
 @InputType()
 export class CreateRequestInput {
-  @Field(() => ID)
+  @Field(() => ID, { nullable: true })
+  @IsOptional()
   @IsUUID()
-  projectId!: string;
+  projectId?: string | null;
 
   @Field(() => String)
   @IsString()

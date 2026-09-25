@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import { AppShell } from '@/components/AppShell'
 import { SettingsLayout } from '@/components/SettingsLayout'
+import { CustomerPage } from '@/pages/CustomerPage'
 import { CustomersPage } from '@/pages/CustomersPage'
 import { IssuePage } from '@/pages/IssuePage'
 import { IssuesPage } from '@/pages/IssuesPage'
@@ -18,6 +19,7 @@ import { ReleasePage } from '@/pages/ReleasePage'
 import { ReleasePipelinePage } from '@/pages/ReleasePipelinePage'
 import { ReleasesPage } from '@/pages/ReleasesPage'
 import { SettingsPage } from '@/pages/SettingsPage'
+import { TeamsPage } from '@/pages/TeamsPage'
 import { AuthProvider } from './AuthProvider'
 import { DialogsProvider } from './DialogsProvider'
 import { GuestOnly } from './GuestOnly'
@@ -61,6 +63,8 @@ export function App() {
                 <Route path="releases" element={<ReleasesPage />} />
                 <Route path="release-pipelines/:pipelineId" element={<ReleasePipelinePage />} />
                 <Route path="customers" element={<CustomersPage />} />
+                <Route path="customers/:customerId" element={<CustomerPage />} />
+                <Route path="teams" element={<TeamsPage />} />
                 <Route path="*" element={<Navigate to="/issues" replace />} />
               </Route>
               <Route element={<RequireAdmin />}>

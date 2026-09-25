@@ -10,9 +10,9 @@ export class CustomerRequest {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Field(() => ID)
-  @Column({ type: 'uuid' })
-  projectId!: string;
+  @Field(() => ID, { nullable: true })
+  @Column({ type: 'uuid', nullable: true })
+  projectId!: string | null;
 
   @Field(() => String)
   @Column({ type: 'varchar', length: 200 })

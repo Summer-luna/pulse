@@ -9,6 +9,7 @@ import type {
   ReleaseFieldsFragment,
   ReleasePipelineFieldsFragment,
   RequestFieldsFragment,
+  TeamFieldsFragment,
   UserFieldsFragment,
 } from '@/graphql/generated/graphql'
 
@@ -22,6 +23,7 @@ export type Comment = CommentFieldsFragment
 export type InvitedMember = InvitedMemberFieldsFragment
 export type CustomerRequest = RequestFieldsFragment
 export type Customer = CustomerFieldsFragment
+export type Team = TeamFieldsFragment
 
 export type IssueDetail = IssueDetailQuery['issueByIdentifier']
 

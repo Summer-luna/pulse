@@ -5,11 +5,23 @@ import { IssuesModule } from '../../issues/issues.module.js';
 import { LabelsModule } from '../../labels/labels.module.js';
 import { ProjectsModule } from '../../projects/projects.module.js';
 import { ReleasesModule } from '../../releases/releases.module.js';
+import { RequestsModule } from '../../requests/requests.module.js';
+import { TeamsModule } from '../../teams/teams.module.js';
 import { UsersModule } from '../../users/users.module.js';
 import { LoadersService } from './loaders.service.js';
 
 @Module({
-  imports: [UsersModule, ProjectsModule, ReleasesModule, IssuesModule, LabelsModule, CommentsModule, CustomersModule],
+  imports: [
+    UsersModule,
+    ProjectsModule,
+    ReleasesModule,
+    IssuesModule,
+    LabelsModule,
+    CommentsModule,
+    CustomersModule,
+    RequestsModule,
+    TeamsModule,
+  ],
   providers: [LoadersService],
   exports: [LoadersService],
 })

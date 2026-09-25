@@ -17,6 +17,10 @@ class CustomerService {
     return customerRepository.list()
   }
 
+  get(id: string): Promise<Customer> {
+    return customerRepository.get(id)
+  }
+
   create(draft: CustomerDraft): Promise<Customer> {
     return customerRepository.create(this.toCreateInput(draft))
   }

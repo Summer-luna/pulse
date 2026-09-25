@@ -3,8 +3,8 @@ import type { CreateRequestInput, RequestFieldsFragment, UpdateRequestInput } fr
 import { graphqlClient } from './graphql-client'
 
 const RequestsQuery = graphql(`
-  query Requests($projectId: ID) {
-    requests(projectId: $projectId) {
+  query Requests($projectId: ID, $customerId: ID) {
+    requests(projectId: $projectId, customerId: $customerId) {
       ...RequestFields
     }
   }
@@ -43,8 +43,8 @@ const ConvertRequestToIssueMutation = graphql(`
 `)
 
 class RequestRepository {
-  async list(projectId?: string): Promise<RequestFieldsFragment[]> {
-    const data = await graphqlClient.request(RequestsQuery, { projectId })
+  async list(projectId?: string, customerId?: string): Promise<RequestFieldsFragment[]> {
+    const data = await graphqlClient.request(RequestsQuery, { projectId, customerId })
     return data.requests
   }
 

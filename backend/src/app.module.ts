@@ -19,6 +19,7 @@ import { ProjectsModule } from './projects/projects.module.js';
 import { ReleasePipelinesModule } from './release-pipelines/release-pipelines.module.js';
 import { ReleasesModule } from './releases/releases.module.js';
 import { RequestsModule } from './requests/requests.module.js';
+import { TeamsModule } from './teams/teams.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
 import { UsersModule } from './users/users.module.js';
 
@@ -55,6 +56,7 @@ import { UsersModule } from './users/users.module.js';
     CommentsModule,
     RequestsModule,
     CustomersModule,
+    TeamsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })

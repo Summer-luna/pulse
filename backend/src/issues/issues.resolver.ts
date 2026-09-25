@@ -6,6 +6,7 @@ import { Progress } from '../common/progress.model.js';
 import { Label } from '../labels/label.entity.js';
 import { Project } from '../projects/project.entity.js';
 import { Release } from '../releases/release.entity.js';
+import { CustomerRequest } from '../requests/customer-request.entity.js';
 import { User } from '../users/user.entity.js';
 import { CreateIssueInput } from './create-issue.input.js';
 import { Issue } from './issue.entity.js';
@@ -103,5 +104,10 @@ export class IssuesResolver {
   @ResolveField(() => [Label])
   labels(@Parent() issue: Issue, @Context() ctx: GraphQLContext): Promise<Label[]> {
     return ctx.loaders.labelsByIssueId.load(issue.id);
+  }
+
+  @ResolveField(() => CustomerRequest, { nullable: true, description: 'The customer request this issue was converted from, if any' })
+  sourceRequest(@Parent() issue: Issue, @Context() ctx: GraphQLContext): Promise<CustomerRequest | null> {
+    return ctx.loaders.requestByConvertedIssueId.load(issue.id);
   }
 }

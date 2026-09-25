@@ -1,4 +1,5 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { TeamsService } from '../teams/teams.service.js';
 import { UsersService } from '../users/users.service.js';
 import { CreateProjectInput } from './create-project.input.js';
 import { Project } from './project.entity.js';
@@ -10,6 +11,7 @@ export class ProjectsService {
   constructor(
     private readonly projects: ProjectsRepository,
     private readonly users: UsersService,
+    private readonly teams: TeamsService,
   ) {}
 
   list(): Promise<Project[]> {
@@ -48,6 +50,9 @@ export class ProjectsService {
     if (input.leadId) {
       await this.users.assertExists(input.leadId);
     }
+    if (input.teamId) {
+      await this.teams.get(input.teamId);
+    }
     const { memberIds, ...patch } = input;
     const resolvedMemberIds = await this.resolveMemberIds(memberIds);
     const project = await this.projects.create({ ...patch, key });
@@ -59,6 +64,9 @@ export class ProjectsService {
     await this.get(id);
     if (input.leadId) {
       await this.users.assertExists(input.leadId);
+    }
+    if (input.teamId) {
+      await this.teams.get(input.teamId);
     }
     const { memberIds, ...patch } = input;
     await this.projects.update(id, patch);

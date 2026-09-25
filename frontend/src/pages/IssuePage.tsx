@@ -180,6 +180,18 @@ export function IssuePage() {
               />
             </dd>
           </dl>
+          {issue.sourceRequest && (
+            <p className="mt-6 text-xs text-faint">
+              Converted from request{' '}
+              {issue.sourceRequest.customer ? (
+                <Link to={`/customers/${issue.sourceRequest.customer.id}`} className="text-accent-strong hover:underline">
+                  {issue.sourceRequest.title}
+                </Link>
+              ) : (
+                <span className="text-dim">{issue.sourceRequest.title}</span>
+              )}
+            </p>
+          )}
           <p className="mt-6 text-xs text-faint">
             Created {formatFullDate(issue.createdAt)}
             <br />

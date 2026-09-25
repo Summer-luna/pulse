@@ -3,7 +3,7 @@ import type { CreateRequestInput, RequestSource, UpdateRequestInput } from '@/gr
 import { requestRepository } from '@/repositories/request-repository'
 
 export interface RequestDraft {
-  projectId: string
+  projectId: string | null
   title: string
   description: string
   requestor: string
@@ -12,8 +12,8 @@ export interface RequestDraft {
 }
 
 class RequestService {
-  list(projectId?: string): Promise<CustomerRequest[]> {
-    return requestRepository.list(projectId)
+  list(projectId?: string, customerId?: string): Promise<CustomerRequest[]> {
+    return requestRepository.list(projectId, customerId)
   }
 
   create(draft: RequestDraft): Promise<CustomerRequest> {
@@ -32,8 +32,8 @@ class RequestService {
     return requestRepository.convertToIssue(id, issueId)
   }
 
-  emptyDraft(projectId: string): RequestDraft {
-    return { projectId, title: '', description: '', requestor: '', source: 'EXTERNAL', customerId: null }
+  emptyDraft(projectId: string | null = null, customerId: string | null = null, requestor = ''): RequestDraft {
+    return { projectId, title: '', description: '', requestor, source: 'EXTERNAL', customerId }
   }
 
   toCreateInput(draft: RequestDraft): CreateRequestInput {

@@ -13,8 +13,11 @@ export class RequestsResolver {
   constructor(private readonly requests: RequestsService) {}
 
   @Query(() => [CustomerRequest], { name: 'requests' })
-  list(@Args('projectId', { type: () => ID, nullable: true }) projectId?: string): Promise<CustomerRequest[]> {
-    return this.requests.list(projectId);
+  list(
+    @Args('projectId', { type: () => ID, nullable: true }) projectId?: string,
+    @Args('customerId', { type: () => ID, nullable: true }) customerId?: string,
+  ): Promise<CustomerRequest[]> {
+    return this.requests.list(projectId, customerId);
   }
 
   @Query(() => CustomerRequest, { name: 'request' })
@@ -48,9 +51,9 @@ export class RequestsResolver {
     return this.requests.linkToIssue(id, issueId);
   }
 
-  @ResolveField(() => Project)
-  async project(@Parent() request: CustomerRequest, @Context() ctx: GraphQLContext): Promise<Project> {
-    return (await ctx.loaders.projectById.load(request.projectId))!;
+  @ResolveField(() => Project, { nullable: true })
+  project(@Parent() request: CustomerRequest, @Context() ctx: GraphQLContext): Promise<Project | null> {
+    return request.projectId ? ctx.loaders.projectById.load(request.projectId) : Promise.resolve(null);
   }
 
   @ResolveField(() => Issue, { nullable: true })

@@ -8,6 +8,19 @@ export function entityLoader<T extends { id: string }>(fetch: (ids: string[]) =>
   });
 }
 
+export function keyedLoader<T>(fetch: (keys: string[]) => Promise<T[]>, keyOf: (row: T) => string | null): DataLoader<string, T | null> {
+  return new DataLoader(async (keys) => {
+    const byKey = new Map<string, T>();
+    for (const row of await fetch([...keys])) {
+      const key = keyOf(row);
+      if (key) {
+        byKey.set(key, row);
+      }
+    }
+    return keys.map((key) => byKey.get(key) ?? null);
+  });
+}
+
 export function groupedLoader<T>(
   fetch: (keys: string[]) => Promise<T[]>,
   keyOf: (row: T) => string | null,
@@ -43,5 +56,12 @@ export function progressLoader(fetch: (ids: string[]) => Promise<Map<string, Pro
   return new DataLoader(async (ids) => {
     const stats = await fetch([...ids]);
     return ids.map((id) => stats.get(id) ?? { total: 0, completed: 0 });
+  });
+}
+
+export function countLoader(fetch: (ids: string[]) => Promise<Map<string, number>>): DataLoader<string, number> {
+  return new DataLoader(async (ids) => {
+    const counts = await fetch([...ids]);
+    return ids.map((id) => counts.get(id) ?? 0);
   });
 }

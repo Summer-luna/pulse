@@ -6,9 +6,12 @@ import { type RequestDraft, requestService } from '@/services/request-service'
 import { queryKeys } from './query-keys'
 import { useRefreshAll } from './use-refresh-all'
 
-export function useRequestsController(projectId?: string) {
+export function useRequestsController(projectId?: string, customerId?: string) {
   const refresh = useRefreshAll()
-  const query = useQuery({ queryKey: queryKeys.requests(projectId), queryFn: () => requestService.list(projectId) })
+  const query = useQuery({
+    queryKey: queryKeys.requests(projectId, customerId),
+    queryFn: () => requestService.list(projectId, customerId),
+  })
 
   const update = useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateRequestInput }) => requestService.update(id, input),
@@ -30,9 +33,9 @@ export function useRequestsController(projectId?: string) {
   }
 }
 
-export function useCreateRequestController(projectId: string) {
+export function useCreateRequestController(projectId?: string, customerId?: string | null, requestor?: string) {
   const refresh = useRefreshAll()
-  const [draft, setDraft] = useState<RequestDraft>(() => requestService.emptyDraft(projectId))
+  const [draft, setDraft] = useState<RequestDraft>(() => requestService.emptyDraft(projectId, customerId, requestor))
   const create = useMutation({ mutationFn: (value: RequestDraft) => requestService.create(value), onSuccess: refresh })
 
   return {

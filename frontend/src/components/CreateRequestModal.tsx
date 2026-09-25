@@ -7,14 +7,16 @@ import { Picker } from '@/ui/Picker'
 import { CustomerPicker } from './CustomerPicker'
 
 interface Props {
-  projectId: string
+  projectId?: string
+  customerId?: string
+  customerName?: string
   onClose: () => void
 }
 
 const SOURCE_OPTIONS = REQUEST_SOURCES.map((source) => ({ value: source, label: REQUEST_SOURCE_LABEL[source] }))
 
-export function CreateRequestModal({ projectId, onClose }: Props) {
-  const controller = useCreateRequestController(projectId)
+export function CreateRequestModal({ projectId, customerId, customerName, onClose }: Props) {
+  const controller = useCreateRequestController(projectId, customerId, customerName)
   const { draft, updateDraft } = controller
 
   async function onSubmit(event: FormEvent) {
@@ -45,20 +47,22 @@ export function CreateRequestModal({ projectId, onClose }: Props) {
           className="min-h-20"
         />
         <div className="flex flex-wrap items-center gap-2">
-          <input
-            value={draft.requestor}
-            onChange={(event) => updateDraft({ requestor: event.target.value })}
-            placeholder="Requestor"
-            maxLength={120}
-            className="field h-7 w-40"
-          />
+          {!customerId && (
+            <input
+              value={draft.requestor}
+              onChange={(event) => updateDraft({ requestor: event.target.value })}
+              placeholder="Requestor"
+              maxLength={120}
+              className="field h-7 w-40"
+            />
+          )}
           <Picker
             value={draft.source}
             options={SOURCE_OPTIONS}
             onChange={(next) => next && updateDraft({ source: next })}
             placeholder="Source"
           />
-          <CustomerPicker value={draft.customerId} onChange={(customerId) => updateDraft({ customerId })} />
+          {!customerId && <CustomerPicker value={draft.customerId} onChange={(next) => updateDraft({ customerId: next })} />}
         </div>
         <div className="flex items-center justify-end gap-2 border-t border-line pt-3">
           {controller.error && <p className="mr-auto text-danger">{controller.error}</p>}

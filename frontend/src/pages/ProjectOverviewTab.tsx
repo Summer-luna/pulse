@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router'
 import { MembersPicker } from '@/components/MembersPicker'
 import { ProjectPriorityPicker } from '@/components/ProjectPriorityPicker'
 import { ProjectStatusPicker } from '@/components/ProjectStatusPicker'
+import { TeamPicker } from '@/components/TeamPicker'
 import { UserPicker } from '@/components/UserPicker'
 import { useProjectController } from '@/controllers/use-projects-controller'
 import { DescriptionEditor } from '@/ui/DescriptionEditor'
@@ -66,6 +67,10 @@ export function ProjectOverviewTab() {
             values={project.members.map((member) => member.id)}
             onChange={(memberIds) => controller.updateProject({ memberIds })}
           />
+        </div>
+        <span className="text-dim">Team</span>
+        <div>
+          <TeamPicker value={project.teamId} onChange={(teamId) => controller.updateProject({ teamId })} />
         </div>
         <span className="text-dim">Start date</span>
         <div>

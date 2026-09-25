@@ -8,6 +8,7 @@ import { Modal } from '@/ui/Modal'
 import { MembersPicker } from './MembersPicker'
 import { ProjectPriorityPicker } from './ProjectPriorityPicker'
 import { ProjectStatusPicker } from './ProjectStatusPicker'
+import { TeamPicker } from './TeamPicker'
 import { UserPicker } from './UserPicker'
 
 interface Props {
@@ -60,6 +61,7 @@ export function CreateProjectModal({ onClose }: Props) {
             noneLabel="No lead"
           />
           <MembersPicker values={draft.memberIds} onChange={(memberIds) => updateDraft({ memberIds })} />
+          <TeamPicker value={draft.teamId} onChange={(teamId) => updateDraft({ teamId })} />
           <label className="chip h-7 gap-1.5 text-dim">
             Start
             <input

@@ -1,4 +1,4 @@
-import { CircleDot, FolderKanban, LogOut, Package, Plus, SquarePen, Users } from 'lucide-react'
+import { CircleDot, FolderKanban, LogOut, Package, Plus, SquarePen, Users, UsersRound } from 'lucide-react'
 import { NavLink } from 'react-router'
 import { useAuth } from '@/app/auth-context'
 import { useDialogs } from '@/app/dialogs-context'
@@ -36,6 +36,9 @@ export function Sidebar() {
         </NavLink>
         <NavLink to="/customers" className={navClass}>
           <Users size={15} /> Customers
+        </NavLink>
+        <NavLink to="/teams" className={navClass}>
+          <UsersRound size={15} /> Teams
         </NavLink>
       </nav>
 

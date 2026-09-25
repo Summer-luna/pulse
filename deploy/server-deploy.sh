@@ -58,6 +58,14 @@ start_services() {
     pulse-frontend >/dev/null
 }
 
+manifests_dir="$release_dir/manifests"
+lock_hash="$(sha256sum "$manifests_dir/package-lock.json" | cut -d' ' -f1)"
+image_lock_hash="$(docker image inspect pulse-backend --format '{{ index .Config.Labels "pulse.lock-hash" }}' 2>/dev/null || true)"
+if [[ "$lock_hash" != "$image_lock_hash" ]]; then
+  echo 'Dependencies changed; rebuilding pulse-backend image...'
+  docker build --label "pulse.lock-hash=$lock_hash" -t pulse-backend -f "$manifests_dir/Dockerfile" "$manifests_dir"
+fi
+
 ln -sfn "$release_dir" "$current_link.next"
 mv -Tf "$current_link.next" "$current_link"
 

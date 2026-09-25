@@ -1,6 +1,5 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
-import { IsEnum, IsOptional, IsString, IsUUID, Length } from 'class-validator';
-import { RequestSource } from './request-source.enum.js';
+import { IsOptional, IsString, IsUUID, Length } from 'class-validator';
 
 @InputType()
 export class CreateRequestInput {
@@ -19,15 +18,16 @@ export class CreateRequestInput {
   @IsString()
   description?: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true, description: 'Free-text name; required unless requestorUserId is set' })
+  @IsOptional()
   @IsString()
   @Length(1, 120)
-  requestor!: string;
+  requestor?: string;
 
-  @Field(() => RequestSource, { nullable: true })
+  @Field(() => ID, { nullable: true, description: 'The internal user filing this request' })
   @IsOptional()
-  @IsEnum(RequestSource)
-  source?: RequestSource;
+  @IsUUID()
+  requestorUserId?: string | null;
 
   @Field(() => ID, { nullable: true })
   @IsOptional()

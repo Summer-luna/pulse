@@ -1,10 +1,11 @@
 import type { Customer } from '@/domain/types'
-import type { CreateCustomerInput, CustomerStatus, CustomerTier, UpdateCustomerInput } from '@/graphql/generated/graphql'
+import type { CreateCustomerInput, CustomerStatus, CustomerTier, CustomerType, UpdateCustomerInput } from '@/graphql/generated/graphql'
 import { customerRepository } from '@/repositories/customer-repository'
 
 export interface CustomerDraft {
   name: string
   status: CustomerStatus
+  type: CustomerType
   tier: CustomerTier | null
   annualRevenue: number | null
   size: string
@@ -34,7 +35,7 @@ class CustomerService {
   }
 
   emptyDraft(): CustomerDraft {
-    return { name: '', status: 'ACTIVE', tier: null, annualRevenue: null, size: '', domains: [], ownerId: null }
+    return { name: '', status: 'ACTIVE', type: 'EXTERNAL', tier: null, annualRevenue: null, size: '', domains: [], ownerId: null }
   }
 
   toCreateInput(draft: CustomerDraft): CreateCustomerInput {
@@ -45,6 +46,7 @@ class CustomerService {
     return {
       name,
       status: draft.status,
+      type: draft.type,
       tier: draft.tier,
       annualRevenue: draft.annualRevenue,
       size: draft.size.trim() || null,

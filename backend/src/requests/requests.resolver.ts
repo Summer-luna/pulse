@@ -68,4 +68,9 @@ export class RequestsResolver {
   customer(@Parent() request: CustomerRequest, @Context() ctx: GraphQLContext): Promise<Customer | null> {
     return request.customerId ? ctx.loaders.customerById.load(request.customerId) : Promise.resolve(null);
   }
+
+  @ResolveField(() => User, { nullable: true })
+  requestorUser(@Parent() request: CustomerRequest, @Context() ctx: GraphQLContext): Promise<User | null> {
+    return request.requestorUserId ? ctx.loaders.userById.load(request.requestorUserId) : Promise.resolve(null);
+  }
 }

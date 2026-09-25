@@ -2,6 +2,7 @@ import { Field, GraphQLISODateTime, ID, Int, ObjectType } from '@nestjs/graphql'
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { CustomerStatus } from './customer-status.enum.js';
 import { CustomerTier } from './customer-tier.enum.js';
+import { CustomerType } from './customer-type.enum.js';
 
 @ObjectType()
 @Entity('customers')
@@ -17,6 +18,10 @@ export class Customer {
   @Field(() => CustomerStatus)
   @Column({ type: 'enum', enum: CustomerStatus, enumName: 'customer_status', default: CustomerStatus.ACTIVE })
   status!: CustomerStatus;
+
+  @Field(() => CustomerType)
+  @Column({ type: 'enum', enum: CustomerType, enumName: 'customer_type', default: CustomerType.EXTERNAL })
+  type!: CustomerType;
 
   @Field(() => CustomerTier, { nullable: true })
   @Column({ type: 'enum', enum: CustomerTier, enumName: 'customer_tier', nullable: true })

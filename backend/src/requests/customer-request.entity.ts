@@ -1,6 +1,5 @@
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { RequestSource } from './request-source.enum.js';
 import { RequestStatus } from './request-status.enum.js';
 
 @ObjectType()
@@ -22,17 +21,17 @@ export class CustomerRequest {
   @Column({ type: 'text', default: '' })
   description!: string;
 
-  @Field(() => String)
-  @Column({ type: 'varchar', length: 120 })
-  requestor!: string;
+  @Field(() => String, { nullable: true, description: 'Free-text name, set for requests from an external customer' })
+  @Column({ type: 'varchar', length: 120, nullable: true })
+  requestor!: string | null;
+
+  @Field(() => ID, { nullable: true, description: 'The internal user who filed this request, if any' })
+  @Column({ type: 'uuid', nullable: true })
+  requestorUserId!: string | null;
 
   @Field(() => ID, { nullable: true })
   @Column({ type: 'uuid', nullable: true })
   customerId!: string | null;
-
-  @Field(() => RequestSource)
-  @Column({ type: 'enum', enum: RequestSource, enumName: 'request_source', default: RequestSource.EXTERNAL })
-  source!: RequestSource;
 
   @Field(() => RequestStatus)
   @Column({ type: 'enum', enum: RequestStatus, enumName: 'request_status', default: RequestStatus.OPEN })

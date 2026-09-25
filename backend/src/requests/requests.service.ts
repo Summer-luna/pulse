@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { IssuesService } from '../issues/issues.service.js';
 import { ProjectsService } from '../projects/projects.service.js';
 import { User } from '../users/user.entity.js';
+import { UsersService } from '../users/users.service.js';
 import { CreateRequestInput } from './create-request.input.js';
 import { CustomerRequest } from './customer-request.entity.js';
 import { RequestStatus } from './request-status.enum.js';
@@ -14,6 +15,7 @@ export class RequestsService {
     private readonly requests: RequestsRepository,
     private readonly projects: ProjectsService,
     private readonly issues: IssuesService,
+    private readonly users: UsersService,
   ) {}
 
   list(projectId?: string, customerId?: string): Promise<CustomerRequest[]> {
@@ -53,13 +55,37 @@ export class RequestsService {
     if (input.projectId) {
       await this.projects.get(input.projectId);
     }
-    return this.requests.create({ ...input, projectId: input.projectId ?? null });
+    const requestor = await this.resolveRequestor(input.requestorUserId, input.requestor);
+    return this.requests.create({ ...input, projectId: input.projectId ?? null, ...requestor });
   }
 
   async update(id: string, input: UpdateRequestInput): Promise<CustomerRequest> {
     await this.get(id);
-    await this.requests.update(id, input);
+    if (input.requestorUserId !== undefined) {
+      const requestor = await this.resolveRequestor(input.requestorUserId, input.requestor);
+      await this.requests.update(id, { ...input, ...requestor });
+    } else {
+      await this.requests.update(id, input);
+    }
     return this.get(id);
+  }
+
+  /** A request is filed either by a known internal user, or (for external customers) a free-text name. */
+  private async resolveRequestor(
+    requestorUserId: string | null | undefined,
+    requestor: string | undefined,
+  ): Promise<{ requestorUserId: string | null; requestor: string | null }> {
+    if (requestorUserId) {
+      const user = await this.users.findById(requestorUserId);
+      if (!user) {
+        throw new BadRequestException('Requestor user does not exist');
+      }
+      return { requestorUserId, requestor: user.name };
+    }
+    if (!requestor?.trim()) {
+      throw new BadRequestException('Requestor is required');
+    }
+    return { requestorUserId: null, requestor: requestor.trim() };
   }
 
   async remove(id: string): Promise<CustomerRequest> {

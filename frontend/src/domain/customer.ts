@@ -1,4 +1,11 @@
-import type { CustomerStatus, CustomerTier } from '@/graphql/generated/graphql'
+import type { CustomerStatus, CustomerTier, CustomerType } from '@/graphql/generated/graphql'
+
+export const CUSTOMER_TYPES: readonly CustomerType[] = ['EXTERNAL', 'INTERNAL']
+
+export const CUSTOMER_TYPE_LABEL: Record<CustomerType, string> = {
+  EXTERNAL: 'External',
+  INTERNAL: 'Internal',
+}
 
 export const CUSTOMER_STATUSES: readonly CustomerStatus[] = ['ACTIVE', 'PROSPECT', 'CHURNED', 'LOST']
 

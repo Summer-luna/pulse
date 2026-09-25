@@ -1,11 +1,4 @@
-import type { RequestSource, RequestStatus } from '@/graphql/generated/graphql'
-
-export const REQUEST_SOURCES: readonly RequestSource[] = ['EXTERNAL', 'INTERNAL']
-
-export const REQUEST_SOURCE_LABEL: Record<RequestSource, string> = {
-  EXTERNAL: 'External',
-  INTERNAL: 'Internal',
-}
+import type { RequestStatus } from '@/graphql/generated/graphql'
 
 export const REQUEST_STATUSES: readonly RequestStatus[] = ['OPEN', 'CONVERTED', 'DECLINED']
 

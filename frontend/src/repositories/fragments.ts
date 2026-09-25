@@ -134,7 +134,7 @@ export const RequestFields = graphql(`
     title
     description
     requestor
-    source
+    requestorUserId
     status
     convertedIssueId
     customerId
@@ -148,6 +148,9 @@ export const RequestFields = graphql(`
       id
       name
     }
+    requestorUser {
+      ...UserFields
+    }
   }
 `)
 
@@ -156,6 +159,7 @@ export const CustomerFields = graphql(`
     id
     name
     status
+    type
     tier
     annualRevenue
     size

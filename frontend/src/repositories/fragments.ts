@@ -57,6 +57,7 @@ export const TeamFields = graphql(`
     name
     key
     description
+    access
     isMember
     activeProjectCount
     createdAt

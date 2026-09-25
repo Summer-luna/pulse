@@ -88,6 +88,8 @@ input CreateRequestInput {
 }
 
 input CreateTeamInput {
+  """Defaults to PUBLIC"""
+  access: TeamAccess
   description: String
 
   """2-5 letters"""
@@ -412,6 +414,7 @@ enum RequestStatus {
 }
 
 type Team {
+  access: TeamAccess!
   activeProjectCount: Int!
   createdAt: DateTime!
   description: String!
@@ -423,6 +426,11 @@ type Team {
   members: [User!]!
   name: String!
   updatedAt: DateTime!
+}
+
+enum TeamAccess {
+  PRIVATE
+  PUBLIC
 }
 
 input UpdateCustomerInput {
@@ -511,6 +519,7 @@ input UpdateRequestInput {
 }
 
 input UpdateTeamInput {
+  access: TeamAccess
   description: String
 
   """Replaces the full member list"""

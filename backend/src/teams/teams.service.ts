@@ -1,6 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { UsersService } from '../users/users.service.js';
 import { CreateTeamInput } from './create-team.input.js';
+import { TeamAccess } from './team-access.enum.js';
 import { Team } from './team.entity.js';
 import { TeamMemberRow, TeamsRepository } from './teams.repository.js';
 import { UpdateTeamInput } from './update-team.input.js';
@@ -47,7 +48,7 @@ export class TeamsService {
     }
     const { memberIds, ...patch } = input;
     const resolvedMemberIds = await this.resolveMemberIds(memberIds);
-    const team = await this.teams.create({ ...patch, key });
+    const team = await this.teams.create({ ...patch, key, access: input.access ?? TeamAccess.PUBLIC });
     await this.teams.setMembers(team.id, resolvedMemberIds);
     return team;
   }

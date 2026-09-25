@@ -27,7 +27,7 @@ type Documents = {
     "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n    role\n    createdAt\n  }\n": typeof types.UserFieldsFragmentDoc,
     "\n  fragment InvitedMemberFields on InvitedMember {\n    temporaryPassword\n    user {\n      ...UserFields\n    }\n  }\n": typeof types.InvitedMemberFieldsFragmentDoc,
     "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    teamId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    team {\n      id\n      name\n      key\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": typeof types.ProjectFieldsFragmentDoc,
-    "\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n": typeof types.TeamFieldsFragmentDoc,
+    "\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    access\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n": typeof types.TeamFieldsFragmentDoc,
     "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    pipelineId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": typeof types.ReleaseFieldsFragmentDoc,
     "\n  fragment ReleasePipelineFields on ReleasePipeline {\n    id\n    projectId\n    name\n    type\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    releaseCount\n    latestRelease {\n      id\n      name\n      version\n      status\n      releasedAt\n    }\n  }\n": typeof types.ReleasePipelineFieldsFragmentDoc,
     "\n  fragment CommentFields on Comment {\n    id\n    issueId\n    body\n    createdAt\n    author {\n      ...UserFields\n    }\n  }\n": typeof types.CommentFieldsFragmentDoc,
@@ -85,7 +85,7 @@ const documents: Documents = {
     "\n  fragment UserFields on User {\n    id\n    name\n    email\n    color\n    role\n    createdAt\n  }\n": types.UserFieldsFragmentDoc,
     "\n  fragment InvitedMemberFields on InvitedMember {\n    temporaryPassword\n    user {\n      ...UserFields\n    }\n  }\n": types.InvitedMemberFieldsFragmentDoc,
     "\n  fragment ProjectFields on Project {\n    id\n    name\n    key\n    description\n    status\n    priority\n    leadId\n    teamId\n    startDate\n    targetDate\n    createdAt\n    lead {\n      ...UserFields\n    }\n    members {\n      ...UserFields\n    }\n    team {\n      id\n      name\n      key\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": types.ProjectFieldsFragmentDoc,
-    "\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n": types.TeamFieldsFragmentDoc,
+    "\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    access\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n": types.TeamFieldsFragmentDoc,
     "\n  fragment ReleaseFields on Release {\n    id\n    projectId\n    pipelineId\n    name\n    version\n    description\n    status\n    targetDate\n    releasedAt\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    progress {\n      total\n      completed\n    }\n  }\n": types.ReleaseFieldsFragmentDoc,
     "\n  fragment ReleasePipelineFields on ReleasePipeline {\n    id\n    projectId\n    name\n    type\n    createdAt\n    project {\n      id\n      key\n      name\n    }\n    releaseCount\n    latestRelease {\n      id\n      name\n      version\n      status\n      releasedAt\n    }\n  }\n": types.ReleasePipelineFieldsFragmentDoc,
     "\n  fragment CommentFields on Comment {\n    id\n    issueId\n    body\n    createdAt\n    author {\n      ...UserFields\n    }\n  }\n": types.CommentFieldsFragmentDoc,
@@ -199,7 +199,7 @@ export function graphql(source: "\n  fragment ProjectFields on Project {\n    id
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n"): (typeof documents)["\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n"];
+export function graphql(source: "\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    access\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n"): (typeof documents)["\n  fragment TeamFields on Team {\n    id\n    name\n    key\n    description\n    access\n    isMember\n    activeProjectCount\n    createdAt\n    members {\n      ...UserFields\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -1,8 +1,11 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { TeamsService } from '../teams/teams.service.js';
+import { User } from '../users/user.entity.js';
+import { UserRole } from '../users/user-role.enum.js';
 import { UsersService } from '../users/users.service.js';
 import { CreateProjectInput } from './create-project.input.js';
 import { Project } from './project.entity.js';
+import { ProjectVisibility } from './project-visibility.enum.js';
 import { ProjectMemberRow, ProjectsRepository } from './projects.repository.js';
 import { UpdateProjectInput } from './update-project.input.js';
 
@@ -16,6 +19,55 @@ export class ProjectsService {
 
   list(): Promise<Project[]> {
     return this.projects.findAll();
+  }
+
+  async listAccessibleTo(viewer: User): Promise<Project[]> {
+    const all = await this.projects.findAll();
+    if (viewer.role === UserRole.ADMIN) {
+      return all;
+    }
+    const privateOthers = all.filter((project) => project.visibility === ProjectVisibility.PRIVATE && project.leadId !== viewer.id);
+    if (privateOthers.length === 0) {
+      return all;
+    }
+    const memberRows = await this.projects.membersByProjectIds(privateOthers.map((project) => project.id));
+    const accessibleIds = new Set(memberRows.filter((row) => row.user.id === viewer.id).map((row) => row.projectId));
+    return all.filter((project) => project.visibility !== ProjectVisibility.PRIVATE || project.leadId === viewer.id || accessibleIds.has(project.id));
+  }
+
+  /** Project ids the viewer cannot see, for excluding their issues/releases/requests from other list queries. */
+  async inaccessiblePrivateProjectIds(viewer: User): Promise<string[]> {
+    if (viewer.role === UserRole.ADMIN) {
+      return [];
+    }
+    const all = await this.projects.findAll();
+    const privateOthers = all.filter((project) => project.visibility === ProjectVisibility.PRIVATE && project.leadId !== viewer.id);
+    if (privateOthers.length === 0) {
+      return [];
+    }
+    const memberRows = await this.projects.membersByProjectIds(privateOthers.map((project) => project.id));
+    const accessibleIds = new Set(memberRows.filter((row) => row.user.id === viewer.id).map((row) => row.projectId));
+    return privateOthers.filter((project) => !accessibleIds.has(project.id)).map((project) => project.id);
+  }
+
+  async canAccess(project: Project, viewer: User): Promise<boolean> {
+    if (project.visibility !== ProjectVisibility.PRIVATE) {
+      return true;
+    }
+    if (viewer.role === UserRole.ADMIN || project.leadId === viewer.id) {
+      return true;
+    }
+    const memberIds = await this.projects.memberIds(project.id);
+    return memberIds.includes(viewer.id);
+  }
+
+  /** Like get(), but 404s (rather than leaking existence) when the viewer can't see a private project. */
+  async assertAccessible(id: string, viewer: User): Promise<Project> {
+    const project = await this.get(id);
+    if (!(await this.canAccess(project, viewer))) {
+      throw new NotFoundException(`Project ${id} not found`);
+    }
+    return project;
   }
 
   findByIds(ids: string[]): Promise<Project[]> {

@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { IssuesService } from '../issues/issues.service.js';
 import { ProjectsService } from '../projects/projects.service.js';
+import { User } from '../users/user.entity.js';
+import { UsersService } from '../users/users.service.js';
 import { CreateRequestInput } from './create-request.input.js';
 import { CustomerRequest } from './customer-request.entity.js';
 import { RequestStatus } from './request-status.enum.js';
@@ -13,10 +15,20 @@ export class RequestsService {
     private readonly requests: RequestsRepository,
     private readonly projects: ProjectsService,
     private readonly issues: IssuesService,
+    private readonly users: UsersService,
   ) {}
 
   list(projectId?: string, customerId?: string): Promise<CustomerRequest[]> {
     return this.requests.findAll(projectId, customerId);
+  }
+
+  async listForViewer(projectId: string | undefined, customerId: string | undefined, viewer: User): Promise<CustomerRequest[]> {
+    if (projectId) {
+      await this.projects.assertAccessible(projectId, viewer);
+      return this.requests.findAll(projectId, customerId);
+    }
+    const excluded = await this.projects.inaccessiblePrivateProjectIds(viewer);
+    return this.requests.findAll(undefined, customerId, excluded);
   }
 
   findByConvertedIssueIds(issueIds: string[]): Promise<CustomerRequest[]> {
@@ -31,17 +43,49 @@ export class RequestsService {
     return request;
   }
 
+  async getForViewer(id: string, viewer: User): Promise<CustomerRequest> {
+    const request = await this.get(id);
+    if (request.projectId && !(await this.projects.canAccess(await this.projects.get(request.projectId), viewer))) {
+      throw new NotFoundException(`Request ${id} not found`);
+    }
+    return request;
+  }
+
   async create(input: CreateRequestInput): Promise<CustomerRequest> {
     if (input.projectId) {
       await this.projects.get(input.projectId);
     }
-    return this.requests.create({ ...input, projectId: input.projectId ?? null });
+    const requestor = await this.resolveRequestor(input.requestorUserId, input.requestor);
+    return this.requests.create({ ...input, projectId: input.projectId ?? null, ...requestor });
   }
 
   async update(id: string, input: UpdateRequestInput): Promise<CustomerRequest> {
     await this.get(id);
-    await this.requests.update(id, input);
+    if (input.requestorUserId !== undefined) {
+      const requestor = await this.resolveRequestor(input.requestorUserId, input.requestor);
+      await this.requests.update(id, { ...input, ...requestor });
+    } else {
+      await this.requests.update(id, input);
+    }
     return this.get(id);
+  }
+
+  /** A request is filed either by a known internal user, or (for external customers) a free-text name. */
+  private async resolveRequestor(
+    requestorUserId: string | null | undefined,
+    requestor: string | undefined,
+  ): Promise<{ requestorUserId: string | null; requestor: string | null }> {
+    if (requestorUserId) {
+      const user = await this.users.findById(requestorUserId);
+      if (!user) {
+        throw new BadRequestException('Requestor user does not exist');
+      }
+      return { requestorUserId, requestor: user.name };
+    }
+    if (!requestor?.trim()) {
+      throw new BadRequestException('Requestor is required');
+    }
+    return { requestorUserId: null, requestor: requestor.trim() };
   }
 
   async remove(id: string): Promise<CustomerRequest> {

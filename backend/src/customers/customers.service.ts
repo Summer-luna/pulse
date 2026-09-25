@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCustomerInput } from './create-customer.input.js';
 import { Customer } from './customer.entity.js';
 import { CustomerStatus } from './customer-status.enum.js';
+import { CustomerType } from './customer-type.enum.js';
 import { CustomersRepository } from './customers.repository.js';
 import { UpdateCustomerInput } from './update-customer.input.js';
 
@@ -26,7 +27,12 @@ export class CustomersService {
   }
 
   create(input: CreateCustomerInput): Promise<Customer> {
-    return this.customers.create({ ...input, status: input.status ?? CustomerStatus.ACTIVE, domains: input.domains ?? [] });
+    return this.customers.create({
+      ...input,
+      status: input.status ?? CustomerStatus.ACTIVE,
+      type: input.type ?? CustomerType.EXTERNAL,
+      domains: input.domains ?? [],
+    });
   }
 
   async update(id: string, input: UpdateCustomerInput): Promise<Customer> {

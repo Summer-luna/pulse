@@ -2,6 +2,7 @@ import { Field, ID, InputType, Int } from '@nestjs/graphql';
 import { ArrayMaxSize, IsArray, IsEnum, IsInt, IsOptional, IsString, IsUUID, Length, Min } from 'class-validator';
 import { CustomerStatus } from './customer-status.enum.js';
 import { CustomerTier } from './customer-tier.enum.js';
+import { CustomerType } from './customer-type.enum.js';
 
 @InputType()
 export class CreateCustomerInput {
@@ -14,6 +15,11 @@ export class CreateCustomerInput {
   @IsOptional()
   @IsEnum(CustomerStatus)
   status?: CustomerStatus;
+
+  @Field(() => CustomerType, { nullable: true, description: 'Defaults to EXTERNAL' })
+  @IsOptional()
+  @IsEnum(CustomerType)
+  type?: CustomerType;
 
   @Field(() => CustomerTier, { nullable: true })
   @IsOptional()

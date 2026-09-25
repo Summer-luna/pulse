@@ -6,7 +6,7 @@ import { CustomerStatusPicker } from '@/components/CustomerStatusPicker'
 import { PageHeader } from '@/components/PageHeader'
 import { UserPicker } from '@/components/UserPicker'
 import { useCustomersController } from '@/controllers/use-customers-controller'
-import { CUSTOMER_STATUSES, CUSTOMER_TIER_LABEL } from '@/domain/customer'
+import { CUSTOMER_STATUSES, CUSTOMER_TIER_LABEL, CUSTOMER_TYPE_LABEL } from '@/domain/customer'
 import type { CustomerStatus } from '@/graphql/generated/graphql'
 import { keyColor } from '@/lib/key-color'
 import { EmptyState } from '@/ui/EmptyState'
@@ -80,6 +80,7 @@ export function CustomersPage() {
               <span className="flex-1">Name</span>
               <span className="w-20 shrink-0 text-right">Requests</span>
               <span className="w-24 shrink-0">Status</span>
+              <span className="w-20 shrink-0">Type</span>
               <span className="w-20 shrink-0">Tier</span>
               <span className="w-40 shrink-0">Owner</span>
               <span className="w-16 shrink-0" />
@@ -110,6 +111,7 @@ export function CustomersPage() {
                     onChange={(status) => updateCustomer(customer.id, { status })}
                   />
                 </span>
+                <span className="w-20 shrink-0 text-xs text-dim">{CUSTOMER_TYPE_LABEL[customer.type]}</span>
                 <span className="w-20 shrink-0 text-xs text-dim">{customer.tier ? CUSTOMER_TIER_LABEL[customer.tier] : '—'}</span>
                 <span className="w-40 shrink-0">
                   <UserPicker

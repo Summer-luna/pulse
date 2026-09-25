@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ProjectsService } from '../projects/projects.service.js';
 import { ReleasePipelinesService } from '../release-pipelines/release-pipelines.service.js';
+import { User } from '../users/user.entity.js';
 import { CreateReleaseInput } from './create-release.input.js';
 import { ReleasePatch, ReleasesRepository } from './releases.repository.js';
 import { Release } from './release.entity.js';
@@ -11,10 +13,20 @@ export class ReleasesService {
   constructor(
     private readonly releases: ReleasesRepository,
     private readonly pipelines: ReleasePipelinesService,
+    private readonly projects: ProjectsService,
   ) {}
 
   list(projectId?: string): Promise<Release[]> {
     return this.releases.findAll(projectId);
+  }
+
+  async listForViewer(projectId: string | undefined, viewer: User): Promise<Release[]> {
+    if (projectId) {
+      await this.projects.assertAccessible(projectId, viewer);
+      return this.releases.findAll(projectId);
+    }
+    const excluded = await this.projects.inaccessiblePrivateProjectIds(viewer);
+    return this.releases.findAll(undefined, excluded);
   }
 
   findByIds(ids: string[]): Promise<Release[]> {
@@ -26,6 +38,12 @@ export class ReleasesService {
     if (!release) {
       throw new NotFoundException(`Release ${id} not found`);
     }
+    return release;
+  }
+
+  async getForViewer(id: string, viewer: User): Promise<Release> {
+    const release = await this.get(id);
+    await this.projects.assertAccessible(release.projectId, viewer);
     return release;
   }
 

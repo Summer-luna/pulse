@@ -12,10 +12,13 @@ export type ProgressGroup = 'projectId' | 'releaseId' | 'parentId';
 export class IssuesRepository {
   constructor(@InjectRepository(Issue) private readonly repo: Repository<Issue>) {}
 
-  findMany(query: IssueQuery): Promise<Issue[]> {
+  findMany(query: IssueQuery, excludedProjectIds: string[] = []): Promise<Issue[]> {
     const qb = this.repo.createQueryBuilder('issue').orderBy('issue.createdAt', 'DESC').addOrderBy('issue.number', 'DESC');
     if (query.projectId) {
       qb.andWhere('issue.projectId = :projectId', { projectId: query.projectId });
+    }
+    if (excludedProjectIds.length > 0) {
+      qb.andWhere('issue.projectId NOT IN (:...excludedProjectIds)', { excludedProjectIds });
     }
     if (query.releaseId) {
       qb.andWhere('issue.releaseId = :releaseId', { releaseId: query.releaseId });

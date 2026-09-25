@@ -1,5 +1,6 @@
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { TeamsService } from '../teams/teams.service.js';
 import type { User } from '../users/user.entity.js';
 import type { UsersService } from '../users/users.service.js';
 import type { Project } from './project.entity.js';
@@ -19,6 +20,7 @@ describe('ProjectsService', () => {
     setMembers: vi.fn(),
   };
   const users = { assertExists: vi.fn(), findByIds: vi.fn() };
+  const teams = { get: vi.fn() };
   let service: ProjectsService;
 
   beforeEach(() => {
@@ -26,7 +28,7 @@ describe('ProjectsService', () => {
     projects.findByKey.mockResolvedValue(null);
     projects.create.mockResolvedValue(project());
     projects.findById.mockResolvedValue(project());
-    service = new ProjectsService(projects as unknown as ProjectsRepository, users as unknown as UsersService);
+    service = new ProjectsService(projects as unknown as ProjectsRepository, users as unknown as UsersService, teams as unknown as TeamsService);
   });
 
   describe('create', () => {

@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 import { DateScalar } from '../common/date.scalar.js';
 import { ProjectPriority } from './project-priority.enum.js';
 import { ProjectStatus } from './project-status.enum.js';
+import { ProjectVisibility } from './project-visibility.enum.js';
 
 @ObjectType()
 @Entity('projects')
@@ -30,6 +31,10 @@ export class Project {
   @Field(() => ProjectPriority)
   @Column({ type: 'enum', enum: ProjectPriority, enumName: 'project_priority', default: ProjectPriority.NO_PRIORITY })
   priority!: ProjectPriority;
+
+  @Field(() => ProjectVisibility)
+  @Column({ type: 'enum', enum: ProjectVisibility, enumName: 'project_visibility', default: ProjectVisibility.PUBLIC })
+  visibility!: ProjectVisibility;
 
   @Field(() => ID, { nullable: true })
   @Column({ type: 'uuid', nullable: true })

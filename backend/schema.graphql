@@ -26,6 +26,9 @@ input CreateCustomerInput {
   size: String
   status: CustomerStatus
   tier: CustomerTier
+
+  """Defaults to EXTERNAL"""
+  type: CustomerType
 }
 
 input CreateIssueInput {
@@ -61,6 +64,9 @@ input CreateProjectInput {
   status: ProjectStatus
   targetDate: Date
   teamId: ID
+
+  """Defaults to PUBLIC"""
+  visibility: ProjectVisibility
 }
 
 input CreateReleaseInput {
@@ -82,12 +88,18 @@ input CreateRequestInput {
   customerId: ID
   description: String
   projectId: ID
-  requestor: String!
-  source: RequestSource
+
+  """Free-text name; required unless requestorUserId is set"""
+  requestor: String
+
+  """The internal user filing this request"""
+  requestorUserId: ID
   title: String!
 }
 
 input CreateTeamInput {
+  """Defaults to PUBLIC"""
+  access: TeamAccess
   description: String
 
   """2-5 letters"""
@@ -109,6 +121,7 @@ type Customer {
   size: String
   status: CustomerStatus!
   tier: CustomerTier
+  type: CustomerType!
 }
 
 type CustomerRequest {
@@ -123,8 +136,13 @@ type CustomerRequest {
   id: ID!
   project: Project
   projectId: ID
-  requestor: String!
-  source: RequestSource!
+
+  """Free-text name, set for requests from an external customer"""
+  requestor: String
+  requestorUser: User
+
+  """The internal user who filed this request, if any"""
+  requestorUserId: ID
   status: RequestStatus!
   title: String!
   updatedAt: DateTime!
@@ -141,6 +159,11 @@ enum CustomerTier {
   TIER_1
   TIER_2
   TIER_3
+}
+
+enum CustomerType {
+  EXTERNAL
+  INTERNAL
 }
 
 """Calendar date in YYYY-MM-DD format"""
@@ -312,6 +335,7 @@ type Project {
   team: Team
   teamId: ID
   updatedAt: DateTime!
+  visibility: ProjectVisibility!
 }
 
 enum ProjectPriority {
@@ -328,6 +352,11 @@ enum ProjectStatus {
   COMPLETED
   IN_PROGRESS
   PLANNED
+}
+
+enum ProjectVisibility {
+  PRIVATE
+  PUBLIC
 }
 
 type Query {
@@ -400,11 +429,6 @@ enum ReleaseStatus {
   PLANNED
 }
 
-enum RequestSource {
-  EXTERNAL
-  INTERNAL
-}
-
 enum RequestStatus {
   CONVERTED
   DECLINED
@@ -412,6 +436,7 @@ enum RequestStatus {
 }
 
 type Team {
+  access: TeamAccess!
   activeProjectCount: Int!
   createdAt: DateTime!
   description: String!
@@ -423,6 +448,11 @@ type Team {
   members: [User!]!
   name: String!
   updatedAt: DateTime!
+}
+
+enum TeamAccess {
+  PRIVATE
+  PUBLIC
 }
 
 input UpdateCustomerInput {
@@ -442,6 +472,7 @@ input UpdateCustomerInput {
 
   """Pass null to clear"""
   tier: CustomerTier
+  type: CustomerType
 }
 
 input UpdateIssueInput {
@@ -485,6 +516,7 @@ input UpdateProjectInput {
 
   """Pass null to unassign"""
   teamId: ID
+  visibility: ProjectVisibility
 }
 
 input UpdateReleaseInput {
@@ -505,12 +537,15 @@ input UpdateRequestInput {
   customerId: ID
   description: String
   requestor: String
-  source: RequestSource
+
+  """Pass null to unset"""
+  requestorUserId: ID
   status: RequestStatus
   title: String
 }
 
 input UpdateTeamInput {
+  access: TeamAccess
   description: String
 
   """Replaces the full member list"""

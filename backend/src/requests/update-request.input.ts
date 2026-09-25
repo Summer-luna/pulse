@@ -1,6 +1,5 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 import { IsEnum, IsOptional, IsString, IsUUID, Length } from 'class-validator';
-import { RequestSource } from './request-source.enum.js';
 import { RequestStatus } from './request-status.enum.js';
 
 @InputType()
@@ -22,10 +21,10 @@ export class UpdateRequestInput {
   @Length(1, 120)
   requestor?: string;
 
-  @Field(() => RequestSource, { nullable: true })
+  @Field(() => ID, { nullable: true, description: 'Pass null to unset' })
   @IsOptional()
-  @IsEnum(RequestSource)
-  source?: RequestSource;
+  @IsUUID()
+  requestorUserId?: string | null;
 
   @Field(() => RequestStatus, { nullable: true })
   @IsOptional()

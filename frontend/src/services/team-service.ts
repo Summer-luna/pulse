@@ -1,12 +1,11 @@
 import type { Team } from '@/domain/types'
-import type { CreateTeamInput, UpdateTeamInput } from '@/graphql/generated/graphql'
+import type { CreateTeamInput, TeamAccess, UpdateTeamInput } from '@/graphql/generated/graphql'
 import { teamRepository } from '@/repositories/team-repository'
 
 export interface TeamDraft {
   name: string
   key: string
-  description: string
-  memberIds: string[]
+  access: TeamAccess
 }
 
 const KEY_PATTERN = /^[A-Za-z]{2,5}$/
@@ -37,7 +36,7 @@ class TeamService {
   }
 
   emptyDraft(): TeamDraft {
-    return { name: '', key: '', description: '', memberIds: [] }
+    return { name: '', key: '', access: 'PUBLIC' }
   }
 
   suggestKey(name: string): string {
@@ -58,8 +57,7 @@ class TeamService {
     return {
       name,
       key: key.toUpperCase(),
-      description: draft.description.trim(),
-      memberIds: draft.memberIds,
+      access: draft.access,
     }
   }
 }

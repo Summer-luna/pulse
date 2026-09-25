@@ -1,14 +1,16 @@
 import { Users } from 'lucide-react'
 import type { FormEvent } from 'react'
 import { useCreateTeamController } from '@/controllers/use-teams-controller'
+import { TEAM_ACCESS_LABEL, TEAM_ACCESSES } from '@/domain/team'
 import { keyColor } from '@/lib/key-color'
-import { DescriptionField } from '@/ui/DescriptionField'
 import { Modal } from '@/ui/Modal'
-import { MembersPicker } from './MembersPicker'
+import { Picker } from '@/ui/Picker'
 
 interface Props {
   onClose: () => void
 }
+
+const ACCESS_OPTIONS = TEAM_ACCESSES.map((access) => ({ value: access, label: TEAM_ACCESS_LABEL[access] }))
 
 export function CreateTeamModal({ onClose }: Props) {
   const controller = useCreateTeamController()
@@ -25,48 +27,64 @@ export function CreateTeamModal({ onClose }: Props) {
   }
 
   return (
-    <Modal title="New team" onClose={onClose}>
-      <form onSubmit={onSubmit} className="flex flex-col gap-3 p-4">
-        <div className="flex items-center gap-3">
-          <span
-            className="flex size-9 shrink-0 items-center justify-center rounded-lg text-white"
-            style={{ background: keyColor(draft.key || draft.name || 'team') }}
-          >
-            <Users size={18} />
-          </span>
-          <input
-            autoFocus
-            value={draft.name}
-            onChange={(event) => updateDraft({ name: event.target.value })}
-            placeholder="Team name"
-            maxLength={80}
-            className="w-full bg-transparent text-lg font-medium outline-none placeholder:text-faint"
-          />
-        </div>
+    <Modal title="Create a new team" onClose={onClose} maxWidthClassName="max-w-2xl">
+      <form onSubmit={onSubmit} className="flex flex-col gap-6 p-5">
+        <p className="-mt-2 text-xs text-faint">Create a new team to manage separate cycles, workflows, and notifications</p>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <label className="chip h-7 gap-1.5 text-dim">
-            Key
+        <div className="divide-y divide-line rounded-lg border border-line">
+          <div className="flex items-center justify-between gap-4 p-4">
+            <span className="font-medium">Icon &amp; Name</span>
+            <div className="flex items-center gap-2">
+              <span
+                className="flex size-8 shrink-0 items-center justify-center rounded-lg text-white"
+                style={{ background: keyColor(draft.key || draft.name || 'team') }}
+              >
+                <Users size={16} />
+              </span>
+              <input
+                autoFocus
+                value={draft.name}
+                onChange={(event) => updateDraft({ name: event.target.value })}
+                placeholder="e.g. Engineering"
+                maxLength={80}
+                className="field h-9 w-56"
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-between gap-4 p-4">
+            <div>
+              <div className="font-medium">Identifier</div>
+              <div className="text-xs text-faint">Used to identify issues from this team (e.g. ENG-123)</div>
+            </div>
             <input
               value={draft.key}
               onChange={(event) => updateDraft({ key: event.target.value.toUpperCase() })}
-              placeholder="KEY"
+              placeholder="e.g. ENG"
               maxLength={5}
-              aria-label="Team key"
-              className="w-14 bg-transparent font-mono text-ink uppercase outline-none"
+              aria-label="Team identifier"
+              className="field h-9 w-24 font-mono uppercase"
             />
-          </label>
-          <MembersPicker values={draft.memberIds} onChange={(memberIds) => updateDraft({ memberIds })} />
+          </div>
         </div>
 
-        <DescriptionField
-          value={draft.description}
-          onChange={(description) => updateDraft({ description })}
-          placeholder="What is this team responsible for?"
-          className="min-h-20"
-        />
+        <div>
+          <div className="mb-1 font-medium">Team access</div>
+          <p className="mb-2 text-xs text-faint">
+            Control who can access the team and its content. Private teams are visible only to team members and workspace admins.
+          </p>
+          <div className="flex items-center justify-between gap-4 rounded-lg border border-line p-4">
+            <span className="font-medium">Team access</span>
+            <Picker
+              value={draft.access}
+              options={ACCESS_OPTIONS}
+              onChange={(next) => next && updateDraft({ access: next })}
+              placeholder="Team access"
+              align="right"
+            />
+          </div>
+        </div>
 
-        <div className="flex items-center justify-end gap-2 border-t border-line pt-3">
+        <div className="flex items-center justify-end gap-2 border-t border-line pt-4">
           {controller.error && <p className="mr-auto text-danger">{controller.error}</p>}
           <button type="button" className="btn" onClick={onClose}>
             Cancel
@@ -79,4 +97,3 @@ export function CreateTeamModal({ onClose }: Props) {
     </Modal>
   )
 }
-

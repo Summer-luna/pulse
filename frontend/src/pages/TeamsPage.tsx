@@ -1,4 +1,4 @@
-import { FolderKanban, Plus, Search, Users } from 'lucide-react'
+import { FolderKanban, Lock, Plus, Search, Users } from 'lucide-react'
 import { useState } from 'react'
 import { CreateTeamModal } from '@/components/CreateTeamModal'
 import { PageHeader } from '@/components/PageHeader'
@@ -73,6 +73,7 @@ export function TeamsPage() {
                   </span>
                   <span className="min-w-0 truncate font-medium">{team.name}</span>
                   <span className="shrink-0 font-mono text-xs text-faint">{team.key}</span>
+                  {team.access === 'PRIVATE' && <Lock size={12} className="shrink-0 text-faint" title="Private to team members" />}
                 </span>
                 <span className="w-48 shrink-0 truncate text-xs text-dim">{team.description || '—'}</span>
                 <span className="w-24 shrink-0">

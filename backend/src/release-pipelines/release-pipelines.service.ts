@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProjectsService } from '../projects/projects.service.js';
 import { Release } from '../releases/release.entity.js';
+import { User } from '../users/user.entity.js';
 import { CreateReleasePipelineInput } from './create-release-pipeline.input.js';
 import { ReleasePipeline } from './release-pipeline.entity.js';
 import { ReleasePipelinesRepository } from './release-pipelines.repository.js';
@@ -17,11 +18,26 @@ export class ReleasePipelinesService {
     return this.pipelines.findAll(projectId);
   }
 
+  async listForViewer(projectId: string | undefined, viewer: User): Promise<ReleasePipeline[]> {
+    if (projectId) {
+      await this.projects.assertAccessible(projectId, viewer);
+      return this.pipelines.findAll(projectId);
+    }
+    const excluded = await this.projects.inaccessiblePrivateProjectIds(viewer);
+    return this.pipelines.findAll(undefined, excluded);
+  }
+
   async get(id: string): Promise<ReleasePipeline> {
     const pipeline = await this.pipelines.findById(id);
     if (!pipeline) {
       throw new NotFoundException(`Release pipeline ${id} not found`);
     }
+    return pipeline;
+  }
+
+  async getForViewer(id: string, viewer: User): Promise<ReleasePipeline> {
+    const pipeline = await this.get(id);
+    await this.projects.assertAccessible(pipeline.projectId, viewer);
     return pipeline;
   }
 

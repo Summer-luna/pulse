@@ -1,6 +1,13 @@
 import { type FormEvent, useState } from 'react'
 import { useCreateCustomerController } from '@/controllers/use-customers-controller'
-import { CUSTOMER_STATUS_LABEL, CUSTOMER_STATUSES, CUSTOMER_TIER_LABEL, CUSTOMER_TIERS } from '@/domain/customer'
+import {
+  CUSTOMER_STATUS_LABEL,
+  CUSTOMER_STATUSES,
+  CUSTOMER_TIER_LABEL,
+  CUSTOMER_TIERS,
+  CUSTOMER_TYPE_LABEL,
+  CUSTOMER_TYPES,
+} from '@/domain/customer'
 import { Modal } from '@/ui/Modal'
 import { Picker } from '@/ui/Picker'
 import { UserPicker } from './UserPicker'
@@ -11,6 +18,7 @@ interface Props {
 
 const STATUS_OPTIONS = CUSTOMER_STATUSES.map((status) => ({ value: status, label: CUSTOMER_STATUS_LABEL[status] }))
 const TIER_OPTIONS = CUSTOMER_TIERS.map((tier) => ({ value: tier, label: CUSTOMER_TIER_LABEL[tier] }))
+const TYPE_OPTIONS = CUSTOMER_TYPES.map((type) => ({ value: type, label: CUSTOMER_TYPE_LABEL[type] }))
 
 export function CreateCustomerModal({ onClose }: Props) {
   const controller = useCreateCustomerController()
@@ -62,6 +70,15 @@ export function CreateCustomerModal({ onClose }: Props) {
               options={STATUS_OPTIONS}
               onChange={(next) => next && updateDraft({ status: next })}
               placeholder="Status"
+            />
+          </label>
+          <label className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-dim">Type</span>
+            <Picker
+              value={draft.type}
+              options={TYPE_OPTIONS}
+              onChange={(next) => next && updateDraft({ type: next })}
+              placeholder="Type"
             />
           </label>
           <label className="flex flex-col gap-1.5">

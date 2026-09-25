@@ -1,5 +1,6 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
-import { ArrayUnique, IsArray, IsOptional, IsString, IsUUID, Length, Matches } from 'class-validator';
+import { ArrayUnique, IsArray, IsEnum, IsOptional, IsString, IsUUID, Length, Matches } from 'class-validator';
+import { TeamAccess } from './team-access.enum.js';
 
 @InputType()
 export class CreateTeamInput {
@@ -11,6 +12,11 @@ export class CreateTeamInput {
   @Field(() => String, { description: '2-5 letters' })
   @Matches(/^[A-Za-z]{2,5}$/, { message: 'key must be 2-5 letters' })
   key!: string;
+
+  @Field(() => TeamAccess, { nullable: true, description: 'Defaults to PUBLIC' })
+  @IsOptional()
+  @IsEnum(TeamAccess)
+  access?: TeamAccess;
 
   @Field(() => String, { nullable: true })
   @IsOptional()

@@ -1,5 +1,5 @@
 import type { Project } from '@/domain/types'
-import type { CreateProjectInput, ProjectPriority, ProjectStatus, UpdateProjectInput } from '@/graphql/generated/graphql'
+import type { CreateProjectInput, ProjectPriority, ProjectStatus, ProjectVisibility, UpdateProjectInput } from '@/graphql/generated/graphql'
 import { projectRepository } from '@/repositories/project-repository'
 
 export interface ProjectDraft {
@@ -8,6 +8,7 @@ export interface ProjectDraft {
   description: string
   status: ProjectStatus
   priority: ProjectPriority
+  visibility: ProjectVisibility
   leadId: string | null
   teamId: string | null
   memberIds: string[]
@@ -45,6 +46,7 @@ class ProjectService {
       description: '',
       status: 'PLANNED',
       priority: 'NO_PRIORITY',
+      visibility: 'PUBLIC',
       leadId: null,
       teamId: null,
       memberIds: [],
@@ -74,6 +76,7 @@ class ProjectService {
       description: draft.description.trim(),
       status: draft.status,
       priority: draft.priority,
+      visibility: draft.visibility,
       leadId: draft.leadId,
       teamId: draft.teamId,
       memberIds: draft.memberIds,

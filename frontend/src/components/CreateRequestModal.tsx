@@ -1,23 +1,27 @@
 import type { FormEvent } from 'react'
+import { useCustomersController } from '@/controllers/use-customers-controller'
 import { useCreateRequestController } from '@/controllers/use-requests-controller'
-import { REQUEST_SOURCE_LABEL, REQUEST_SOURCES } from '@/domain/request'
+import type { CustomerType } from '@/graphql/generated/graphql'
 import { DescriptionField } from '@/ui/DescriptionField'
 import { Modal } from '@/ui/Modal'
-import { Picker } from '@/ui/Picker'
 import { CustomerPicker } from './CustomerPicker'
+import { UserPicker } from './UserPicker'
 
 interface Props {
   projectId?: string
   customerId?: string
   customerName?: string
+  customerType?: CustomerType
   onClose: () => void
 }
 
-const SOURCE_OPTIONS = REQUEST_SOURCES.map((source) => ({ value: source, label: REQUEST_SOURCE_LABEL[source] }))
-
-export function CreateRequestModal({ projectId, customerId, customerName, onClose }: Props) {
+export function CreateRequestModal({ projectId, customerId, customerName, customerType, onClose }: Props) {
   const controller = useCreateRequestController(projectId, customerId, customerName)
   const { draft, updateDraft } = controller
+  const { customers } = useCustomersController()
+
+  const effectiveCustomerType = customerId ? customerType : customers.find((customer) => customer.id === draft.customerId)?.type
+  const isInternal = effectiveCustomerType !== 'EXTERNAL'
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault()
@@ -47,7 +51,7 @@ export function CreateRequestModal({ projectId, customerId, customerName, onClos
           className="min-h-20"
         />
         <div className="flex flex-wrap items-center gap-2">
-          {!customerId && (
+          {!customerId && !isInternal && (
             <input
               value={draft.requestor}
               onChange={(event) => updateDraft({ requestor: event.target.value })}
@@ -56,12 +60,14 @@ export function CreateRequestModal({ projectId, customerId, customerName, onClos
               className="field h-7 w-40"
             />
           )}
-          <Picker
-            value={draft.source}
-            options={SOURCE_OPTIONS}
-            onChange={(next) => next && updateDraft({ source: next })}
-            placeholder="Source"
-          />
+          {isInternal && (
+            <UserPicker
+              value={draft.requestorUserId}
+              onChange={(requestorUserId) => updateDraft({ requestorUserId })}
+              placeholder="Requestor"
+              noneLabel="Requestor"
+            />
+          )}
           {!customerId && <CustomerPicker value={draft.customerId} onChange={(next) => updateDraft({ customerId: next })} />}
         </div>
         <div className="flex items-center justify-end gap-2 border-t border-line pt-3">

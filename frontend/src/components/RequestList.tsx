@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { REQUEST_SOURCE_LABEL, REQUEST_STATUS_COLOR, REQUEST_STATUS_LABEL } from '@/domain/request'
+import { REQUEST_STATUS_COLOR, REQUEST_STATUS_LABEL } from '@/domain/request'
 import type { CustomerRequest } from '@/domain/types'
 import { formatRelativeTime, formatShortDate } from '@/lib/format-date'
 import { CreateIssueModal } from './CreateIssueModal'
@@ -43,7 +43,6 @@ export function RequestList({ requests, onConvert, onRemove }: Props) {
             <RequestStatusIcon status={request.status} />
             <span className="min-w-0 flex-1 truncate font-medium">{request.title}</span>
             {request.customer && <span className="chip shrink-0">{request.customer.name}</span>}
-            <span className="shrink-0 text-xs text-dim">{REQUEST_SOURCE_LABEL[request.source]}</span>
             <span className="shrink-0 text-xs text-dim">{REQUEST_STATUS_LABEL[request.status]}</span>
             <span className="shrink-0 text-xs text-faint">{formatShortDate(request.createdAt)}</span>
             <span className="flex shrink-0 items-center gap-3 opacity-0 group-hover:opacity-100">
@@ -70,7 +69,7 @@ export function RequestList({ requests, onConvert, onRemove }: Props) {
           {request.description && (
             <div className="pl-[1.375rem]">
               <p className="mt-1 text-xs text-faint">
-                Added by {request.requestor} · {formatRelativeTime(request.createdAt)}
+                Added by {request.requestorUser?.name ?? request.requestor} · {formatRelativeTime(request.createdAt)}
               </p>
               <p className="mt-0.5 text-sm text-dim">{request.description}</p>
             </div>

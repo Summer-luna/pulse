@@ -1,5 +1,5 @@
 import type { CustomerRequest } from '@/domain/types'
-import type { CreateRequestInput, RequestSource, UpdateRequestInput } from '@/graphql/generated/graphql'
+import type { CreateRequestInput, UpdateRequestInput } from '@/graphql/generated/graphql'
 import { requestRepository } from '@/repositories/request-repository'
 
 export interface RequestDraft {
@@ -7,7 +7,7 @@ export interface RequestDraft {
   title: string
   description: string
   requestor: string
-  source: RequestSource
+  requestorUserId: string | null
   customerId: string | null
 }
 
@@ -33,7 +33,7 @@ class RequestService {
   }
 
   emptyDraft(projectId: string | null = null, customerId: string | null = null, requestor = ''): RequestDraft {
-    return { projectId, title: '', description: '', requestor, source: 'EXTERNAL', customerId }
+    return { projectId, title: '', description: '', requestor, requestorUserId: null, customerId }
   }
 
   toCreateInput(draft: RequestDraft): CreateRequestInput {
@@ -41,15 +41,15 @@ class RequestService {
     if (!title) {
       throw new Error('Request title is required')
     }
-    if (!draft.requestor.trim()) {
+    if (!draft.requestorUserId && !draft.requestor.trim()) {
       throw new Error('Requestor is required')
     }
     return {
       projectId: draft.projectId,
       title,
       description: draft.description.trim(),
-      requestor: draft.requestor.trim(),
-      source: draft.source,
+      requestor: draft.requestorUserId ? undefined : draft.requestor.trim(),
+      requestorUserId: draft.requestorUserId,
       customerId: draft.customerId,
     }
   }

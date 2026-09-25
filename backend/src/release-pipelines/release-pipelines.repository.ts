@@ -21,11 +21,15 @@ export class ReleasePipelinesRepository {
     return this.releases.findOne({ where: { pipelineId }, order: { createdAt: 'DESC' } });
   }
 
-  findAll(projectId?: string): Promise<ReleasePipeline[]> {
-    return this.repo.find({
-      where: projectId ? { projectId } : {},
-      order: { createdAt: 'DESC' },
-    });
+  findAll(projectId?: string, excludedProjectIds: string[] = []): Promise<ReleasePipeline[]> {
+    const qb = this.repo.createQueryBuilder('pipeline').orderBy('pipeline.createdAt', 'DESC');
+    if (projectId) {
+      qb.andWhere('pipeline.projectId = :projectId', { projectId });
+    }
+    if (excludedProjectIds.length > 0) {
+      qb.andWhere('pipeline.projectId NOT IN (:...excludedProjectIds)', { excludedProjectIds });
+    }
+    return qb.getMany();
   }
 
   findById(id: string): Promise<ReleasePipeline | null> {

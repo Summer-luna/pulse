@@ -8,6 +8,7 @@ import { RequestList } from '@/components/RequestList'
 import { UserPicker } from '@/components/UserPicker'
 import { useCustomerController } from '@/controllers/use-customers-controller'
 import { useRequestsController } from '@/controllers/use-requests-controller'
+import { CUSTOMER_TYPE_LABEL } from '@/domain/customer'
 import { keyColor } from '@/lib/key-color'
 import { EmptyState } from '@/ui/EmptyState'
 import { PageState } from '@/ui/PageState'
@@ -65,6 +66,10 @@ export function CustomerPage() {
                 noneLabel="No owner"
               />
             </div>
+            <div>
+              <div className="mb-1.5 text-xs text-dim">Type</div>
+              <span className="chip h-7">{CUSTOMER_TYPE_LABEL[customer.type]}</span>
+            </div>
           </div>
 
           <div className="mt-8 border-t border-line pt-6">
@@ -86,7 +91,14 @@ export function CustomerPage() {
           </div>
         </div>
       </div>
-      {creating && <CreateRequestModal customerId={customerId} customerName={customer.name} onClose={() => setCreating(false)} />}
+      {creating && (
+        <CreateRequestModal
+          customerId={customerId}
+          customerName={customer.name}
+          customerType={customer.type}
+          onClose={() => setCreating(false)}
+        />
+      )}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { TeamAccess } from './team-access.enum.js';
 
 @ObjectType()
 @Entity('teams')
@@ -19,6 +20,10 @@ export class Team {
   @Field(() => String)
   @Column({ type: 'text', default: '' })
   description!: string;
+
+  @Field(() => TeamAccess)
+  @Column({ type: 'enum', enum: TeamAccess, enumName: 'team_access', default: TeamAccess.PUBLIC })
+  access!: TeamAccess;
 
   @Field(() => GraphQLISODateTime)
   @CreateDateColumn({ type: 'timestamptz' })

@@ -67,7 +67,6 @@ try {
   Copy-Item (Join-Path $repoRoot 'package-lock.json') $manifestsDir -Force
   Copy-Item (Join-Path $repoRoot 'backend/package.json') (Join-Path $manifestsDir 'backend') -Force
   Copy-Item (Join-Path $repoRoot 'frontend/package.json') (Join-Path $manifestsDir 'frontend') -Force
-  Copy-Item (Join-Path $repoRoot 'deploy/backend-runtime.Dockerfile') (Join-Path $manifestsDir 'Dockerfile') -Force
 
   New-Item -ItemType Directory -Force -Path $deployRoot | Out-Null
   Invoke-Checked 'tar.exe' @('-czf', $archivePath, '-C', $stageDir, '.')

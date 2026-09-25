@@ -44,6 +44,7 @@ start_services() {
     -e "JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}" \
     -v pulse_uploads_data:/app/backend/uploads \
     -v "$active_release/backend:/app/backend/dist:ro" \
+    -v "$modules_dir:/app/node_modules:ro" \
     pulse-backend >/dev/null
 
   docker rm -f pulse-frontend-1 >/dev/null 2>&1 || true
@@ -60,10 +61,21 @@ start_services() {
 
 manifests_dir="$release_dir/manifests"
 lock_hash="$(sha256sum "$manifests_dir/package-lock.json" | cut -d' ' -f1)"
-image_lock_hash="$(docker image inspect pulse-backend --format '{{ index .Config.Labels "pulse.lock-hash" }}' 2>/dev/null || true)"
-if [[ "$lock_hash" != "$image_lock_hash" ]]; then
-  echo 'Dependencies changed; rebuilding pulse-backend image...'
-  docker build --label "pulse.lock-hash=$lock_hash" -t pulse-backend -f "$manifests_dir/Dockerfile" "$manifests_dir"
+modules_root="$app_dir/node_modules"
+modules_dir="$modules_root/$lock_hash"
+# `docker build` RUN steps can't disable AppArmor on this LXC host, so install deps in a one-off `docker run` instead.
+if [[ ! -d "$modules_dir" ]]; then
+  echo 'Dependencies changed; installing production node_modules...'
+  mkdir -p "$modules_root"
+  rm -rf "$modules_dir.tmp"
+  mkdir -p "$modules_dir.tmp"
+  docker run --rm \
+    --security-opt apparmor=unconfined \
+    -v "$manifests_dir:/src:ro" \
+    -v "$modules_dir.tmp:/out" \
+    node:22-alpine \
+    sh -c 'mkdir /work && cp -r /src/. /work && cd /work && npm ci --omit=dev && cp -a node_modules/. /out/'
+  mv "$modules_dir.tmp" "$modules_dir"
 fi
 
 ln -sfn "$release_dir" "$current_link.next"
@@ -98,5 +110,10 @@ find "$app_dir/releases" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' \
   | cut -d' ' -f2- \
   | xargs -r rm -rf
 find "$app_dir/releases" -maxdepth 1 -type f -name 'pulse-*.tar.gz' -mtime +7 -delete
+find "$modules_root" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' \
+  | sort -rn \
+  | tail -n +3 \
+  | cut -d' ' -f2- \
+  | xargs -r rm -rf
 
 echo "Release $release_id is active."
